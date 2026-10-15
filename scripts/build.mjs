@@ -1,0 +1,10 @@
+import { cp, mkdir, rm, writeFile, readFile } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
+const web = fileURLToPath(new URL("../web/",import.meta.url));
+const dist = fileURLToPath(new URL("../dist/",import.meta.url));
+await rm(dist,{recursive:true,force:true}); await mkdir(dist,{recursive:true});
+await cp(web,dist,{recursive:true});
+await writeFile(new URL("../dist/.nojekyll",import.meta.url),"");
+const manifest=JSON.parse(await readFile(new URL("../web/vendor/manifest.json",import.meta.url),"utf8"));
+console.log("Da tao dist/. Co the deploy toan bo thu muc dist len dich vu static hosting.");
+if(!manifest.localLibraries)console.warn("Thu vien vi/camera dang tai tu CDN. Chay npm install va build lai de dong goi cuc bo.");

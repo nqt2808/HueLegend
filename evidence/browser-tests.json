@@ -1,0 +1,58 @@
+{
+  "results": [
+    {
+      "test": "Desktop: 6 lo mau, nhan nguon ro rang, khong tran ngang",
+      "status": "PASS"
+    },
+    {
+      "test": "Tra cuu: timeline 4 chang va QR canvas duoc tao",
+      "status": "PASS"
+    },
+    {
+      "test": "Tai QR va JSON: danh dau mau, khong co TxHash gia",
+      "status": "PASS"
+    },
+    {
+      "test": "Chan URI javascript truoc khi gui",
+      "status": "PASS"
+    },
+    {
+      "test": "Producer: tao lo, xac nhan, tu mo timeline va QR",
+      "status": "PASS"
+    },
+    {
+      "test": "Ma lo trung: hien loi tieng Viet, khong tao them",
+      "status": "PASS"
+    },
+    {
+      "test": "Gian lan mo phong: khach khong duoc tao lo",
+      "status": "PASS"
+    },
+    {
+      "test": "Inspector: verifyBatch dung 3 tham so, cap nhat trang thai",
+      "status": "PASS"
+    },
+    {
+      "test": "Ky quy: nut rut bi khoa khi con thoi han",
+      "status": "PASS"
+    },
+    {
+      "test": "Owner: chan phi vuot 0.01 ETH o giao dien",
+      "status": "PASS"
+    },
+    {
+      "test": "XSS: ten lo doc hai hien thi nhu van ban, khong thuc thi",
+      "status": "PASS"
+    },
+    {
+      "test": "Khong co JavaScript pageerror trong cac luong da thu",
+      "status": "PASS"
+    },
+    {
+      "test": "Mobile 390px: menu, tra cuu, QR; khong tran ngang toan trang",
+      "status": "PASS"
+    }
+  ],
+  "total": 13,
+  "pageErrors": []
+}

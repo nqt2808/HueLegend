@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#675277">
+  <meta name="description" content="HueLegend — Tra cứu hành trình đặc sản Huế. Ghi nhận nguồn gốc, kiểm định và bàn giao trên Ethereum Sepolia.">
+  <meta name="referrer" content="no-referrer">
+  <title>HueLegend · Hành trình đặc sản Huế</title>
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Bỏ qua menu, đến nội dung</a>
+  <div class="mobile-scrim" id="mobile-scrim" hidden></div>
+  <aside class="sidebar" id="sidebar" aria-label="Thanh điều hướng">
+    <a class="brand" href="#/dashboard"><span class="brand-mark" id="brand-mark"></span><span>HueLegend<small>TINH HOA CÓ NGUỒN CỘI</small></span></a>
+    <div class="nav-label">KHÔNG GIAN LÀM VIỆC</div>
+    <nav id="navigation" aria-label="Chức năng chính"></nav>
+    <div class="sidebar-bottom">
+      <div class="sidebar-story"><span class="eyebrow">TỪ LÀNG NGHỀ ĐẾN TAY BẠN</span><p>Giữ câu chuyện thật<br>trong từng đặc sản.</p><span class="story-rule"></span><small>Minh bạch qua từng chặng.</small></div>
+      <button class="nav-item" data-action="settings"><span data-icon="settings"></span>Cấu hình kết nối</button>
+      <a class="nav-item" href="#/guide"><span data-icon="help"></span>Hướng dẫn sử dụng</a>
+      <div class="sidebar-footer"><span class="dot"></span>Phiên bản học tập · ECO2432</div>
+    </div>
+  </aside>
+  <div class="workspace">
+    <header class="topbar">
+      <div class="topbar-left"><button class="icon-button mobile-toggle" data-action="menu" aria-label="Mở menu" aria-expanded="false"><span data-icon="menu"></span></button><span class="breadcrumb">Không gian làm việc <span>/</span> <strong id="breadcrumb-title">Tổng quan</strong></span></div>
+      <div class="topbar-actions">
+        <label class="sr-only" for="mode-select">Nguồn dữ liệu</label>
+        <select id="mode-select" class="mode-select"><option value="demo">Trải nghiệm mẫu</option><option value="sepolia">Sepolia Testnet</option></select>
+        <button class="button button-primary wallet-button" data-action="connect" id="connect-button"><span data-icon="wallet"></span><span>Kết nối ví</span></button>
+      </div>
+    </header>
+    <div id="mode-banner" class="mode-banner" role="status"></div>
+    <div id="network-banner"></div>
+    <div id="transaction-banner" aria-live="polite"></div>
+    <main id="main-content" tabindex="-1"><div class="loading-page"><span class="spinner"></span> Đang chuẩn bị không gian HueLegend…</div></main>
+    <footer class="page-footer"><span>HueLegend <span class="footer-divider">/</span> Nguồn gốc rõ ràng. Giá trị bền lâu.</span><span>Ethereum Sepolia · ETH thử nghiệm</span></footer>
+  </div>
+  <div id="toasts" class="toasts" aria-live="polite" aria-atomic="false"></div>
+  <dialog id="app-dialog" aria-labelledby="dialog-title"></dialog>
+  <noscript><p class="noscript">Vui lòng bật JavaScript để sử dụng DApp HueLegend.</p></noscript>
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>

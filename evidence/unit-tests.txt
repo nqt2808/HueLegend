@@ -1,0 +1,122 @@
+
+> huelegend-dapp@1.0.0 test
+> node --test test/*.test.mjs
+
+TAP version 13
+# Subtest: UTF-8: tieng Viet tinh theo byte, khong theo so ky tu
+ok 1 - UTF-8: tieng Viet tinh theo byte, khong theo so ky tu
+  ---
+  duration_ms: 1.211983
+  type: 'test'
+  ...
+# Subtest: ETH dung BigInt, giu chinh xac den 1 wei
+ok 2 - ETH dung BigInt, giu chinh xac den 1 wei
+  ---
+  duration_ms: 0.340714
+  type: 'test'
+  ...
+# Subtest: HTML escape ngan chen ma XSS tu du lieu lo
+ok 3 - HTML escape ngan chen ma XSS tu du lieu lo
+  ---
+  duration_ms: 0.271211
+  type: 'test'
+  ...
+# Subtest: URI chan javascript, data va URL co mat khau
+ok 4 - URI chan javascript, data va URL co mat khau
+  ---
+  duration_ms: 0.780625
+  type: 'test'
+  ...
+# Subtest: Metadata va RPC duoc kiem tra dau vao
+ok 5 - Metadata va RPC duoc kiem tra dau vao
+  ---
+  duration_ms: 0.31728
+  type: 'test'
+  ...
+# Subtest: QR round-trip giu ma Unicode, mode va hop dong
+ok 6 - QR round-trip giu ma Unicode, mode va hop dong
+  ---
+  duration_ms: 0.657794
+  type: 'test'
+  ...
+# Subtest: QR la ma duoc tao that, co finder pattern va quiet zone do renderer tao
+ok 7 - QR la ma duoc tao that, co finder pattern va quiet zone do renderer tao
+  ---
+  duration_ms: 11.158097
+  type: 'test'
+  ...
+# Subtest: ABI dung ten ham va thu tu tham so cua nguon contract
+ok 8 - ABI dung ten ham va thu tu tham so cua nguon contract
+  ---
+  duration_ms: 0.217793
+  type: 'test'
+  ...
+# Subtest: TC-01: producer du coc tao lo va co chang khoi tao
+ok 9 - TC-01: producer du coc tao lo va co chang khoi tao
+  ---
+  duration_ms: 1.934642
+  type: 'test'
+  ...
+# Subtest: TC-02: nop thieu phi bi chan, du lieu khong doi
+ok 10 - TC-02: nop thieu phi bi chan, du lieu khong doi
+  ---
+  duration_ms: 0.99361
+  type: 'test'
+  ...
+# Subtest: TC-03 GIAN LAN: khach mao danh producer bi chan
+ok 11 - TC-03 GIAN LAN: khach mao danh producer bi chan
+  ---
+  duration_ms: 0.862736
+  type: 'test'
+  ...
+# Subtest: TC-04: ma lo trung bi chan
+ok 12 - TC-04: ma lo trung bi chan
+  ---
+  duration_ms: 0.918989
+  type: 'test'
+  ...
+# Subtest: TC-05: rut coc som bi chan; het han thi reset so du va moc khoa
+ok 13 - TC-05: rut coc som bi chan; het han thi reset so du va moc khoa
+  ---
+  duration_ms: 0.421123
+  type: 'test'
+  ...
+# Subtest: TC-06: owner mien phi, ROLE_ADMIN khong tu dong la owner
+ok 14 - TC-06: owner mien phi, ROLE_ADMIN khong tu dong la owner
+  ---
+  duration_ms: 1.058336
+  type: 'test'
+  ...
+# Subtest: TC-07: phi vuot tran bi chan
+ok 15 - TC-07: phi vuot tran bi chan
+  ---
+  duration_ms: 0.269739
+  type: 'test'
+  ...
+# Subtest: TC-08: doi vi giua luc chuan bi va xac nhan bi chan
+ok 16 - TC-08: doi vi giua luc chuan bi va xac nhan bi chan
+  ---
+  duration_ms: 0.521341
+  type: 'test'
+  ...
+# Subtest: TC-09: kiem dinh va thu hoi them lich su thay vi xoa
+ok 17 - TC-09: kiem dinh va thu hoi them lich su thay vi xoa
+  ---
+  duration_ms: 0.619547
+  type: 'test'
+  ...
+# Subtest: Loi nested va tu choi vi duoc dich de hieu
+ok 18 - Loi nested va tu choi vi duoc dich de hieu
+  ---
+  duration_ms: 0.307976
+  type: 'test'
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 90.474895

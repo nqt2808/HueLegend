@@ -1,0 +1,50 @@
+{
+  "app": "HueLegend",
+  "mode": "demo",
+  "source": "DU_LIEU_MO_PHONG",
+  "exportedAt": "2026-10-13T07:26:53.875Z",
+  "batch": {
+    "batchCode": "HL-MEXUNG-2026-001",
+    "productName": "Mè xửng truyền thống",
+    "origin": "Phú Hòa, Huế",
+    "createdAt": 1791617213,
+    "producer": "0x2000000000000000000000000000000000000002",
+    "isVerified": true,
+    "exists": true,
+    "checkpoints": [
+      {
+        "timestamp": 1791617213,
+        "recorder": "0x2000000000000000000000000000000000000002",
+        "role": "0x0ba5d6a294d18975619aa009af5f0a28f2394d7e887fd23c22f28a99c7dd0f25",
+        "location": "Phú Hòa, Huế",
+        "action": "Khởi tạo lô tại cơ sở sản xuất mẫu",
+        "metadataURI": ""
+      },
+      {
+        "timestamp": 1791620813,
+        "recorder": "0x5000000000000000000000000000000000000005",
+        "role": "0xed49429b4c7fe50cdbad60132e4418036ca605907e31900afaa579e783c780ec",
+        "location": "Điểm kiểm định mẫu, Huế",
+        "action": "Kiểm định hồ sơ lô hàng (minh hoạ)",
+        "metadataURI": ""
+      },
+      {
+        "timestamp": 1791624413,
+        "recorder": "0x3000000000000000000000000000000000000003",
+        "role": "0x40eaecc116ce5d0eea6a62051370939931c44adf9a3116dae12029c664d7e90e",
+        "location": "Kho trung chuyển mẫu, Huế",
+        "action": "Tiếp nhận và bàn giao vận chuyển",
+        "metadataURI": ""
+      },
+      {
+        "timestamp": 1791631613,
+        "recorder": "0x4000000000000000000000000000000000000004",
+        "role": "0xc2030e84afe8cfd541c4479ced4b7fbe215607847bc89259553fe65775d29de2",
+        "location": "Điểm bán mẫu, Đông Ba",
+        "action": "Nhận hàng tại điểm bán",
+        "metadataURI": ""
+      }
+    ]
+  },
+  "evidence": null
+}

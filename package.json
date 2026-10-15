@@ -1,0 +1,30 @@
+{
+  "name": "huelegend-dapp",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "HueLegend fullstack: frontend MetaMask + Vercel API + Solidity ProjectCore",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "start": "node scripts/serve.mjs",
+    "dev": "node scripts/serve.mjs",
+    "test": "node --test test/*.test.mjs",
+    "postinstall": "node scripts/vendor.mjs",
+    "vendor": "node scripts/vendor.mjs",
+    "build": "node scripts/build.mjs",
+    "check:live": "node scripts/check-live.mjs",
+    "test:contract": "hardhat test solidity",
+    "compile:contract": "hardhat compile"
+  },
+  "dependencies": {
+    "ethers": "6.17.0",
+    "qr-scanner": "1.4.2",
+    "@openzeppelin/contracts": "5.4.0"
+  },
+  "devDependencies": {
+    "hardhat": "^3.0.0",
+    "typescript": "^5.8.3"
+  }
+}
