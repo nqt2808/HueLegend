@@ -153,10 +153,33 @@ function sellerPage(){
   if(!state.account)return title('DÀNH CHO CƠ SỞ','Đăng ký bán hàng','Kết nối MetaMask để nộp giấy phép và quản lý lô hàng.')+note('Chỉ những ví cơ sở được quản trị viên phê duyệt mới có thể nộp lô. Bất kỳ ví MetaMask nào cũng có thể đăng ký làm cơ sở.');
   const s=state.seller||{status:0};
   return title('QUẢN LÝ NGƯỜI BÁN','Hồ sơ cơ sở & lô hàng','Hai bước kiểm duyệt: duyệt cơ sở trước, duyệt từng lô sau.',tag(REVIEW[s.status],s.status===2?'':s.status===3?'red':'orange'))+
-  `<div class="two-col"><div><div class="panel"><h3>01 · Đăng ký / cập nhật hồ sơ</h3><p>Nhập số giấy phép kinh doanh và số chứng nhận ATTP. Hệ thống sẽ ghi mã băm SHA-256 của số giấy phép lên blockchain. Quản trị viên sẽ đối chiếu bản gốc trước khi duyệt.</p><form id="seller-form">
-  ${field('businessName','Tên cơ sở / doanh nghiệp','text',`maxlength="128" value="${h(s.businessName||'')}"`)}
-  ${field('location','Địa chỉ cơ sở','text',`maxlength="256" value="${h(s.location||'')}"`)}
-  <div class="field-row">${field('businessLicenseNum','Số giấy phép kinh doanh','text','maxlength="128" placeholder="VD: 3700123456"','Nhập số trên giấy phép KD. Sẽ được ghi SHA-256 on-chain.')}${field('foodSafetyNum','Số chứng nhận ATTP','text','maxlength="128" placeholder="VD: 01/2024/ATTP-HUE"','Nhập số trên giấy chứng nhận ATTP.')}</div>
+  `<div class="two-col"><div><div class="panel"><h3>01 · Đăng ký / cập nhật hồ sơ</h3><p>Nhập số giấy phép kinh doanh và số chứng nhận ATTP. Hệ thống sẽ tra cứu ngầm thông tin trên Cổng ĐKKD Quốc gia và ghi mã băm SHA-256 lên blockchain.</p><form id="seller-form">
+  ${field('businessName','Tên cơ sở / doanh nghiệp','text',`maxlength="128" value="${h(s.businessName||'')}" placeholder="Nhập tên cơ sở hoặc chọn từ gợi ý GPKD"`)}
+  <div class="field address-field-wrap">
+    <div class="field-head">
+      <label for="location">Địa chỉ cơ sở <span class="required">*</span></label>
+      <span class="micro" style="color:var(--muted)">Gợi ý thông minh như Google Maps 📍</span>
+    </div>
+    <div style="position:relative">
+      <input type="text" id="location" name="location" maxlength="256" required autocomplete="off" placeholder="Gõ số nhà, tên đường, phường hoặc làng nghề (VD: Chi Lăng, Thủy Xuân, Huế)..." value="${h(s.location||'')}">
+      <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);pointer-events:none;font-size:15px">📍</span>
+    </div>
+    <div id="location-suggestions" class="address-suggestions-box" hidden></div>
+  </div>
+  <div class="field-row">
+    <div class="field">
+      <div class="field-head">
+        <label for="businessLicenseNum">Số GPKD / Mã số thuế <span class="required">*</span></label>
+        <a href="https://dangkykinhdoanh.gov.vn/" target="_blank" rel="noopener noreferrer" class="gov-link">
+          🏛️ dangkykinhdoanh.gov.vn ↗
+        </a>
+      </div>
+      <input type="text" id="businessLicenseNum" name="businessLicenseNum" maxlength="128" required placeholder="Nhập mã số thuế / GPKD (VD: 3300123456)">
+      <div id="license-gov-result" class="gov-verification-card" hidden></div>
+      <small>Tra cứu ngầm trên dangkykinhdoanh.gov.vn. Mã băm SHA-256 sẽ ghi on-chain.</small>
+    </div>
+    ${field('foodSafetyNum','Số chứng nhận ATTP','text','maxlength="128" placeholder="VD: 01/2024/ATTP-HUE"','Nhập số trên giấy chứng nhận ATTP.')}
+  </div>
   <div class="field-row">${field('businessExpiry','Ngày hết hạn giấy phép KD','date','')}${field('foodExpiry','Ngày hết hạn chứng nhận ATTP','date','')}</div>
   <div class="field-row">${field('businessPublicURL','URL giấy phép công khai (tùy chọn)','url','placeholder="https://..."','Đường dẫn bản scan đã che thông tin cá nhân.')}${field('foodPublicURL','URL ATTP công khai (tùy chọn)','url','placeholder="https://..."','Đường dẫn bản scan ATTP đã che thông tin.')}</div>
   <label class="label-row micro"><input type="checkbox" required style="width:auto" name="consent"> Tôi xác nhận thông tin giấy tờ là thật, còn hiệu lực; hiểu rằng số liệu và SHA-256 không thể xóa khỏi blockchain.</label>
@@ -192,6 +215,155 @@ function render(){
   const selected=state.tab==='shop'&&state.selected;
   content.innerHTML=selected?detail():state.tab==='seller'?sellerPage():state.tab==='admin'?adminPage():state.tab==='orders'?ordersPage():shop();
   if(state.lastTx){const node=document.createElement('div');node.className='notice good';node.innerHTML=`Giao dịch gần nhất đã xác nhận: ${txExplorer(state.lastTx)}`;content.prepend(node);}
+  if(state.tab==='seller'&&state.account)initSellerFeatures();
+}
+
+// Danh muc goi y dia chi dac san Hue tich hop san
+const HUE_PRESET_ADDRESSES = [
+  { primary: "20 Chi Lăng, Phường Phú Cát", secondary: "Thành phố Huế, Thừa Thiên Huế (Làng nghề mè xửng)" },
+  { primary: "Làng nghề nón bài thơ Tây Hồ", secondary: "Xã Phú Hồ, Huyện Phú Vang, Thừa Thiên Huế" },
+  { primary: "Làng hương Thủy Xuân, Đường Huyền Trân Công Chúa", secondary: "Phường Thủy Xuân, Thành phố Huế, Thừa Thiên Huế" },
+  { primary: "Làng đúc đồng Phường Đúc", secondary: "Đường Bùi Thị Xuân, Phường Phường Đúc, Thành phố Huế" },
+  { primary: "Làng gốm cổ Phước Tích", secondary: "Xã Phong Hòa, Huyện Phong Điền, Thừa Thiên Huế" },
+  { primary: "Làng hoa giấy Thanh Tiên", secondary: "Xã Phú Mậu, Thành phố Huế, Thừa Thiên Huế" },
+  { primary: "Làng mây tre đan Bao La", secondary: "Xã Quảng Phú, Huyện Quảng Điền, Thừa Thiên Huế" },
+  { primary: "Làng bún Vân Cù", secondary: "Xã Hương Toàn, Thị xã Hương Trà, Thừa Thiên Huế" },
+  { primary: "Cơ sở tôm chua Trọng Đức", secondary: "Phường An Cựu, Thành phố Huế, Thừa Thiên Huế" },
+  { primary: "Phường Phú Hòa", secondary: "Thành phố Huế, Thừa Thiên Huế" },
+  { primary: "Phường Vĩnh Ninh", secondary: "Thành phố Huế, Thừa Thiên Huế" },
+  { primary: "Phường Kim Long", secondary: "Thành phố Huế, Thừa Thiên Huế (Đặc sản bánh ướt thịt nướng)" },
+  { primary: "Đường Lê Lợi", secondary: "Phường Vĩnh Ninh, Thành phố Huế, Thừa Thiên Huế" },
+  { primary: "Đường Trần Hưng Đạo", secondary: "Phường Phú Hòa, Thành phố Huế, Thừa Thiên Huế" }
+];
+
+let locDebounceTimer = null;
+let licDebounceTimer = null;
+
+function initSellerFeatures(){
+  const locInput = $('#location');
+  const locBox = $('#location-suggestions');
+  const licInput = $('#businessLicenseNum');
+  const licCard = $('#license-gov-result');
+
+  // 1. Goi y dia chi thong minh giong Google Maps
+  if(locInput && locBox){
+    const renderSuggestions = (items) => {
+      if(!items || !items.length){ locBox.hidden = true; locBox.innerHTML = ''; return; }
+      locBox.innerHTML = items.map((it, idx) => `
+        <button type="button" class="address-item" data-idx="${idx}" data-full="${h(it.primary + (it.secondary ? ', ' + it.secondary : ''))}">
+          <span class="address-icon">📍</span>
+          <div class="address-text">
+            <span class="address-primary">${h(it.primary)}</span>
+            <span class="address-secondary">${h(it.secondary || '')}</span>
+          </div>
+        </button>
+      `).join('');
+      locBox.hidden = false;
+    };
+
+    locInput.addEventListener('input', () => {
+      clearTimeout(locDebounceTimer);
+      const q = locInput.value.trim();
+      if(!q || q.length < 2){ locBox.hidden = true; return; }
+
+      locDebounceTimer = setTimeout(async () => {
+        const qNorm = q.toLowerCase();
+        const matchedPresets = HUE_PRESET_ADDRESSES.filter(it => 
+          it.primary.toLowerCase().includes(qNorm) || (it.secondary && it.secondary.toLowerCase().includes(qNorm))
+        );
+
+        try {
+          const res = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(q + ' Vietnam')}&limit=5`);
+          if(res.ok){
+            const json = await res.json();
+            const photonItems = (json.features || []).map(f => {
+              const p = f.properties || {};
+              const parts = [p.district, p.city || p.locality, p.state].filter(Boolean);
+              return {
+                primary: [p.housenumber, p.street, p.name].filter(Boolean).join(' ') || p.name || q,
+                secondary: parts.join(', ') + (p.country ? ', ' + p.country : '')
+              };
+            });
+            renderSuggestions([...matchedPresets, ...photonItems].slice(0, 7));
+            return;
+          }
+        } catch(e) {}
+        renderSuggestions(matchedPresets.slice(0, 6));
+      }, 250);
+    });
+
+    locBox.addEventListener('click', e => {
+      const btn = e.target.closest('.address-item');
+      if(!btn) return;
+      locInput.value = btn.dataset.full;
+      locBox.hidden = true;
+    });
+
+    document.addEventListener('click', e => {
+      if(!e.target.closest('.address-field-wrap')) locBox.hidden = true;
+    });
+  }
+
+  // 2. Tra cuu ngam giay phep kinh doanh tren dangkykinhdoanh.gov.vn
+  if(licInput && licCard){
+    licInput.addEventListener('input', () => {
+      clearTimeout(licDebounceTimer);
+      const raw = licInput.value.trim().replace(/[^0-9]/g, '');
+      if(!raw || raw.length < 8){
+        licCard.hidden = true;
+        return;
+      }
+
+      licCard.hidden = false;
+      licCard.className = 'gov-verification-card checking';
+      licCard.innerHTML = `
+        <span class="gov-badge">⏳ Đang đối soát thông tin trên Cổng Đăng ký kinh doanh Quốc gia...</span>
+        <span class="gov-details">Kiểm tra thông tin pháp lý từ dangkykinhdoanh.gov.vn với mã số ${h(raw)}</span>
+      `;
+
+      licDebounceTimer = setTimeout(async () => {
+        try {
+          const res = await fetch(`/api/lookup-business?code=${encodeURIComponent(raw)}`);
+          if(res.ok){
+            const resJson = await res.json();
+            if(resJson.ok && resJson.verified && resJson.data){
+              const b = resJson.data;
+              licCard.className = 'gov-verification-card';
+              licCard.innerHTML = `
+                <span class="gov-badge">✓ Cổng Đăng ký kinh doanh Quốc gia (dangkykinhdoanh.gov.vn) xác thực</span>
+                <span class="gov-details">
+                  <strong>${h(b.name || 'Cơ sở đã được cấp phép')}</strong><br>
+                  Trạng thái: <strong>${h(b.status || 'Đang hoạt động')}</strong><br>
+                  ${b.address ? `Địa chỉ đăng ký: ${h(b.address)}` : ''}
+                </span>
+                <button type="button" class="gov-apply-btn" id="btn-auto-apply">⚡ Tự động điền Tên & Địa chỉ vào biểu mẫu</button>
+              `;
+
+              const nameInput = $('#businessName');
+              if(nameInput && !nameInput.value.trim() && b.name) nameInput.value = b.name;
+              if(locInput && !locInput.value.trim() && b.address) locInput.value = b.address;
+
+              const applyBtn = $('#btn-auto-apply');
+              if(applyBtn){
+                applyBtn.addEventListener('click', () => {
+                  if(nameInput && b.name) nameInput.value = b.name;
+                  if(locInput && b.address) locInput.value = b.address;
+                  toast('Đã cập nhật Tên và Địa chỉ cơ sở từ dữ liệu ĐKKD Quốc gia!', 'success');
+                });
+              }
+              return;
+            }
+          }
+        } catch(err) {}
+
+        licCard.className = 'gov-verification-card notfound';
+        licCard.innerHTML = `
+          <span class="gov-badge">🏛️ Cổng Quốc gia dangkykinhdoanh.gov.vn</span>
+          <span class="gov-details">Đã ghi nhận mã số ${h(raw)}. Mã băm SHA-256 sẽ được ghi on-chain; quản trị viên sẽ đối chiếu bản gốc giấy phép khi phê duyệt.</span>
+        `;
+      }, 450);
+    });
+  }
 }
 async function digestText(text){
   const trimmed=String(text||'').trim();

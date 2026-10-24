@@ -21,3 +21,24 @@
 @media(max-width:760px){.site-header .logo.hl-brand{min-width:0;flex:1 1 auto;max-width:100%;padding:9px 10px}.site-header .logo.hl-brand .hl-wordmark{font-size:28px}.site-header .logo.hl-brand .hl-tagline{font-size:9px}.site-header .logo.hl-brand .hl-mark{width:47px;height:47px}.site-header .header-right{margin-left:0}.site-header .nav{overflow-x:auto;scrollbar-width:thin;padding-bottom:3px}.site-header .nav button{flex:0 0 auto;min-height:42px}.hero-art{display:none}.toast{left:16px;right:16px;bottom:16px;max-width:none}}
 @media(max-width:460px){.site-header{gap:10px}.site-header .logo.hl-brand{flex-basis:100%}.site-header .logo.hl-brand .hl-tagline{font-size:10px}.site-header .header-right{width:100%;justify-content:flex-end}.site-header .header-right .btn{min-height:40px}.hero-metrics{gap:12px}}
 @media(prefers-reduced-motion:reduce){.card-media img{transition:none}.card:hover .card-media img{transform:none}}
+
+/* Goi y dia chi va tra cuu dangkykinhdoanh.gov.vn */
+.address-field-wrap{position:relative}
+.address-suggestions-box{position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:90;background:#ffffff;border:1px solid #d9d0dc;border-radius:12px;box-shadow:0 12px 32px rgba(53,35,68,.14);max-height:250px;overflow-y:auto;display:flex;flex-direction:column}
+.address-item{display:flex;align-items:flex-start;gap:11px;padding:10px 14px;cursor:pointer;border-bottom:1px solid #f3eff5;text-align:left;background:transparent;width:100%;font:inherit}
+.address-item:last-child{border-bottom:0}
+.address-item:hover,.address-item:focus{background:#f8f4fb}
+.address-icon{font-size:16px;flex:0 0 auto;margin-top:2px}
+.address-text{display:flex;flex-direction:column;gap:2px;min-width:0;text-align:left}
+.address-primary{font-weight:650;font-size:13px;color:#352744}
+.address-secondary{font-size:11px;color:#786984;white-space:normal;line-height:1.4}
+.field-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.gov-link{font-size:11px;color:#70538a;text-decoration:none;display:inline-flex;align-items:center;gap:4px;font-weight:600}
+.gov-link:hover{text-decoration:underline;color:#553b6c}
+.gov-verification-card{margin-top:9px;padding:12px 14px;border-radius:12px;background:#f3f9f5;border:1px solid #c9e4d3;color:#28563c;font-size:12px;display:flex;flex-direction:column;gap:4px;box-shadow:0 3px 12px rgba(40,86,60,.06)}
+.gov-verification-card.checking{background:#fdf9f2;border-color:#e8d7b8;color:#7d612e}
+.gov-verification-card.notfound{background:#faf6f8;border-color:#e6d3db;color:#7e5264}
+.gov-badge{font-weight:700;display:inline-flex;align-items:center;gap:6px;font-size:11.5px}
+.gov-details{font-size:11px;color:#456753;line-height:1.5;margin-top:2px}
+.gov-apply-btn{align-self:flex-start;margin-top:6px;padding:5px 10px;font-size:11px;background:#28563c;color:#fff;border-radius:7px;border:0;cursor:pointer;font-weight:650}
+.gov-apply-btn:hover{background:#1d422d}

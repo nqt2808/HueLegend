@@ -6,7 +6,7 @@ const root = path.resolve(fileURLToPath(new URL("../web/", import.meta.url)));
 const port = Number(process.env.PORT || 5173);
 const host = process.env.HOST || "127.0.0.1";
 // Dung cung API route voi Vercel khi chay o may ca nhan.
-const apiRoutes = new Set(["health", "batches", "batch", "rules", "tx", "evidence", "config", "market-config", "market-health", "market-products", "market-product"]);
+const apiRoutes = new Set(["health", "batches", "batch", "rules", "tx", "evidence", "config", "market-config", "market-health", "market-products", "market-product", "lookup-business"]);
 const mime = { ".html":"text/html; charset=utf-8", ".css":"text/css; charset=utf-8",
   ".js":"text/javascript; charset=utf-8", ".mjs":"text/javascript; charset=utf-8",
   ".json":"application/json; charset=utf-8", ".svg":"image/svg+xml; charset=utf-8",
