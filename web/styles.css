@@ -6,7 +6,7 @@
   --shadow:0 6px 24px #25133306; --radius:16px;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.65 "Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.65 'Be Vietnam Pro',"Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased}
 button,input,select,textarea{font:inherit}
 button,a,input,select,textarea{-webkit-tap-highlight-color:transparent}
 button{cursor:pointer}
@@ -38,7 +38,7 @@ small{font-size:12px}
 .sidebar-bottom{margin-top:auto;padding-top:30px}
 .sidebar-story{background:#faf8fc;border:1px solid #f0ebf4;border-radius:12px;padding:20px 17px;margin-bottom:18px}
 .eyebrow{font-size:9px;letter-spacing:1.35px;font-weight:650;color:var(--primary)}
-.sidebar-story p{font-family:Georgia,"Times New Roman",serif;font-size:20px;line-height:1.45;margin-top:13px;letter-spacing:-.3px;color:#62526e}
+.sidebar-story p{font-family:'Lora',Georgia,"Times New Roman",serif;font-size:20px;line-height:1.45;margin-top:13px;letter-spacing:-.3px;color:#62526e}
 .sidebar-story small{font-size:10px;color:#928899}
 .story-rule{display:block;width:25px;height:2px;background:#b49b70;margin:15px 0 12px}
 .sidebar-footer{font-size:9px;color:#a6a1ae;margin:17px 15px 0;display:flex;gap:7px;align-items:center}
@@ -75,7 +75,7 @@ main{padding:31px 38px 24px;max-width:1510px;width:100%;margin:0 auto;flex:1}
 .hero{min-height:210px;border:1px solid #e8dfec;border-radius:16px;background:#f0eaf4;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;padding:31px 34px;margin-bottom:23px}
 .hero-content{position:relative;z-index:1;max-width:520px}
 .hero .eyebrow{font-size:9px;letter-spacing:1.55px}
-.hero h2{font-family:Georgia,"Times New Roman",serif;font-weight:500;font-size:35px;line-height:1.18;letter-spacing:-.9px;color:#584363;margin-top:12px}
+.hero h2{font-family:'Lora',Georgia,"Times New Roman",serif;font-weight:600;font-size:35px;line-height:1.18;letter-spacing:-.9px;color:#584363;margin-top:12px}
 .hero p{font-size:11px;color:#97849f;margin:12px 0 20px;max-width:390px;line-height:1.75}
 .hero-actions{display:flex;gap:10px;flex-wrap:wrap}.hero-actions .button{font-size:11px;min-height:37px;padding:9px 15px}
 .hero-art{position:absolute;right:20px;width:320px;height:240px;bottom:-15px;color:#91789f}
@@ -314,12 +314,12 @@ dialog::backdrop{background:#20182e60;backdrop-filter:blur(3px)}
   .stat-caption{font-size:9px}
 }
 
-/* Branding override: prevent sidebar clipping and keep the official slogan readable. */
+/* Dong bo nhan dien thuong hieu HueLegend tren sidebar phu hop voi nen sang */
 .sidebar .brand.hl-brand{font-size:initial;letter-spacing:normal;margin:0 0 32px;gap:9px;padding:12px 9px}
 .sidebar .hl-brand .hl-mark{width:52px;height:52px}
 .sidebar .hl-brand .hl-wordmark{font-size:27px}
-.sidebar .hl-brand .hl-tagline{font-size:9.5px;letter-spacing:0;line-height:1.28;max-width:140px;color:#dfd0bd;font-weight:400}
+.sidebar .hl-brand .hl-tagline{font-size:9.5px;letter-spacing:0;line-height:1.28;max-width:140px;color:#786683;font-weight:550}
 .sidebar .hl-brand .hl-text{max-width:calc(100% - 60px)}
-.sidebar .hl-brand .hl-wordmark .hue{color:#eee0f7}
-.sidebar .hl-brand .hl-wordmark .legend{color:#e6b86f}
+.sidebar .hl-brand .hl-wordmark .hue{color:#523d65}
+.sidebar .hl-brand .hl-wordmark .legend{background:linear-gradient(115deg,#a6731d 0%,#c99236 44%,#e5be6e 69%,#8d5810 100%);color:#a6731d;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 @media(max-width:1250px){.sidebar .brand.hl-brand{padding:10px 7px}.sidebar .hl-brand .hl-mark{width:47px;height:47px}.sidebar .hl-brand .hl-wordmark{font-size:25px}.sidebar .hl-brand .hl-tagline{font-size:9px;max-width:125px}.sidebar .hl-brand .hl-text{max-width:calc(100% - 55px)}}

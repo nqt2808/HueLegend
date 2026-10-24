@@ -88,7 +88,7 @@ function renderHeader() {
   const banner = $("#mode-banner");
   banner.className = `mode-banner ${state.mode==="sepolia"?"live":""}`;
   banner.innerHTML = state.mode==="demo" ? `<span class="dot"></span><strong>CHẾ ĐỘ MẪU</strong><span>· Dữ liệu minh hoạ, không phải hồ sơ blockchain · Không dùng ETH thật</span><button class="inline-action" data-action="reset-demo">Đặt lại dữ liệu mẫu</button>` :
-    `<span class="dot"></span><strong>SEPOLIA TESTNET</strong><span>· ${state.loading?"Đang kiểm tra kết nối":state.error?"Chưa kết nối thành công":state.service?.backendEnabled ? "API on-chain + MetaMask" : "Đọc trực tiếp blockchain"} · ETH thử nghiệm</span><button class="inline-action" data-action="settings">${h(shortAddress(state.config.contractAddress))}</button>`;
+    `<span class="dot"></span><strong>SEPOLIA TESTNET</strong><span>· ${state.loading?"Đang kiểm tra kết nối":state.error?"Chưa kết nối thành công":state.service?.backendEnabled ? "API on-chain + MetaMask" : "Đọc trực tiếp blockchain"} · ETH thử nghiệm</span><a class="inline-action" href="https://sepolia.etherscan.io/address/${encodeURIComponent(state.config.contractAddress)}" target="_blank" rel="noopener noreferrer" title="Hợp đồng ProjectCore trên Sepolia">${h(shortAddress(state.config.contractAddress))} ↗</a>`;
   $("#network-banner").innerHTML = state.account&&!state.account.correctNetwork ?
     `<div class="banner">${icon("alert")}Ví đang ở mạng khác. Dữ liệu đọc vẫn từ Sepolia.${button("Chuyển sang Sepolia","switch-network","route","button-secondary button-small")}</div>`:"";
   renderTransaction();
@@ -235,15 +235,7 @@ async function connectWallet() {
   finally{$("#connect-button").disabled=state.busy;}
 }
 function showSettings() {
-  if(state.busy)return toast("Hoàn tất hoặc hủy thao tác đang xác nhận trước.");
-  openDialog("Cấu hình kết nối",`
-    <p class="dialog-description">Dùng đúng địa chỉ ProjectCore đã triển khai trên Sepolia. Thay địa chỉ không chứng minh hợp đồng mới an toàn.</p>
-    <form data-form="settings"><div class="form-error" role="alert"></div>
-      ${field("config-address","Địa chỉ hợp đồng trên Sepolia",{required:true,value:state.config.contractAddress,extra:'spellcheck="false"'})}
-      ${field("config-rpc","RPC HTTPS công khai",{required:true,value:state.config.rpcUrl,hint:"Lưu ở trình duyệt. Không dán private key hoặc API key bí mật vào đây.",extra:'spellcheck="false"'})}
-      <div class="note">${icon("info")}<p>ABI đang dùng đã đối chiếu với ProjectCore trong repo dẫn ở README. Hợp đồng phiên bản khác có thể cần thay ABI và bộ nối.</p></div>
-      <div class="dialog-actions">${button("Mặc định","default-config","refresh","button-secondary",'type="button"')}<button class="button button-primary" type="submit">Lưu cấu hình</button></div>
-    </form>`);
+  toast("Hệ thống tự động kết nối với hợp đồng Sepolia đã định sẵn.", "info");
 }
 function confirmTransaction(prepared,title,summary) {
   const mode=state.mode;

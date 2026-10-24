@@ -8,8 +8,10 @@ const host = process.env.HOST || "127.0.0.1";
 // Dung cung API route voi Vercel khi chay o may ca nhan.
 const apiRoutes = new Set(["health", "batches", "batch", "rules", "tx", "evidence", "config", "market-config", "market-health", "market-products", "market-product"]);
 const mime = { ".html":"text/html; charset=utf-8", ".css":"text/css; charset=utf-8",
-  ".js":"text/javascript; charset=utf-8", ".json":"application/json; charset=utf-8",
-  ".svg":"image/svg+xml", ".png":"image/png", ".webp":"image/webp", ".jpg":"image/jpeg", ".jpeg":"image/jpeg", ".txt":"text/plain; charset=utf-8" };
+  ".js":"text/javascript; charset=utf-8", ".mjs":"text/javascript; charset=utf-8",
+  ".json":"application/json; charset=utf-8", ".svg":"image/svg+xml; charset=utf-8",
+  ".png":"image/png", ".webp":"image/webp", ".jpg":"image/jpeg", ".jpeg":"image/jpeg",
+  ".txt":"text/plain; charset=utf-8" };
 const server = http.createServer(async (request, response) => {
   try {
     if (!["GET","HEAD"].includes(request.method)) { response.writeHead(405); response.end(); return; }
@@ -20,11 +22,16 @@ const server = http.createServer(async (request, response) => {
       try {
         const mod = await import(`../api/${match[1]}.js`);
         const apiResponse = await mod.GET(new Request(url.href));
-        response.writeHead(apiResponse.status, Object.fromEntries(apiResponse.headers.entries()));
+        const headers = Object.fromEntries(apiResponse.headers.entries());
+        // Dam bao response API luon co charset utf-8
+        if (headers["content-type"] && !headers["content-type"].includes("charset")) {
+          headers["content-type"] += "; charset=utf-8";
+        }
+        response.writeHead(apiResponse.status, headers);
         response.end(Buffer.from(await apiResponse.arrayBuffer()));
       } catch (error) {
         console.error("Local API:", error.message);
-        response.writeHead(503, {"Content-Type":"application/json"});
+        response.writeHead(503, {"Content-Type":"application/json; charset=utf-8"});
         response.end(JSON.stringify({ok:false,error:"Can cai npm install de bat backend API."}));
       }
       return;
