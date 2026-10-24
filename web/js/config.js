@@ -9,7 +9,7 @@ export const DEFAULT_CONFIG = Object.freeze({
   pageSize: 8,
   eventLookback: 5000,
   eventChunk: 1000,
-  defaultMode: "demo"
+  defaultMode: "sepolia"
 });
 
 export const STORAGE_KEYS = Object.freeze({

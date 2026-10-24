@@ -39,7 +39,7 @@ function gate(s, role) {
   if (!s.account) return `<div class="form-gate">${note(`Kết nối ví để thực hiện. Bạn vẫn có thể nhập trước thông tin và tra cứu mà không cần ví.`)}</div>`;
   if (!s.account.correctNetwork) return `<div class="form-gate">${note("Ví đang ở mạng khác. Hãy chuyển sang Sepolia trước khi ký.", "amber")}</div>`;
   if (role && !(role === "OWNER" ? s.account.isOwner : s.account.roles.includes(role))) return `<div class="form-gate">${note(`Ví hiện tại chưa có quyền <strong>${role === "OWNER" ? "chủ sở hữu hợp đồng" : h(ROLE_LABEL[role])}</strong>. Chọn vai trên giao diện không tự cấp quyền on-chain.`, "amber")}</div>`;
-  return `<div class="form-gate">${note(`Ví <strong>${h(shortAddress(s.account.address))}</strong> đã kết nối${s.mode === "demo" ? " trong chế độ mẫu" : " Sepolia"}. ${role ? "Quyền thực hiện đã được kiểm tra." : ""}`,"green")}</div>`;
+  return `<div class="form-gate">${note(`Ví <strong>${h(shortAddress(s.account.address))}</strong> đã kết nối Sepolia. ${role ? "Quyền thực hiện đã được kiểm tra." : ""}`,"green")}</div>`;
 }
 const formError = '<div class="form-error" role="alert"></div>';
 const panelTitle = (number,title,description) => `<div class="panel-heading"><div class="section-number">${number}</div><h2>${title}</h2><p>${description}</p></div>`;
@@ -51,7 +51,7 @@ function economics(s) {
     ${infoRow("Thời gian khóa",s.rules ? `${s.rules.lockDuration / 86400} ngày` : "—")}
     ${infoRow("Trần phí",`${h(formatETH(s.rules?.feeLimit))} ETH`)}
     ${s.account?.isOwner ? note("Theo hợp đồng đã đối chiếu, chủ sở hữu được miễn phí tạo lô và yêu cầu cọc.") : ""}
-    <p class="evidence-hint">${s.mode === "demo" ? "Tham số mẫu, không có tiền thật." : "Giá trị được đọc từ hợp đồng; không cố định cứng theo README."}</p>
+    <p class="evidence-hint">Giá trị được đọc từ hợp đồng; không cố định cứng theo README.</p>
   </div>`;
 }
 function steps() {
@@ -81,13 +81,13 @@ export function dashboard(s) {
     </section>
     <section class="stats" aria-label="Thống kê nguồn dữ liệu đang chọn">
       ${[
-        ["Lô hàng trên hệ thống",String(total),"box",s.mode==="demo"?"Dữ liệu mô phỏng":"Tổng số đọc từ hợp đồng"],
+        ["Lô hàng trên hệ thống",String(total),"box","Tổng số đọc từ hợp đồng"],
         ["Đã kiểm định",`${verified}<span>/ ${rows.length}</span>`,"shield","Trong trang đang hiển thị"],
         ["Phí tạo lô",`${h(formatETH(s.rules?.fee))}<span>ETH</span>`,"wallet","Không bao gồm phí mạng"],
         ["Mức cọc tối thiểu",`${h(formatETH(s.rules?.minStake))}<span>ETH</span>`,"lock","Đối với cơ sở sản xuất"]
       ].map(([title,num,ico,sub])=>`<article class="stat-card"><div class="stat-top">${title}<span class="stat-icon">${icon(ico)}</span></div><div class="stat-number">${num}</div><small class="stat-caption">${sub}</small></article>`).join("")}
     </section>
-    <div class="section-title"><div><h2>Lô hàng gần đây</h2><p>${s.mode === "demo" ? "Các lô mẫu để bạn khám phá giao diện." : "Dữ liệu đọc trực tiếp từ Sepolia; lô mới nhất hiển thị trước."}</p></div>${button("Xuất trang CSV","export-csv","download","button-ghost")}${button("Làm mới","refresh","refresh","button-ghost")}</div>
+    <div class="section-title"><div><h2>Lô hàng gần đây</h2><p>Dữ liệu đọc trực tiếp từ Sepolia; lô mới nhất hiển thị trước.</p></div>${button("Xuất trang CSV","export-csv","download","button-ghost")}${button("Làm mới","refresh","refresh","button-ghost")}</div>
     <section class="panel">
       <div class="table-toolbar"><div class="table-tabs" aria-label="Lọc trạng thái">
         <button class="tab ${s.statusFilter==="all"?"active":""}" data-action="filter" data-filter="all">Tất cả <span>${rows.length}</span></button>
@@ -95,7 +95,7 @@ export function dashboard(s) {
         <button class="tab ${s.statusFilter==="pending"?"active":""}" data-action="filter" data-filter="pending">Chưa kiểm định</button>
       </div><label class="search-small" for="table-search">${icon("search")}<input id="table-search" type="search" value="${h(s.search)}" placeholder="Lọc mã lô, tên trên trang này…" aria-label="Lọc trên trang hiện tại"></label></div>
       <div class="table-scroll"><table><thead><tr><th>SẢN PHẨM</th><th>MÃ LÔ HÀNG</th><th>NGUỒN GỐC</th><th>TRẠNG THÁI</th><th><span class="sr-only">Chi tiết</span></th></tr></thead><tbody id="batch-rows">${batchRows(s)}</tbody></table></div>
-      <div class="table-footer"><span>Trang ${s.page+1} / ${Math.max(1,Math.ceil(total/s.config.pageSize))} · ${total} lô trên ${s.mode==="demo"?"nguồn mẫu":"hợp đồng"}<br>Bộ lọc chỉ áp dụng cho trang hiện tại.</span>
+      <div class="table-footer"><span>Trang ${s.page+1} / ${Math.max(1,Math.ceil(total/s.config.pageSize))} · ${total} lô trên hợp đồng<br>Bộ lọc chỉ áp dụng cho trang hiện tại.</span>
       <div class="pagination"><button class="icon-button" data-action="previous-page" aria-label="Trang trước" ${s.page===0?"disabled":""}>${icon("chevron","rotate")}</button><span>${s.page+1}</span><button class="icon-button" data-action="next-page" aria-label="Trang sau" ${(s.page+1)*s.config.pageSize>=total?"disabled":""}>${icon("chevron")}</button></div></div>
     </section>${steps()}`;
 }
@@ -117,7 +117,7 @@ export function createPage(s) {
       ${field("product-name","Tên đặc sản",{required:true,limit:128,placeholder:"Ví dụ: Mè xửng truyền thống"})}
       ${field("origin","Nguồn gốc / cơ sở sản xuất",{required:true,limit:128,placeholder:"Ví dụ: Phú Hòa, Huế",hint:"Chỉ công khai thông tin cần thiết. Không nhập dữ liệu cá nhân nhạy cảm."})}
       ${metadataField("initial-uri")}
-      <div class="form-bottom"><p>${s.mode==="demo"?"Chế độ mẫu không sử dụng ví thật hoặc ETH thật.":"Bạn sẽ kiểm tra phí và xác nhận trong ví trước khi gửi."}</p>${submit("Kiểm tra & tạo lô")}</div>
+      <div class="form-bottom"><p>Bạn sẽ kiểm tra phí và xác nhận trong ví trước khi gửi.</p>${submit("Kiểm tra & tạo lô")}</div>
     </form><aside class="aside-notes">${economics(s)}
       <div class="panel side-panel"><h3>Ba điều cần nhớ</h3><div class="check-list">
       <div class="check-line">${icon("check")}<p>Chỉ ví được cấp quyền sản xuất mới tạo được lô.</p></div>
@@ -159,7 +159,7 @@ export function inspectorPage(s) {
 export function stakePage(s) {
   const a = s.account, rules = s.rules;
   return `${heading("Ký quỹ uy tín","Theo dõi tiền cọc của ví và thời điểm được phép rút.")}${gate(s)}
-    <div class="stake-hero"><h2>SỐ TIỀN ĐANG KÝ QUỸ ${s.mode==="demo"?"· MẪU":""}</h2><div class="stake-value">${h(formatETH(a?.stake))}<span>ETH</span></div>
+    <div class="stake-hero"><h2>SỐ TIỀN ĐANG KÝ QUỸ</h2><div class="stake-value">${h(formatETH(a?.stake))}<span>ETH</span></div>
       <div class="stake-lock">${icon("lock")}<span>${a ? BigInt(a.stake) ? `Mở khóa: ${dateTime(a.unlockAt)} · ${remainingTime(a.remaining)}` : "Ví chưa có tiền cọc." : "Kết nối ví để xem số dư ký quỹ."}</span></div>
     </div>
     <div class="stake-grid"><form class="panel form-panel" data-form="deposit">
@@ -181,7 +181,7 @@ export function stakePage(s) {
 export function adminPage(s) {
   const owner = s.account?.isOwner;
   return `${heading("Quản trị hệ thống","Cấp quyền và điều chỉnh tham số của ProjectCore.")}${gate(s,"OWNER")}
-    ${!owner ? `<section class="panel empty-state"><div class="empty-icon">${icon("key")}</div><h2>Khu vực dành cho chủ hợp đồng</h2><p>Quyền quản trị các hàm này được xác định bằng owner(), không chỉ bằng nhãn ROLE_ADMIN. ${s.mode==="demo"?"Chọn vai “Chủ hợp đồng” trong cửa sổ kết nối ví để thử.":""}</p>${button("Kiểm tra ví","connect","wallet","button-primary")}</section>` : `
+    ${!owner ? `<section class="panel empty-state"><div class="empty-icon">${icon("key")}</div><h2>Khu vực dành cho chủ hợp đồng</h2><p>Quyền quản trị các hàm này được xác định bằng owner(), không chỉ bằng nhãn ROLE_ADMIN.</p>${button("Kiểm tra ví","connect","wallet","button-primary")}</section>` : `
     <div class="admin-grid"><form class="panel form-panel" data-form="role">
       ${panelTitle("PHÂN QUYỀN","Quản lý vai trò ví","Cấp hoặc thu hồi quyền tham gia chuỗi truy xuất.")}${formError}
       ${field("role-address","Địa chỉ ví",{required:true,placeholder:"0x…",extra:'spellcheck="false"'})}
@@ -209,9 +209,9 @@ export function tracePage(s) {
   return `${heading("Tra cứu nguồn gốc","Một mã lô, toàn bộ hành trình. Không cần kết nối ví.")}
     <form class="panel trace-search" data-form="lookup"><label class="trace-input" for="lookup-code">${icon("search")}<input id="lookup-code" name="lookup-code" value="${h(s.detail?.batchCode||s.lookupInput||"")}" placeholder="Nhập mã lô hoặc dán liên kết QR…" required autocomplete="off"></label>
       ${submit("Tra cứu","arrow")}${button("Quét QR","scan","camera","button-secondary",'type="button"')}
-      <p class="trace-hint">${s.mode==="demo" ? 'Thử nhanh: <button type="button" class="link-button" data-action="view" data-code="HL-MEXUNG-2026-001">HL-MEXUNG-2026-001</button> · Dữ liệu mẫu, không phải hồ sơ thật.' : "Dữ liệu hiển thị thuộc hợp đồng và mạng đang chọn, không tự đổi theo một QR lạ."}</p>${formError}
+      <p class="trace-hint">Dữ liệu hiển thị thuộc hợp đồng và mạng Sepolia, không tự đổi theo một QR lạ.</p>${formError}
     </form>
-    ${s.detail ? detail(s) : `<section class="panel empty-state"><div class="empty-icon">${icon("qr")}</div><h2>Khám phá câu chuyện của sản phẩm</h2><p>Nhập mã trên bao bì hoặc quét mã QR để xem nguồn gốc, các điểm bàn giao và trạng thái kiểm định.</p>${s.mode==="demo"?button("Xem một hành trình mẫu","sample","arrow","button-primary"):""}</section>`}`;
+    ${s.detail ? detail(s) : `<section class="panel empty-state"><div class="empty-icon">${icon("qr")}</div><h2>Khám phá câu chuyện của sản phẩm</h2><p>Nhập mã trên bao bì hoặc quét mã QR để xem nguồn gốc, các điểm bàn giao và trạng thái kiểm định.</p></section>`}`;
 }
 function detail(s) {
   const b = s.detail, kind = productKind(b.productName);
@@ -220,7 +220,7 @@ function detail(s) {
   return `<div class="detail-grid"><div>
     <article class="panel detail-card">
       <div class="detail-product"><span class="product-thumb ${kind.tone}">${icon(kind.icon)}</span><div><span class="eyebrow">${kind.category.toUpperCase()}</span><h2>${h(b.productName)}</h2><span class="code">${h(b.batchCode)}</span></div></div>
-      ${badge(b.isVerified)} ${s.mode==="demo"?'<span class="badge badge-neutral">Hồ sơ minh hoạ</span>':`<span class="badge badge-neutral">Sepolia${b.blockNumber?` · Block ${b.blockNumber}`:""}</span>`}
+      ${badge(b.isVerified)} <span class="badge badge-neutral">Sepolia${b.blockNumber?` · Block ${b.blockNumber}`:""}</span>
       <dl class="detail-meta"><div><dt>Nguồn gốc khai báo</dt><dd>${h(b.origin)}</dd></div><div><dt>Thời điểm khởi tạo (giờ Việt Nam)</dt><dd>${dateTime(b.createdAt)}</dd></div><div><dt>Ví cơ sở sản xuất</dt><dd class="mono">${h(b.producer)}</dd></div><div><dt>Dấu mốc trong hành trình</dt><dd>${b.checkpoints.length} chặng đã ghi nhận</dd></div></dl>
     </article>
     <article class="panel timeline-card">
@@ -244,24 +244,24 @@ function detail(s) {
         ${button("Sao chép liên kết","copy-link","copy")}
         ${button("Xuất hồ sơ JSON","export","file","button-ghost")}
       </div><span class="qr-url">${h(share)}</span>
-      ${note(s.mode==="demo"?"QR này mở dữ liệu mẫu, không phải dữ liệu blockchain.": "QR chỉ trỏ đến hồ sơ. Mã QR có thể bị sao chép; hãy đối chiếu thêm bao bì và chứng từ.")}
+      ${note("QR chỉ trỏ đến hồ sơ. Mã QR có thể bị sao chép; hãy đối chiếu thêm bao bì và chứng từ.")}
     </section><section class="panel side-panel"><h3>Đối chiếu tài liệu</h3><p class="evidence-hint" style="margin:0 0 15px">Tính SHA-256 của tài liệu trên máy và so với các mã băm đã ghi trong hành trình.</p>
       <label class="button button-secondary file-input-button">${icon("file")}Chọn tài liệu<input type="file" data-proof-file aria-label="Chọn tài liệu để đối chiếu SHA-256"></label><div id="proof-result" class="evidence-hint" aria-live="polite"></div>
     </section>
   </aside></div><div style="margin-top:20px">${note("Blockchain lưu lại thông tin do các ví khai báo; không tự đảm bảo chất lượng hoặc nguồn gốc thực tế của hàng hóa.")}</div>`;
 }
 export function guidePage() {
-  return `${heading("Bắt đầu cùng HueLegend","Từ trải nghiệm mẫu đến thao tác với ví trên Sepolia.")}
+  return `${heading("Bắt đầu cùng HueLegend","Hướng dẫn sử dụng và tương tác ví trên Sepolia.")}
     <div class="guide-grid">
-      <article class="panel guide-card"><h2>01. Khám phá không cần ví</h2><p>Giữ chế độ “Trải nghiệm mẫu”, mở một lô hàng, xem timeline và tải QR. Đây là dữ liệu mô phỏng lưu riêng trong trình duyệt.</p><ol><li>Vào <strong>Tra cứu nguồn gốc</strong>.</li><li>Nhập mã lô hoặc chọn hành trình mẫu.</li><li>Mở hồ sơ, tải QR hoặc xuất JSON.</li></ol></article>
-      <article class="panel guide-card"><h2>02. Thử luồng theo vai trò</h2><p>Trong chế độ mẫu, bấm <strong>Kết nối ví</strong> để chọn vai minh hoạ: cơ sở sản xuất, kiểm định hoặc chủ hợp đồng.</p><p>Chọn khách tra cứu để thử một thao tác không đủ quyền. Đây chỉ là kiểm thử giao diện/mô phỏng, không chứng minh độ an toàn của hợp đồng.</p></article>
-      <article class="panel guide-card"><h2>03. Kết nối Sepolia</h2><ol><li>Đổi nguồn dữ liệu sang <strong>Sepolia Testnet</strong> ở góc trên.</li><li>Bấm <strong>Kết nối ví MetaMask</strong> (hệ thống tự động liên kết hợp đồng on-chain).</li><li>Chuyển mạng sang Sepolia khi MetaMask yêu cầu.</li><li>Chủ hợp đồng cấp vai; ví sản xuất nạp cọc trước khi tạo lô.</li></ol><p>Không nhập private key hoặc cụm từ khôi phục vào trang này. Khóa luôn nằm trong ví.</p></article>
-      <article class="panel guide-card"><h2>04. Đọc phí và trạng thái</h2><p>Tra cứu là lời gọi đọc, không cần ký giao dịch. Tạo lô, thêm chặng, kiểm định và ký quỹ là lời gọi ghi; cần xác nhận trong ví và trả phí mạng.</p><p>DApp mô phỏng lời gọi trước khi gửi và chờ biên nhận. Khi giao dịch còn chờ, kiểm tra TxHash thay vì bấm gửi lại.</p></article>
-      <article class="panel guide-card"><h2>05. Camera và tài liệu</h2><p>Camera cần HTTPS hoặc localhost và quyền truy cập. Khi không dùng được camera, chọn ảnh QR hoặc nhập mã thủ công. Trên điện thoại, thao tác ký thuận tiện hơn trong trình duyệt của ví.</p><p>Tính SHA-256 diễn ra trên máy, tối đa 10 MB/tài liệu. Trang không tự tải tài liệu lên IPFS; liên kết phải được bạn chuẩn bị trước.</p></article>
-      <article class="panel guide-card"><h2>06. Phạm vi của phiên bản</h2><p>Giao diện kết nối với ProjectCore đã đối chiếu từ repo dẫn trong README. Chưa xác minh toàn bộ bytecode triển khai; cần chạy kiểm tra đọc và test giao dịch trên Sepolia của nhóm.</p><p>Chưa có luồng tịch thu cọc/thưởng tố giác trong mã hợp đồng đã đối chiếu. Không có token riêng, oracle tự động hoặc nút giả cho các chức năng này.</p></article>
+      <article class="panel guide-card"><h2>01. Tra cứu nguồn gốc</h2><p>Người tiêu dùng không cần kết nối ví. Nhập mã lô hoặc quét mã QR để đọc dữ liệu hành trình sản phẩm được lưu trên Sepolia.</p><ol><li>Vào <strong>Tra cứu nguồn gốc</strong>.</li><li>Nhập mã lô hoặc quét mã QR.</li><li>Xem timeline chặng, đối chiếu SHA-256 chứng từ và tải QR.</li></ol></article>
+      <article class="panel guide-card"><h2>02. Phân quyền vai trò</h2><p>Quyền hạn của từng ví được quản lý on-chain bởi Smart Contract: cơ sở sản xuất (PRODUCER), kiểm định (INSPECTOR) và quản trị.</p><p>Chủ hợp đồng (Owner) cấp vai trò cho ví đối tác thông qua trang Quản trị hệ thống.</p></article>
+      <article class="panel guide-card"><h2>03. Kết nối Sepolia</h2><ol><li>Bấm <strong>Kết nối ví</strong> (MetaMask) ở góc trên.</li><li>Chuyển mạng sang Sepolia Testnet khi ví yêu cầu.</li><li>Cơ sở sản xuất nạp cọc ký quỹ trước khi tạo lô hàng mới.</li></ol><p>Không nhập private key hoặc cụm từ khôi phục vào trang web. Khóa luôn nằm an toàn trong ví cá nhân.</p></article>
+      <article class="panel guide-card"><h2>04. Đọc phí và trạng thái</h2><p>Tra cứu là lời gọi đọc (call), hoàn toàn miễn phí gas. Tạo lô, thêm chặng, kiểm định và nạp cọc là giao dịch ghi; cần xác nhận trong ví và trả phí gas Sepolia ETH.</p><p>DApp mô phỏng giao dịch trước khi gửi và theo dõi biên nhận TxHash trên Sepolia Etherscan.</p></article>
+      <article class="panel guide-card"><h2>05. Camera và tài liệu</h2><p>Quét mã QR qua camera yêu cầu cấp quyền trên trình duyệt (HTTPS hoặc localhost). Khi không dùng camera, có thể chọn tải tệp ảnh QR lên.</p><p>Tính SHA-256 diễn ra trực tiếp trên trình duyệt máy khách, tối đa 10 MB/tài liệu để bảo mật dữ liệu gốc.</p></article>
+      <article class="panel guide-card"><h2>06. Phạm vi hệ thống</h2><p>Giao diện tương tác trực tiếp với hợp đồng ProjectCore trên mạng Sepolia Testnet.</p><p>Hệ thống không thu thập dữ liệu cá nhân nhạy cảm, chỉ lưu trữ các chứng từ xác thực dưới dạng mã băm SHA-256 bất biến.</p></article>
     </div>`;
 }
 export function errorPage(s) {
-  return `${heading("Chưa thể đọc dữ liệu","Không tự thay thế dữ liệu Sepolia bằng dữ liệu mẫu khi kết nối lỗi.")}
-    <section class="panel empty-state"><div class="empty-icon">${icon("alert")}</div><h2>Kiểm tra nguồn dữ liệu</h2><p>${h(s.error)}</p><div class="hero-actions" style="justify-content:center;margin-top:20px">${button("Thử lại","refresh","refresh","button-primary")}</div><p class="evidence-hint" style="margin-top:20px">Để xem bố cục mà không cần mạng, chủ động chọn “Trải nghiệm mẫu” ở thanh trên.</p></section>`;
+  return `${heading("Chưa thể đọc dữ liệu","Không thể kết nối hoặc tải dữ liệu từ hợp đồng Sepolia.")}
+    <section class="panel empty-state"><div class="empty-icon">${icon("alert")}</div><h2>Kiểm tra nguồn dữ liệu</h2><p>${h(s.error)}</p><div class="hero-actions" style="justify-content:center;margin-top:20px">${button("Thử lại","refresh","refresh","button-primary")}</div></section>`;
 }

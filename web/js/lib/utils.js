@@ -86,7 +86,7 @@ export function parseBatchInput(raw, expected = {}) {
     if (!["http:", "https:"].includes(url.protocol)) throw new Error("Không mở liên kết không an toàn từ mã QR.");
     const mode = url.searchParams.get("mode"), chain = url.searchParams.get("chainId");
     const contract = url.searchParams.get("contract");
-    if (mode && expected.mode && mode !== expected.mode) throw new Error(`QR thuộc chế độ ${mode === "demo" ? "mẫu" : "Sepolia"}. Hãy tự chuyển đúng chế độ trước.`);
+    if (mode && expected.mode && mode !== expected.mode) throw new Error(`QR thuộc chế độ khác Sepolia. Hãy kiểm tra lại mã QR.`);
     if (chain && chain !== "11155111") throw new Error("QR không thuộc Ethereum Sepolia.");
     if (contract && expected.contractAddress && contract.toLowerCase() !== expected.contractAddress.toLowerCase()) throw new Error("QR thuộc hợp đồng khác. Kiểm tra nguồn trước khi thay đổi cấu hình.");
     const code = url.searchParams.get("batch");

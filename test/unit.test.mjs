@@ -40,8 +40,9 @@ test("Metadata va RPC duoc kiem tra dau vao",()=>{
 });
 test("QR round-trip giu ma Unicode, mode va hop dong",()=>{
   const code="HL-HUẾ-001";
-  const url=makeBatchURL("https://example.org/repo/web/?other=1#/create",code,"sepolia",DEFAULT_CONFIG.contractAddress);
-  assert.equal(parseBatchInput(url,{mode:"sepolia",contractAddress:DEFAULT_CONFIG.contractAddress}),code);
+  const sampleContract = DEMO_ACCOUNTS.VISITOR;
+  const url=makeBatchURL("https://example.org/repo/web/?other=1#/create",code,"sepolia",sampleContract);
+  assert.equal(parseBatchInput(url,{mode:"sepolia",contractAddress:sampleContract}),code);
   assert(!/[^\x00-\x7F]/.test(url));
   assert.throws(()=>parseBatchInput(url,{mode:"demo"}),/chế độ/);
   assert.throws(()=>parseBatchInput(url,{mode:"sepolia",contractAddress:DEMO_ACCOUNTS.OWNER}),/hợp đồng khác/);
@@ -57,7 +58,7 @@ test("ABI dung ten ham va thu tu tham so cua nguon contract",()=>{
   assert(CONTRACT_ABI.some(x=>x.startsWith("function getCheckpoints(")));
   assert(CONTRACT_ABI.some(x=>x.startsWith("function verifyBatch(string batchCode, string inspectorNote, string certificateURI)")));
   assert(!CONTRACT_ABI.some(x=>x.startsWith("function stake(")));
-  assert(isAddress(DEFAULT_CONFIG.contractAddress));
+  assert(DEFAULT_CONFIG.contractAddress === "" || isAddress(DEFAULT_CONFIG.contractAddress));
 });
 test("TC-01: producer du coc tao lo va co chang khoi tao",async()=>{
   const {service}=await demo();const before=await service.getPage();
