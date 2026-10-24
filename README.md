@@ -1,10 +1,7 @@
 # HueLegend — Tinh hoa có nguồn cội
 
 <p align="center">
-  <img src="./web/assets/logo.png" alt="HueLegend Logo" width="160" style="border-radius:50%;border:2px solid #d4af37;" />
-  <br>
-  <strong style="font-size:24px;font-weight:800;letter-spacing:-0.5px;">HueLegend</strong><br>
-  <span style="font-size:12px;letter-spacing:2.5px;color:#8e8e93;font-weight:700;">TINH HOA CÓ NGUỒN CỘI</span>
+  <img src="./web/assets/brand-logo.png" alt="HueLegend — Tinh hoa có nguồn cội" width="420" style="border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,0.2);" />
 </p>
 
 **Blockchain traceability for traditional Hue specialty products** (Me xung, tom chua, tra cung dinh, tinh dau tram, and local crafts).
