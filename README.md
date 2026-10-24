@@ -36,7 +36,7 @@
 
 - Responsive Vietnamese web UI with muted Hue-inspired colors
 - Search/browse product lots, QR trace pages, checkpoints and verification state
-- Demo mode separate from live Sepolia mode
+- Kết nối trực tiếp ví MetaMask on-chain trên mạng Ethereum Sepolia (đã loại bỏ chế độ demo mô phỏng)
 - MetaMask wallet connection and role-aware transaction forms
 - Read-only Node.js API for Vercel; actual writes are signed by the user's wallet
 - `ProjectCore.sol` implementation with producer/logistics/retailer/inspector roles, staking, fees, checkpoints and audit events
