@@ -7,6 +7,13 @@
 1. **Ngô Quỳnh Trang** — MSV: `23K4300041`
 2. **Ngô Thị Thuỷ Vân** — MSV: `23K4300023`
 
+## 🌐 Liên kết triển khai trực tuyến (Deployment Links)
+
+- 🛍️ **HueLegend Market (Gian hàng đặc sản & 4 nhóm vai trò):** [https://huelegend-dapp.vercel.app/market.html](https://huelegend-dapp.vercel.app/market.html)
+- 🔍 **HueLegend DApp (Truy xuất nguồn gốc chuỗi cung ứng):** [https://huelegend-dapp.vercel.app](https://huelegend-dapp.vercel.app)
+- 📦 **Mã nguồn GitHub Repository:** [https://github.com/nqt2808/HueLegend](https://github.com/nqt2808/HueLegend)
+- ⚙️ **API Health Check:** [https://huelegend-dapp.vercel.app/api/health](https://huelegend-dapp.vercel.app/api/health)
+
 > STATUS: EDUCATIONAL FULLSTACK MVP, NOT AUDITED OR VERIFIED FOR REAL FUNDS. The included Solidity contract is a new implementation; it has NOT been confirmed to match the Sepolia contract address recorded in the original course README. Never display demo data as genuine blockchain provenance.
 
 ## Features available in this source
