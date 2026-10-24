@@ -9,7 +9,7 @@ const host = process.env.HOST || "127.0.0.1";
 const apiRoutes = new Set(["health", "batches", "batch", "rules", "tx", "evidence", "config", "market-config", "market-health", "market-products", "market-product"]);
 const mime = { ".html":"text/html; charset=utf-8", ".css":"text/css; charset=utf-8",
   ".js":"text/javascript; charset=utf-8", ".json":"application/json; charset=utf-8",
-  ".svg":"image/svg+xml", ".png":"image/png", ".txt":"text/plain; charset=utf-8" };
+  ".svg":"image/svg+xml", ".png":"image/png", ".webp":"image/webp", ".jpg":"image/jpeg", ".jpeg":"image/jpeg", ".txt":"text/plain; charset=utf-8" };
 const server = http.createServer(async (request, response) => {
   try {
     if (!["GET","HEAD"].includes(request.method)) { response.writeHead(405); response.end(); return; }
