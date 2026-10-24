@@ -31,9 +31,8 @@
     <header class="topbar">
       <div class="topbar-left"><button class="icon-button mobile-toggle" data-action="menu" aria-label="Mở menu" aria-expanded="false"><span data-icon="menu"></span></button><span class="breadcrumb">Không gian làm việc <span>/</span> <strong id="breadcrumb-title">Tổng quan</strong></span></div>
       <div class="topbar-actions">
-        <label class="sr-only" for="mode-select">Nguồn dữ liệu</label>
-        <select id="mode-select" class="mode-select"><option value="demo">Trải nghiệm mẫu</option><option value="sepolia">Sepolia Testnet</option></select>
-        <button class="button button-primary wallet-button" data-action="connect" id="connect-button"><span data-icon="wallet"></span><span>Kết nối ví</span></button>
+        <div class="network-badge" id="network-badge" title="Mạng thử nghiệm Ethereum Sepolia Testnet"><span class="dot live-dot"></span><strong>Ethereum Sepolia</strong></div>
+        <button class="button button-primary wallet-button" data-action="connect" id="connect-button"><span data-icon="wallet"></span><span>Kết nối MetaMask</span></button>
       </div>
     </header>
     <div id="mode-banner" class="mode-banner" role="status"></div>

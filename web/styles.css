@@ -48,8 +48,10 @@ small{font-size:12px}
 .topbar{height:80px;padding:0 38px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:#ffffffda;gap:16px}
 .topbar-left{display:flex;align-items:center;gap:12px}
 .breadcrumb{font-size:11px;color:#a09aa8}.breadcrumb span{margin:0 14px;color:#c6c0cd}.breadcrumb strong{color:#706777;font-weight:550}
-.topbar-actions{display:flex;align-items:center;gap:16px}
 .mode-select{border:0;background:transparent;padding:8px 22px 8px 10px;color:#746a7e;font-size:11px;cursor:pointer;max-width:185px}
+.network-badge{display:inline-flex;align-items:center;gap:8px;background:#edf6f0;color:#33664e;border:1px solid #cce0d0;border-radius:20px;padding:6px 14px;font-size:11px;font-weight:600}
+.live-dot{background:#419069!important;box-shadow:0 0 6px #419069}
+
 .button{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:1px solid transparent;border-radius:9px;padding:10px 16px;min-height:42px;line-height:1.4;font-size:12px;font-weight:600;white-space:normal;transition:background .15s,transform .15s}
 .button .icon{width:17px;height:17px}.button:hover:not(:disabled){transform:translateY(-1px)}
 .button-primary{background:var(--primary);color:#fff;box-shadow:0 3px 5px #6042760c}.button-primary:hover:not(:disabled){background:var(--primary-dark)}

@@ -21,13 +21,14 @@ const params = new URLSearchParams(location.search);
 const readStorage = key => { try { return localStorage.getItem(key); } catch { return null; } };
 const saveStorage = (key,value) => { try { localStorage.setItem(key,value); } catch {} };
 const removeStorage = key => { try { localStorage.removeItem(key); } catch {} };
-const initialMode = params.get("mode") || readStorage(STORAGE_KEYS.mode) || DEFAULT_CONFIG.defaultMode;
+const initialMode = "sepolia";
+saveStorage(STORAGE_KEYS.mode, "sepolia");
 const routeFromHash = () => {
   const route = location.hash.replace(/^#\/?/, "").split("?")[0] || (params.get("batch") ? "trace" : "dashboard");
   return ROUTE_LABEL[route] ? route : "dashboard";
 };
 const state = {
-  config: loadConfig(), mode: initialMode === "sepolia" ? "sepolia" : "demo", route: routeFromHash(),
+  config: loadConfig(), mode: "sepolia", route: routeFromHash(),
   service: null, rules: null, account: null, pageData: null, page: 0, loading: true, error: "",
   detail: null, lookupInput: "", evidence: null, statusFilter: "all", search: "", busy: false,
   transaction: null, pending: null, drafts: {}, sourceVersion: 0
@@ -79,18 +80,17 @@ function updateCounters(input = null) {
   });
 }
 function renderHeader() {
-  $("#mode-select").value = state.mode; $("#mode-select").disabled = state.busy;
+  if ($("#mode-select")) { $("#mode-select").value = "sepolia"; $("#mode-select").disabled = state.busy; }
   $("#breadcrumb-title").textContent = ROUTE_LABEL[state.route]||"Tổng quan";
   $("#navigation").innerHTML = NAV.map(([key,ico,label])=>`<a class="nav-item ${key===state.route?"active":""} ${key==="admin"?"nav-section-gap":""}" href="#/${key}" ${key===state.route?'aria-current="page"':""}>${icon(ico)}${label}</a>`).join("");
   const connect = $("#connect-button");
-  connect.innerHTML = `${icon("wallet")}<span>${state.account?h(shortAddress(state.account.address)):"Kết nối ví"}</span>`;
-  connect.disabled = state.busy; connect.title = state.account ? "Thông tin ví và vai trò" : "Kết nối ví";
+  connect.innerHTML = `${icon("wallet")}<span>${state.account?h(shortAddress(state.account.address)):"Kết nối MetaMask"}</span>`;
+  connect.disabled = state.busy; connect.title = state.account ? "Thông tin ví MetaMask" : "Kết nối MetaMask";
   const banner = $("#mode-banner");
-  banner.className = `mode-banner ${state.mode==="sepolia"?"live":""}`;
-  banner.innerHTML = state.mode==="demo" ? `<span class="dot"></span><strong>CHẾ ĐỘ MẪU</strong><span>· Dữ liệu minh hoạ, không phải hồ sơ blockchain · Không dùng ETH thật</span><button class="inline-action" data-action="reset-demo">Đặt lại dữ liệu mẫu</button>` :
-    `<span class="dot"></span><strong>SEPOLIA TESTNET</strong><span>· ${state.loading?"Đang kiểm tra kết nối":state.error?"Chưa kết nối thành công":state.service?.backendEnabled ? "API on-chain + MetaMask" : "Đọc trực tiếp blockchain"} · ETH thử nghiệm</span><button class="inline-action" data-action="settings">${h(shortAddress(state.config.contractAddress))}</button>`;
+  banner.className = "mode-banner live";
+  banner.innerHTML = `<span class="dot"></span><strong>SEPOLIA TESTNET</strong><span>· ${state.loading?"Đang kết nối blockchain Sepolia":state.error?"Chưa kết nối thành công RPC":state.service?.backendEnabled ? "API on-chain + MetaMask" : "Đọc trực tiếp Sepolia Testnet"} · ETH thử nghiệm</span><button class="inline-action" data-action="settings">Hợp đồng: ${h(shortAddress(state.config.contractAddress))}</button>`;
   $("#network-banner").innerHTML = state.account&&!state.account.correctNetwork ?
-    `<div class="banner">${icon("alert")}Ví đang ở mạng khác. Dữ liệu đọc vẫn từ Sepolia.${button("Chuyển sang Sepolia","switch-network","route","button-secondary button-small")}</div>`:"";
+    `<div class="banner">${icon("alert")}Ví MetaMask đang ở mạng khác.${button("Chuyển sang Sepolia","switch-network","route","button-secondary button-small")}</div>`:"";
   renderTransaction();
 }
 function renderTransaction() {
@@ -167,9 +167,9 @@ async function initSource() {
   state.transaction=null; state.drafts={}; state.lookupInput=""; renderPage();
   await syncDeploymentConfig();
   if(version!==state.sourceVersion)return;
-  const service=state.mode==="demo" ? new DemoService() : new ChainService(state.config,async()=>{
+  const service = new ChainService(state.config, async () => {
     if(version!==state.sourceVersion)return;
-    try { await refreshData(); toast("Ví hoặc mạng vừa thay đổi. Quyền đã được kiểm tra lại."); }
+    try { await refreshData(); toast("Ví MetaMask hoặc mạng vừa thay đổi. Quyền đã được kiểm tra lại."); }
     catch(error) { state.account=null; renderHeader(); toast(errorText(error,service.interface),"error"); }
   });
   state.service=service;
@@ -223,16 +223,32 @@ function choosePersona() {
   }</div>`);
 }
 async function connectWallet() {
-  if(state.busy)return;
-  if(state.account)return accountDialog();
-  if(state.mode==="demo")return choosePersona();
+  if (state.busy) return;
+  if (state.account) return accountDialog();
+  if (!globalThis.ethereum) {
+    toast("Cần cài đặt tiện ích ví MetaMask trên trình duyệt để kết nối.", "error");
+    window.open("https://metamask.io/download/", "_blank", "noopener");
+    return;
+  }
   try {
-    $("#connect-button").disabled=true;
-    state.account=await state.service.connect();renderHeader();
-    rememberDrafts();renderPage();
-    toast(state.account.correctNetwork?"Ví đã kết nối. Vai trò được đọc từ hợp đồng.":"Ví đã kết nối nhưng đang sai mạng.",state.account.correctNetwork?"success":"info");
-  }catch(error){toast(errorText(error,state.service?.interface),"error");}
-  finally{$("#connect-button").disabled=state.busy;}
+    $("#connect-button").disabled = true;
+    toast("Đang mở MetaMask để kết nối ví...");
+    try {
+      await globalThis.ethereum.request({
+        method: "wallet_requestPermissions",
+        params: [{ eth_accounts: {} }]
+      });
+    } catch {}
+    state.account = await state.service.connect();
+    renderHeader();
+    rememberDrafts();
+    renderPage();
+    toast(state.account.correctNetwork ? `Ví MetaMask ${shortAddress(state.account.address)} đã kết nối.` : "Ví đã kết nối nhưng chưa đổi sang mạng Sepolia. Vui lòng chuyển mạng trên MetaMask.", state.account.correctNetwork ? "success" : "info");
+  } catch (error) {
+    toast(errorText(error, state.service?.interface), "error");
+  } finally {
+    $("#connect-button").disabled = state.busy;
+  }
 }
 function showSettings() {
   if(state.busy)return toast("Hoàn tất hoặc hủy thao tác đang xác nhận trước.");
