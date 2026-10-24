@@ -1,0 +1,27 @@
+================================================================================
+  KIEM THU CAC BAN VA XU LY KET QUA AUDIT CHEO (LAB 14)
+  Du an: HueLegend - Truy xuat dac san Hue tren Blockchain
+  Kiem thu vien: Ngo Quynh Trang (23K4300041) & Ngo Thi Thuy Van (23K4300023)
+================================================================================
+
+[TEST 1] KIEM THU CO CHE HOAN TRA PHI THUA (EXCESS ETH REFUND - PHAT HIEN TRUNG BINH):
+  Kich ban: Co so san xuat nop 0.003 ETH tao lo (trong khi phi quy dinh la 0.001 ETH).
+  [+] Quy OCOP nhan duoc: 0.0010 ETH (Chuan 0.0010 ETH)
+  [+] Nguoi dung duoc hoan tra: 0.0020 ETH (Chuan 0.0020 ETH)
+  => KET QUA: DAT (PASS) - Hoan tra phi thua chinh xac va phat su kien ExcessFeeRefunded!
+
+[TEST 2] KIEM THU TRAN DO DAI CHUOI KY TU CHONG SPAM GAS (PHAT HIEN NHE 1):
+  Kich ban 2.1: Co tinh truyen batchCode dai 100 ky tu (> 64 ky tu cho phep).
+  [PASS] 2.1 CHAN THANH CONG: Revert dung loi StringTooLong (batchCode vuot tran 64)
+  Kich ban 2.2: Co tinh truyen productName dai 200 ky tu (> 128 ky tu cho phep).
+  [PASS] 2.2 CHAN THANH CONG: Revert dung loi StringTooLong (productName vuot tran 128)
+
+[TEST 3] KIEM THU RESET PRODUCER_UNLOCK_TIME KHI RUT HET COC (PHAT HIEN NHE 2):
+  Kich ban: Co so doi den het han 30 ngay va rut sach 0.05 ETH.
+  [+] producerStake sau rut: 0.0 ETH (Bang 0)
+  [+] producerUnlockTime sau rut: 0 (Da reset ve 0)
+  => KET QUA: DAT (PASS) - Reset sach toan bo trang thai khoa coc!
+
+================================================================================
+  TONG KET AUDIT REMEDIATION: 3/3 PHAT HIEN DA DUOC VA TRIET DE VA KIEM THU PASSED 100%!
+================================================================================

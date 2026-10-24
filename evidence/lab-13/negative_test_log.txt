@@ -1,0 +1,40 @@
+================================================================================
+  BO KIEM THU CAC CA THAT BAI (NEGATIVE TESTS & HARDENING - LAB 13)
+  Du an: HueLegend - Truy xuat dac san Hue tren Blockchain
+  Kiem thu vien: Ngo Quynh Trang (23K4300041) & Ngo Thi Thuy Van (23K4300023)
+================================================================================
+
+[CA 1] KIEM THU SAI THOI DIEM (TIMELOCK VIOLATION):
+  Kich ban: Co so san xuat nap coc 0.05 ETH va co tinh rut coc ngay sau 5 ngay (< 30 ngay).
+  [+] Co so da nap 0.05 ETH vao thoi diem T = 1770000000. Han mo khoa = T + 30 ngay.
+  [PASS] CHAN THANH CONG: Giao dich bi revert dung loi custom error: StillLocked
+         Chi tiet: Tien coc con bi khoa den 1772592000 (con thieu 2160000 giay)
+
+[CA 2] KIEM THU SAI NGUOI (UNAUTHORIZED ROLE IMPERSONATION):
+  Kich ban 2.1: Vi ke xau khong co quyen ROLE_PRODUCER co tinh tao lo hang.
+  [PASS] 2.1 CHAN THANH CONG: Revert voi UnauthorizedCaller (Chan nguoi khong co ROLE_PRODUCER).
+  Kich ban 2.2: Don vi van chuyen co tinh goi verifyBatch (Quyen cua Thanh tra Inspector).
+  [PASS] 2.2 CHAN THANH CONG: Revert voi UnauthorizedCaller (Chan Logistics vuot quyen Inspector).
+
+[CA 3] KIEM THU SAI SO TIEN (AMOUNT & CIRCUIT BREAKER VIOLATION):
+  Kich ban 3.1: Co so tao lo nhung nop thieu phi (chi gui 0.0003 ETH < 0.001 ETH).
+  [PASS] 3.1 CHAN THANH CONG: Revert voi InsufficientBatchFee (Phi nop 0.0003 ETH khong du 0.001 ETH).
+  Kich ban 3.2: Admin bi hack co tinh set phi vuot tran an toan Circuit Breaker (0.02 ETH > 0.01 ETH).
+  [PASS] 3.2 CHAN THANH CONG: Revert voi FeeExceedsLimit (Muc phi 0.02 ETH vuot qua tran Circuit Breaker 0.01 ETH).
+
+[CA 4] KIEM THU GOI LAI (REENTRANCY DEFENSE ON WITHDRAWSTAKE):
+  Kich ban: Hop dong ke tan cong nap coc 0.05 ETH, doi het han khoa va co tinh goi lai withdrawStake()
+           khi nhan ETH trong ham callback.
+  [PASS] CHAN DUNG TAN CONG TAI NHAP: ReentrancyGuard va CEI da ngan chan thanh cong!
+         Tien coc bi xoa ve 0 truoc khi goi ngoai, hoac khoa nonReentrant phat hien goi de quy.
+
+[CA 5] KIEM THU DU LIEU LOI & TRAN CHONG SPAM DOS:
+  Kich ban 5.1: Co tinh tao trung ma lo da ton tai tren chuoi.
+  [PASS] 5.1 CHAN THANH CONG: Revert voi BatchAlreadyExists (Ma lo HL-MEXUNG-2026-CHIEU da ton tai).
+  Kich ban 5.2: Spam them qua 50 chang tren cung 1 lo hang de phong thu chong DoS.
+  [PASS] 5.2 CHAN THANH CONG: Revert voi MaxCheckpointsExceeded (Lo HL-MEXUNG-2026-CHIEU da dat tran 50 chang chong spam DoS).
+
+================================================================================
+  TONG KET NEGATIVE TEST SUITE: 5/5 NHOM KIEM THU PASSED (100% CLEAN)
+  DU AN HUELEGEND DA HOAN TAT HARDENING CHONG MOI HINH THUC GIAN LAN VA REENTRANCY!
+================================================================================

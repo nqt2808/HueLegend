@@ -1,0 +1,9 @@
+Local HTTP server smoke check: http://127.0.0.1:5173
+200 /
+200 /styles.css
+200 /js/app.js
+200 /js/abi.js
+200 /js/services/demo.js
+200 /vendor/qr-code.js
+200 /vendor/manifest.json
+Scope: local HTTP only; no wallet or Sepolia transaction.

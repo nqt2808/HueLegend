@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#352b42"><meta name="referrer" content="no-referrer">
+  <meta name="description" content="HueLegend Market - gian hang dac san Hue duoc duyet va truy xuat on-chain.">
+  <title>HueLegend Market · Đặc sản Huế minh bạch</title>
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./market/style.css">
+</head>
+<body>
+  <a class="skip" href="#content">Bỏ qua menu</a>
+  <div class="site-shell">
+    <header class="site-header">
+      <a class="logo" href="./market.html"><span class="logo-mark">✦</span><span><strong>HueLegend</strong><small>MARKETPLACE · XỨ HUẾ</small></span></a>
+      <nav class="nav" aria-label="Điều hướng chính">
+        <button type="button" data-tab="shop" class="active">Gian hàng</button>
+        <button type="button" data-tab="seller">Cơ sở & lô hàng</button>
+        <button type="button" data-tab="orders">Đơn hàng</button>
+        <button type="button" data-tab="admin">Quản trị</button>
+      </nav>
+      <div class="header-right"><a href="./index.html#/dashboard" class="btn btn-light hide-mobile">Truy xuất QR ↗</a><button id="connect" class="btn btn-primary">Kết nối MetaMask</button></div>
+    </header>
+    <main id="content" tabindex="-1">
+      <section class="hero">
+        <div><div class="eyebrow"><span class="dot"></span> CHỢ ĐẶC SẢN HUẾ · NGUỒN GỐC ĐÃ KIỂM DUYỆT</div>
+        <h1>Vị Huế nguyên bản.<br><em>Chọn mua an tâm.</em></h1>
+        <p>Mỗi cơ sở phải khai báo giấy phép kinh doanh và chứng nhận an toàn thực phẩm. Mỗi lô hàng chỉ được mở bán sau khi quản trị viên phê duyệt trên blockchain.</p>
+        <div class="hero-actions"><button class="btn btn-primary" data-tab="shop">Khám phá sản phẩm <span>↗</span></button><button class="btn btn-outline" data-tab="seller">Đăng ký bán hàng</button></div>
+        <div class="hero-metrics"><span><strong>02</strong> lớp kiểm duyệt</span><span><strong>SHA-256</strong> chứng từ</span><span><strong>Sepolia</strong> testnet</span></div></div>
+        <div class="hero-art" aria-hidden="true"><span class="orb orb-one"></span><span class="orb orb-two"></span><div class="art-card"><span class="art-seal">✦</span><span class="art-caption">T I N H &nbsp; H O A &nbsp; C Ố &nbsp; Đ Ô</span><span class="art-leaf">❧</span></div><div class="art-tag">Hồ sơ có thể đối chiếu<br>trên blockchain</div></div>
+      </section>
+      <div id="network-state" role="status" aria-live="polite"></div>
+      <section class="section" id="content-section"><div class="loading">Đang chuẩn bị gian hàng HueLegend...</div></section>
+    </main>
+    <footer class="footer"><span>HueLegend · Gìn giữ bản sắc, kết nối niềm tin.</span><span>Ethereum Sepolia · <strong>Chỉ dùng ETH thử nghiệm</strong> · Không phải thanh toán thật</span></footer>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <script type="module" src="./market/app.js"></script>
+</body></html>

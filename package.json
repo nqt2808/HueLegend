@@ -1,0 +1,33 @@
+{
+  "name": "huelegend-dapp",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "HueLegend Fullstack + Marketplace 2 vai tro, Sepolia escrow testnet",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "start": "node scripts/serve.mjs",
+    "dev": "node scripts/serve.mjs",
+    "test": "node --test test/*.test.mjs",
+    "postinstall": "node scripts/vendor.mjs",
+    "vendor": "node scripts/vendor.mjs",
+    "build": "node scripts/build.mjs",
+    "check:live": "node scripts/check-live.mjs",
+    "test:contract": "hardhat test solidity",
+    "compile:contract": "hardhat compile",
+    "check:deployment": "node scripts/check-deployment.mjs",
+    "test:market": "node --test test/market-static.test.mjs",
+    "check:market": "node scripts/check-market-deployment.mjs"
+  },
+  "dependencies": {
+    "ethers": "6.17.0",
+    "qr-scanner": "1.4.2",
+    "@openzeppelin/contracts": "5.4.0"
+  },
+  "devDependencies": {
+    "hardhat": "^3.0.0",
+    "typescript": "^5.8.3"
+  }
+}

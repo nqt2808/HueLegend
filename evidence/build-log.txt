@@ -1,0 +1,6 @@
+
+> huelegend-dapp@1.0.0 build
+> node scripts/build.mjs
+
+Da tao dist/. Co the deploy toan bo thu muc dist len dich vu static hosting.
+Thu vien vi/camera dang tai tu CDN. Chay npm install va build lai de dong goi cuc bo.
