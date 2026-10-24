@@ -21,7 +21,7 @@ const params = new URLSearchParams(location.search);
 const readStorage = key => { try { return localStorage.getItem(key); } catch { return null; } };
 const saveStorage = (key,value) => { try { localStorage.setItem(key,value); } catch {} };
 const removeStorage = key => { try { localStorage.removeItem(key); } catch {} };
-const initialMode = params.get("mode") || readStorage(STORAGE_KEYS.mode) || DEFAULT_CONFIG.defaultMode;
+const initialMode = params.get("mode") || (readStorage(STORAGE_KEYS.mode) === "sepolia" && state?.config?.contractAddress ? "sepolia" : DEFAULT_CONFIG.defaultMode);
 const routeFromHash = () => {
   const route = location.hash.replace(/^#\/?/, "").split("?")[0] || (params.get("batch") ? "trace" : "dashboard");
   return ROUTE_LABEL[route] ? route : "dashboard";
@@ -88,7 +88,7 @@ function renderHeader() {
   const banner = $("#mode-banner");
   banner.className = `mode-banner ${state.mode==="sepolia"?"live":""}`;
   banner.innerHTML = state.mode==="demo" ? `<span class="dot"></span><strong>CHẾ ĐỘ MẪU</strong><span>· Dữ liệu minh hoạ, không phải hồ sơ blockchain · Không dùng ETH thật</span><button class="inline-action" data-action="reset-demo">Đặt lại dữ liệu mẫu</button>` :
-    `<span class="dot"></span><strong>SEPOLIA TESTNET</strong><span>· ${state.loading?"Đang kiểm tra kết nối":state.error?"Chưa kết nối thành công":state.service?.backendEnabled ? "API on-chain + MetaMask" : "Đọc trực tiếp blockchain"} · ETH thử nghiệm</span><a class="inline-action" href="https://sepolia.etherscan.io/address/${encodeURIComponent(state.config.contractAddress)}" target="_blank" rel="noopener noreferrer" title="Hợp đồng ProjectCore trên Sepolia">${h(shortAddress(state.config.contractAddress))} ↗</a>`;
+    `<span class="dot"></span><strong>SEPOLIA TESTNET</strong><span>· ${state.loading?"Đang kiểm tra kết nối":state.error?"Chưa triển khai hợp đồng on-chain":state.service?.backendEnabled ? "API on-chain + MetaMask" : "Đọc trực tiếp blockchain"} · ETH thử nghiệm</span>${state.config.contractAddress&&isAddress(state.config.contractAddress)?`<a class="inline-action" href="https://sepolia.etherscan.io/address/${encodeURIComponent(state.config.contractAddress)}" target="_blank" rel="noopener noreferrer" title="Hợp đồng Sepolia">${h(shortAddress(state.config.contractAddress))} ↗</a>`:""}`;
   $("#network-banner").innerHTML = state.account&&!state.account.correctNetwork ?
     `<div class="banner">${icon("alert")}Ví đang ở mạng khác. Dữ liệu đọc vẫn từ Sepolia.${button("Chuyển sang Sepolia","switch-network","route","button-secondary button-small")}</div>`:"";
   renderTransaction();

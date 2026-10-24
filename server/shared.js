@@ -2,7 +2,7 @@ import { Contract, FetchRequest, JsonRpcProvider, isAddress } from "ethers";
 import { CONTRACT_ABI } from "../web/js/abi.js";
 
 const DEFAULT_RPC = "https://ethereum-sepolia-rpc.publicnode.com";
-const DEFAULT_ADDRESS = "0x35655079aEbB215E58e379D5a8c2f1f3a5323C6b";
+const DEFAULT_ADDRESS = "";
 export const CHAIN_ID = 11155111;
 
 export function integerParam(raw, fallback, min, max) {
@@ -54,7 +54,7 @@ export function publicConfig() {
   const rpc = process.env.HUELEGEND_RPC_URL || DEFAULT_RPC;
   const contractAddress = process.env.HUELEGEND_CONTRACT_ADDRESS || DEFAULT_ADDRESS;
   if (!/^https:\/\//.test(rpc)) throw new Error("HUELEGEND_RPC_URL phai la HTTPS.");
-  if (!isAddress(contractAddress)) throw new Error("HUELEGEND_CONTRACT_ADDRESS sai dinh dang.");
+  if (!isAddress(contractAddress)) throw Object.assign(new Error("Chua cau hinh HUELEGEND_CONTRACT_ADDRESS tren Sepolia."), { status: 503 });
   return { rpc, contractAddress };
 }
 

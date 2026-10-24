@@ -22,7 +22,7 @@ export class ChainService {
     this.backend = new BackendReadClient(config); this.backendEnabled = false;
   }
   async init() {
-    if (!isAddress(this.config.contractAddress)) throw fault("InvalidAddress");
+    if (!isAddress(this.config.contractAddress)) throw new Error("Chưa triển khai hợp đồng trên Sepolia. Đang trong giai đoạn hoàn thiện luồng nghiệp vụ.");
     this.ethers = await loadEthers();
     const { JsonRpcProvider, FetchRequest, Contract, getAddress } = this.ethers;
     this.contractAddress = getAddress(this.config.contractAddress);
