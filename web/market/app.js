@@ -8,12 +8,7 @@ const state = {
   owner:null, seller:null, products:[], ownedLots:[], waitingSellers:[], waitingLots:[], orders:[],
   busy:false, page:0, selected:null, q:'', demo:false, lastTx:null
 };
-// Dia chi vi cho cac vai tro
-const ROLE_WALLETS = {
-  admin: '0x2e4216e1BCA81d308b25adaD6ef5Ea92E2e42F8c',
-  seller: '0x325650E804c62297EE9c830Dc79468007Ae3F295',
-  buyer: '0x0B210F788fe573194E290026Fda73565ED2ffb1b'
-};
+// Moi vi MetaMask deu co the ket noi; vai tro duoc xac dinh qua smart contract
 const fmt = n => {
   const val=BigInt(String(n || 0));
   const units=val/1000000000000000000n;
@@ -104,29 +99,12 @@ async function connect(){
     state.account=await signer.getAddress();
     state.provider=provider;
     state.ethers=ethers;
-    // Kiểm tra ví khớp vai trò
-    let expected=null;
-    switch(state.tab){
-      case 'admin': expected = ROLE_WALLETS.admin; break;
-      case 'seller': expected = ROLE_WALLETS.seller; break;
-      case 'orders': expected = ROLE_WALLETS.buyer; break;
-      default: expected = null;
-    }
-    if(expected && state.account.toLowerCase()!==expected.toLowerCase()){
-      toast('Ví không khớp với vai trò đã chọn. Vui lòng chuyển sang ví đúng và kết nối lại.');
-      state.account=null;
-      setBusy(false);
-      render();
-      return;
-    }
-    // Kiểm tra số dư tối thiểu (0.005 ETH)
-    const bal = await provider.getBalance(state.account);
-    if(bal < ethers.parseEther('0.005')){
-      toast('Số dư ví quá thấp (<0.005 ETH). Vui lòng nạp thêm để thực hiện giao dịch.');
-    }
+    // Kiem tra so du toi thieu de thong bao nguoi dung
+    const bal=await provider.getBalance(state.account);
+    if(bal<ethers.parseEther('0.005'))toast('Cảnh báo: Số dư ví thấp (<0.005 ETH Sepolia). Nạp thêm tại https://sepoliafaucet.com để thực hiện giao dịch.');
     if(state.config?.configured)state.contract=new ethers.Contract(state.config.contractAddress,MARKET_ABI,signer);
     if(state.contract){await loadWalletData();await loadOrders();}
-    toast('Đã kết nối ví '+short(state.account));
+    toast('Đã kết nối ví '+short(state.account)+' · Vai trò xác định qua smart contract');
     render();
   }catch(e){
     toast('Không kết nối được ví: '+errorText(e));
@@ -172,17 +150,17 @@ function detail(){
   `<div class="panel detail-box"><div><div class="detail-image">${photo(p)}</div><h3 style="margin-top:20px">${h(p.productName)}</h3><p class="muted">${h(p.description)}</p><div class="label-row">${tag(state.demo?'DEMO':'Đã duyệt')} ${tag('Còn '+p.stock+' sản phẩm','orange')}</div><a class="btn btn-light" href="./index.html?batch=${encodeURIComponent(p.batchCode)}#/trace">Tra cứu ProjectCore (nếu có) ↗</a></div><div><div class="kicker">GIÁ NIÊM YẾT</div><div class="price" style="font-size:32px;margin-bottom:24px">${vnd(p.priceVND)} VNĐ</div><p class="micro">Giá thanh toán demo: ${fmt(p.priceWei)} ETH Sepolia</p><h3>Hồ sơ cơ sở</h3><div class="side-list"><div class="side-line"><span>Doanh nghiệp</span><b>${h(p.business?.businessName)}</b></div><div class="side-line"><span>Địa chỉ</span><b>${h(p.business?.location)}</b></div><div class="side-line"><span>Ví cơ sở</span><b class="code">${h(short(p.seller))}</b></div></div>${publicDoc(p.business)}<div class="field"><label for="qty">Số lượng</label><input type="number" min="1" max="${p.stock}" value="1" id="qty"></div><button class="btn btn-primary submit" data-action="buy" ${state.demo?'disabled':''}>Mua bằng MetaMask (ETH thử) ↗</button><p class="micro">Thanh toán bằng ETH Sepolia mô phỏng ký quỹ trong hợp đồng. Chưa thu địa chỉ giao hàng hoặc xử lý thanh toán VNĐ; không đặt hàng thật trên bản thử nghiệm.</p></div></div>`;
 }
 function sellerPage(){
-  if(!state.account)return title('DÀNH CHO CƠ SỞ','Đăng ký bán hàng','Kết nối MetaMask để nộp giấy phép và quản lý lô hàng.')+note('Chỉ những ví cơ sở được quản trị viên phê duyệt mới có thể nộp lô. Khách mua không cần đăng ký vai trò.');
+  if(!state.account)return title('DÀNH CHO CƠ SỞ','Đăng ký bán hàng','Kết nối MetaMask để nộp giấy phép và quản lý lô hàng.')+note('Chỉ những ví cơ sở được quản trị viên phê duyệt mới có thể nộp lô. Bất kỳ ví MetaMask nào cũng có thể đăng ký làm cơ sở.');
   const s=state.seller||{status:0};
   return title('QUẢN LÝ NGƯỜI BÁN','Hồ sơ cơ sở & lô hàng','Hai bước kiểm duyệt: duyệt cơ sở trước, duyệt từng lô sau.',tag(REVIEW[s.status],s.status===2?'':s.status===3?'red':'orange'))+
-  `<div class="two-col"><div><div class="panel"><h3>01 · Đăng ký / cập nhật hồ sơ</h3><p>Hai giấy tờ là bắt buộc. Chọn file để tạo SHA-256 ngay trên trình duyệt; file <strong>không tự tải lên máy chủ</strong>. Bản PDF phục vụ kiểm duyệt phải được cung cấp cho quản trị viên theo kênh riêng. Chỉ cung cấp đường dẫn bản công khai đã che thông tin nếu được phép.</p><form id="seller-form">
+  `<div class="two-col"><div><div class="panel"><h3>01 · Đăng ký / cập nhật hồ sơ</h3><p>Nhập số giấy phép kinh doanh và số chứng nhận ATTP. Hệ thống sẽ ghi mã băm SHA-256 của số giấy phép lên blockchain. Quản trị viên sẽ đối chiếu bản gốc trước khi duyệt.</p><form id="seller-form">
   ${field('businessName','Tên cơ sở / doanh nghiệp','text',`maxlength="128" value="${h(s.businessName||'')}"`)}
   ${field('location','Địa chỉ cơ sở','text',`maxlength="256" value="${h(s.location||'')}"`)}
-  <div class="field-row">${field('businessLicense','Giấy phép kinh doanh (PDF/ảnh)','file','accept=".pdf,image/png,image/jpeg"')}${field('foodSafety','Chứng nhận an toàn thực phẩm (PDF/ảnh)','file','accept=".pdf,image/png,image/jpeg"')}</div>
-  <div class="field-row">${field('businessExpiry','Ngày hết hạn giấy phép','date')}${field('foodExpiry','Ngày hết hạn chứng nhận ATTP','date')}</div>
-  <div class="field-row">${field('businessPublicURL','URL bản công khai đã che thông tin','url','placeholder="https://..."','Không bắt buộc; nếu nhập sẽ công khai on-chain.')}${field('foodPublicURL','URL bản ATTP công khai đã che thông tin','url','placeholder="https://..."','Không bắt buộc; nếu nhập sẽ công khai on-chain.')}</div>
-  <label class="label-row micro"><input type="checkbox" required style="width:auto" name="consent"> Tôi xác nhận hai giấy tờ là thật, còn hiệu lực; hiểu rằng URL công khai và SHA-256 không thể xóa khỏi blockchain.</label>
-  <div class="file-note">Mỗi file tối đa 5 MB. Giấy phép kinh doanh không ghi ngày hết hạn có thể để trống ô ngày. Chỉ tính SHA-256 ở thiết bị; quản trị viên phải kiểm tra bản gốc qua kênh an toàn trước khi duyệt.</div>
+  <div class="field-row">${field('businessLicenseNum','Số giấy phép kinh doanh','text','maxlength="128" placeholder="VD: 3700123456"','Nhập số trên giấy phép KD. Sẽ được ghi SHA-256 on-chain.')}${field('foodSafetyNum','Số chứng nhận ATTP','text','maxlength="128" placeholder="VD: 01/2024/ATTP-HUE"','Nhập số trên giấy chứng nhận ATTP.')}</div>
+  <div class="field-row">${field('businessExpiry','Ngày hết hạn giấy phép KD','date','')}${field('foodExpiry','Ngày hết hạn chứng nhận ATTP','date','')}</div>
+  <div class="field-row">${field('businessPublicURL','URL giấy phép công khai (tùy chọn)','url','placeholder="https://..."','Đường dẫn bản scan đã che thông tin cá nhân.')}${field('foodPublicURL','URL ATTP công khai (tùy chọn)','url','placeholder="https://..."','Đường dẫn bản scan ATTP đã che thông tin.')}</div>
+  <label class="label-row micro"><input type="checkbox" required style="width:auto" name="consent"> Tôi xác nhận thông tin giấy tờ là thật, còn hiệu lực; hiểu rằng số liệu và SHA-256 không thể xóa khỏi blockchain.</label>
+  <div class="file-note">Số giấy phép sẽ được mã hóa SHA-256 ngay trên trình duyệt trước khi gửi lên on-chain. Bản gốc giấy tờ cần nộp cho quản trị viên theo kênh riêng để xác minh.</div>
   <button type="submit" class="btn btn-primary submit">Gửi hồ sơ, ký qua MetaMask ↗</button></form></div>
   <div class="panel" style="margin-top:20px"><h3>02 · Đăng ký lô hàng</h3><p>${sellerValid(s)?'Cơ sở đã được duyệt và giấy tờ còn hiệu lực. Có thể nộp lô mới.':'Chỉ được nộp khi trạng thái cơ sở là Đã duyệt và đủ giấy tờ còn hạn.'}</p>
   <form id="lot-form">${field('batchCode','Mã lô duy nhất','text','maxlength="64" placeholder="HL-MEXUNG-2026-001"')}${field('productName','Tên sản phẩm','text','maxlength="128" placeholder="Mè xửng truyền thống"')}
@@ -215,16 +193,20 @@ function render(){
   content.innerHTML=selected?detail():state.tab==='seller'?sellerPage():state.tab==='admin'?adminPage():state.tab==='orders'?ordersPage():shop();
   if(state.lastTx){const node=document.createElement('div');node.className='notice good';node.innerHTML=`Giao dịch gần nhất đã xác nhận: ${txExplorer(state.lastTx)}`;content.prepend(node);}
 }
-async function digestFile(file){
-  if(!file||!['application/pdf','image/png','image/jpeg'].includes(file.type))throw Error('Chọn PDF, PNG hoặc JPG hợp lệ.');
-  if(file.size===0||file.size>5*1024*1024)throw Error('Mỗi tài liệu phải lớn hơn 0 và không quá 5 MB.');
-  const bytes=await file.arrayBuffer(),hash=await crypto.subtle.digest('SHA-256',bytes);
+async function digestText(text){
+  const trimmed=String(text||'').trim();
+  if(!trimmed)throw Error('So giay phep khong duoc de trong.');
+  if(trimmed.length>128)throw Error('So giay phep qua dai (toi da 128 ky tu).');
+  const bytes=new TextEncoder().encode(trimmed);
+  const hash=await crypto.subtle.digest('SHA-256',bytes);
   return '0x'+[...new Uint8Array(hash)].map(n=>n.toString(16).padStart(2,'0')).join('');
 }
 async function submitSeller(form){
   const d=new FormData(form);if(!d.get('consent'))throw Error('Phải xác nhận cam kết hồ sơ.');
-  const a=await digestFile(d.get('businessLicense')),b=await digestFile(d.get('foodSafety'));
-  const expiry=s=>{if(s==='businessExpiry' && !d.get(s))return 0;const ms=Date.parse(String(d.get(s))+'T23:59:59+07:00');if(!Number.isFinite(ms)||ms<Date.now())throw Error('Ngày hết hạn phải ở tương lai.');return Math.floor(ms/1000);};
+  // Hash so giay phep thay vi hash file PDF
+  const a=await digestText(d.get('businessLicenseNum'));
+  const b=await digestText(d.get('foodSafetyNum'));
+  const expiry=s=>{if(s==='businessExpiry'&&!d.get(s))return 0;const ms=Date.parse(String(d.get(s))+'T23:59:59+07:00');if(!Number.isFinite(ms)||ms<Date.now())throw Error('Ngày hết hạn phải ở tương lai.');return Math.floor(ms/1000);};
   const bu=urlOk(d.get('businessPublicURL')||''),fu=urlOk(d.get('foodPublicURL')||'');
   if(d.get('businessPublicURL')&&!bu||d.get('foodPublicURL')&&!fu)throw Error('URL phải là HTTPS và không chứa mật khẩu.');
   await transact('Gửi hồ sơ cơ sở',()=>state.contract.submitSeller(String(d.get('businessName')).trim(),String(d.get('location')).trim(),a,b,expiry('businessExpiry'),expiry('foodExpiry'),bu,fu));
