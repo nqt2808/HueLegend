@@ -40,5 +40,6 @@ export function icon(name, cls = "") {
   return `<svg class="icon ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths[name] || paths.box}</svg>`;
 }
 export function logo() {
-  return '<svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M5 16h30M9 13h22M12 9h16M17 5h6M7 17v14m26-14v14M4 32h32M12 19v10m16-10v10M17 31v-9a3 3 0 0 1 6 0v9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5 16c3-1 4-2 4-3m22 0c0 1 1 2 4 3" stroke="currentColor" stroke-width="2"/></svg>';
+  return '<img src="./assets/logo.png" alt="HueLegend Logo" class="brand-logo-img" style="width:100%;height:100%;object-fit:cover;border-radius:50%;border:1.5px solid #d4af37;box-shadow:0 0 10px rgba(212,175,55,0.4);display:block;">';
 }
+

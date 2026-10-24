@@ -27,8 +27,9 @@ small{font-size:12px}
 .sidebar{width:248px;position:fixed;inset:0 auto 0 0;background:var(--surface);border-right:1px solid var(--line);padding:34px 21px 20px;display:flex;flex-direction:column;z-index:40}
 .brand{display:flex;gap:11px;align-items:center;margin:0 4px 47px;color:var(--ink);font-size:24px;font-weight:700;letter-spacing:-1px}
 .brand small{display:block;font-size:8px;font-weight:600;letter-spacing:1.35px;color:var(--muted);margin-top:1px}
-.brand-mark{width:40px;height:44px;color:var(--primary)}.brand-mark svg{width:100%;height:100%}
+.brand-mark{width:44px;height:44px;color:var(--primary);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}.brand-mark svg,.brand-mark img{width:100%;height:100%}.brand-mark img{border-radius:50%;object-fit:cover}
 .nav-label{color:#a19aa9;font-size:9px;letter-spacing:1.4px;font-weight:650;margin:0 15px 12px}
+
 #navigation{display:flex;flex-direction:column;gap:6px}
 .nav-item{display:flex;align-items:center;gap:12px;border-radius:10px;padding:12px 15px;color:#827a8c;font-size:13px;font-weight:550;background:transparent;text-align:left;width:100%;transition:background .15s,color .15s}
 .nav-item:hover{background:var(--soft);color:var(--primary)}

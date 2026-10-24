@@ -1,5 +1,11 @@
 # HueLegend
 
+<p align="center">
+  <img src="./web/assets/logo.png" alt="HueLegend Logo" width="160" style="border-radius:50%;" />
+  <br>
+  <strong>Cố đô Huyền thoại — Song hành theo thời gian</strong>
+</p>
+
 **Blockchain traceability for traditional Hue specialty products** (Me xung, tom chua, tra cung dinh, tinh dau tram, and local crafts).
 
 ## 👥 Thành viên thực hiện dự án
