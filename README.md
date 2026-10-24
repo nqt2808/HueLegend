@@ -20,7 +20,17 @@
 - 📦 **Mã nguồn GitHub Repository:** [https://github.com/nqt2808/HueLegend](https://github.com/nqt2808/HueLegend)
 - ⚙️ **API Health Check:** [https://huelegend-dapp.vercel.app/api/health](https://huelegend-dapp.vercel.app/api/health)
 
+## 🔑 Phân bổ địa chỉ ví MetaMask theo vai trò (Ethereum Sepolia)
+
+| Nhóm vai trò | Địa chỉ ví MetaMask | Quyền hạn on-chain |
+| :--- | :--- | :--- |
+| 🛡️ **Quản trị (Admin)** | `0x2e4216e1BCA81d308b25adaD6ef5Ea92E2e42F8c` | Chạy sang Backend, duyệt hồ sơ GPKD + ATTP, duyệt lô hàng, giải quyết tranh chấp |
+| 🏭 **Cơ sở SX & Kiểm định** | `0x325650E804c62297EE9c830Dc79468007Ae3F295` | Nộp hash GPKD & ATTP, nộp ký quỹ bảo chứng, đăng ký lô đặc sản |
+| 🏪 **Nơi bán (Retailer)** | `0x325650E804c62297EE9c830Dc79468007Ae3F295` | Tiếp nhận lô hàng, quản lý tồn kho, xác nhận vận chuyển |
+| 🛒 **Người mua (Buyer)** | `0x0B210F788fe573194E290026Fda73565ED2ffb1b` | Quét mã QR minh bạch, đặt mua giữ tiền qua Smart Contract Escrow |
+
 > STATUS: EDUCATIONAL FULLSTACK MVP, NOT AUDITED OR VERIFIED FOR REAL FUNDS. The included Solidity contract is a new implementation; it has NOT been confirmed to match the Sepolia contract address recorded in the original course README. Never display demo data as genuine blockchain provenance.
+
 
 ## Features available in this source
 

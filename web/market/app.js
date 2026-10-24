@@ -176,7 +176,7 @@ const demoProducts = [
     stock: 38,
     sold: 12,
     status: 2,
-    seller: '0x35655079aEbB215E58e379D5a8c2f1f3a5323C6b',
+    seller: '0x325650E804c62297EE9c830Dc79468007Ae3F295',
     txHash: '0xa6c9417890ef1234567890abcdef1234567890abcdef1234567890abcdef01',
     business: {
       businessName: 'Cơ sở Sản Xuất Mè Xửng Thiên Hương',
@@ -185,8 +185,8 @@ const demoProducts = [
       foodSafetySHA256: '0x3f5c2d1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
       businessLicenseExpires: 1999999999,
       foodSafetyExpires: 1999999999,
-      publicBusinessLicenseURL: 'https://sepolia.etherscan.io/address/0x35655079aEbB215E58e379D5a8c2f1f3a5323C6b',
-      publicFoodSafetyURL: 'https://sepolia.etherscan.io/address/0x35655079aEbB215E58e379D5a8c2f1f3a5323C6b',
+      publicBusinessLicenseURL: 'https://sepolia.etherscan.io/address/0x325650E804c62297EE9c830Dc79468007Ae3F295',
+      publicFoodSafetyURL: 'https://sepolia.etherscan.io/address/0x325650E804c62297EE9c830Dc79468007Ae3F295',
       status: 2
     }
   },
@@ -201,7 +201,7 @@ const demoProducts = [
     stock: 24,
     sold: 18,
     status: 2,
-    seller: '0x82d022a704706B2f144863D619D7418F8a0f19A7',
+    seller: '0x325650E804c62297EE9c830Dc79468007Ae3F295',
     txHash: '0xb7d142890ef1234567890abcdef1234567890abcdef1234567890abcdef02',
     business: {
       businessName: 'Doanh nghiệp Tư nhân Trà Cung Đình Đức Phượng',
@@ -210,8 +210,8 @@ const demoProducts = [
       foodSafetySHA256: '0x4d1e8c1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
       businessLicenseExpires: 1999999999,
       foodSafetyExpires: 1999999999,
-      publicBusinessLicenseURL: 'https://sepolia.etherscan.io/address/0x82d022a704706B2f144863D619D7418F8a0f19A7',
-      publicFoodSafetyURL: 'https://sepolia.etherscan.io/address/0x82d022a704706B2f144863D619D7418F8a0f19A7',
+      publicBusinessLicenseURL: 'https://sepolia.etherscan.io/address/0x325650E804c62297EE9c830Dc79468007Ae3F295',
+      publicFoodSafetyURL: 'https://sepolia.etherscan.io/address/0x325650E804c62297EE9c830Dc79468007Ae3F295',
       status: 2
     }
   },
@@ -226,7 +226,7 @@ const demoProducts = [
     stock: 19,
     sold: 9,
     status: 2,
-    seller: '0x40eaecc116ce5d0eea6a62051370939931c44adf9a3116dae12029c664d7e90e',
+    seller: '0x325650E804c62297EE9c830Dc79468007Ae3F295',
     txHash: '0xc8e253890ef1234567890abcdef1234567890abcdef1234567890abcdef03',
     business: {
       businessName: 'Cơ sở Tôm Chua Gia Truyền Trọng Tín',
@@ -235,8 +235,8 @@ const demoProducts = [
       foodSafetySHA256: '0x2a9d4f1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
       businessLicenseExpires: 1999999999,
       foodSafetyExpires: 1999999999,
-      publicBusinessLicenseURL: 'https://sepolia.etherscan.io',
-      publicFoodSafetyURL: 'https://sepolia.etherscan.io',
+      publicBusinessLicenseURL: 'https://sepolia.etherscan.io/address/0x325650E804c62297EE9c830Dc79468007Ae3F295',
+      publicFoodSafetyURL: 'https://sepolia.etherscan.io/address/0x325650E804c62297EE9c830Dc79468007Ae3F295',
       status: 2
     }
   }
@@ -309,6 +309,14 @@ async function loadOrders() {
   state.orders = (await Promise.all(ids.map(id => state.contract.getOrder(id).then(toOrder)))).sort((a, b) => b.id - a.id);
 }
 
+// Danh sach vi MetaMask chi dinh cho tung vai tro
+export const ASSIGNED_ROLE_WALLETS = Object.freeze({
+  admin: '0x2e4216e1BCA81d308b25adaD6ef5Ea92E2e42F8c',
+  producer: '0x325650E804c62297EE9c830Dc79468007Ae3F295',
+  retailer: '0x325650E804c62297EE9c830Dc79468007Ae3F295',
+  buyer: '0x0B210F788fe573194E290026Fda73565ED2ffb1b'
+});
+
 // Danh gia tinh hop le cua vai tro va kiem tra so du / ky quy
 function evaluateRoleAndStaking(roleKey) {
   if (!state.account) {
@@ -316,39 +324,43 @@ function evaluateRoleAndStaking(roleKey) {
     return;
   }
   const bal = Number(state.balanceETH || 0);
+  const targetWallet = ASSIGNED_ROLE_WALLETS[roleKey];
+  const isTarget = targetWallet && state.account && targetWallet.toLowerCase() === state.account.toLowerCase();
+  const targetTag = isTarget ? ` · ✓ Khớp ví chỉ định (${short(targetWallet)})` : (targetWallet ? ` · ℹ Ví gán: ${short(targetWallet)}` : '');
+
   if (roleKey === 'producer') {
     if (bal >= 0.005) {
       state.stakeStatus = {
         type: 'good',
-        text: `✓ Đạt chuẩn ký quỹ (Số dư: ${bal.toFixed(4)} ETH >= 0.005 ETH) · Sẵn sàng tạo lô hàng`
+        text: `✓ Đạt chuẩn ký quỹ (Số dư: ${bal.toFixed(4)} ETH >= 0.005 ETH)${targetTag} · Sẵn sàng tạo lô hàng`
       };
     } else {
       state.stakeStatus = {
         type: 'warning',
-        text: `⚠️ Số dư ví thấp (${bal.toFixed(4)} ETH < 0.005 ETH) · Cần nạp thêm Sepolia ETH để ký quỹ`
+        text: `⚠️ Số dư ví thấp (${bal.toFixed(4)} ETH < 0.005 ETH)${targetTag} · Cần nạp thêm Sepolia ETH để ký quỹ`
       };
     }
   } else if (roleKey === 'admin') {
-    if (isOwner() || state.demo) {
+    if (isOwner() || state.demo || isTarget) {
       state.stakeStatus = {
         type: 'admin',
-        text: `✓ Ví Quản trị Backend đã xác thực (Số dư: ${bal.toFixed(4)} ETH) · Toàn quyền phê duyệt on-chain`
+        text: `✓ Ví Quản trị Backend đã xác thực (Số dư: ${bal.toFixed(4)} ETH)${targetTag} · Toàn quyền phê duyệt on-chain`
       };
     } else {
       state.stakeStatus = {
         type: 'warning',
-        text: `⚠️ Ví ${short(state.account)} chưa phải Owner hợp đồng. Chỉ địa chỉ deploy mới duyệt được on-chain.`
+        text: `⚠️ Ví ${short(state.account)} chưa phải Owner hợp đồng. Chỉ địa chỉ deploy (${short(targetWallet)}) mới duyệt được on-chain.`
       };
     }
   } else if (roleKey === 'retailer') {
     state.stakeStatus = {
       type: 'good',
-      text: `✓ Ví Nơi bán đã sẵn sàng (Số dư: ${bal.toFixed(4)} ETH) · Sẵn sàng cập nhật tồn kho & giao hàng`
+      text: `✓ Ví Nơi bán đã sẵn sàng (Số dư: ${bal.toFixed(4)} ETH)${targetTag} · Sẵn sàng cập nhật tồn kho & giao hàng`
     };
   } else {
     state.stakeStatus = {
       type: 'good',
-      text: `✓ Ví Người mua kết nối thành công (Số dư: ${bal.toFixed(4)} ETH) · Sẵn sàng đặt mua qua Escrow`
+      text: `✓ Ví Người mua kết nối thành công (Số dư: ${bal.toFixed(4)} ETH)${targetTag} · Sẵn sàng đặt mua qua Escrow`
     };
   }
 }

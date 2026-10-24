@@ -2,14 +2,14 @@ import { ROLE, WORKFLOW_ROLES } from "../roles.js";
 import { STORAGE_KEYS } from "../config.js";
 import { assertText, parseETH, isAddress, fault } from "../lib/utils.js";
 
-// Du lieu mo phong chi phuc vu giao dien, khong phai bang chung on-chain.
+// Du lieu mo phong duoc gan truc tiep voi cac vi MetaMask chi dinh
 export const DEMO_ACCOUNTS = Object.freeze({
-  OWNER: "0x1000000000000000000000000000000000000001",
-  PRODUCER: "0x2000000000000000000000000000000000000002",
+  OWNER: "0x2e4216e1BCA81d308b25adaD6ef5Ea92E2e42F8c",
+  PRODUCER: "0x325650E804c62297EE9c830Dc79468007Ae3F295",
   LOGISTICS: "0x3000000000000000000000000000000000000003",
   RETAILER: "0x4000000000000000000000000000000000000004",
   INSPECTOR: "0x5000000000000000000000000000000000000005",
-  VISITOR: "0x6000000000000000000000000000000000000006"
+  VISITOR: "0x0B210F788fe573194E290026Fda73565ED2ffb1b"
 });
 function makeSeed(now) {
   const owner = DEMO_ACCOUNTS.OWNER;
