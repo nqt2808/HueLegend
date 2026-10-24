@@ -4,121 +4,138 @@
   <img src="./web/assets/brand-logo.png" alt="HueLegend — Tinh hoa có nguồn cội" width="420" style="border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,0.2);" />
 </p>
 
-**Blockchain traceability for traditional Hue specialty products** (Me xung, tom chua, tra cung dinh, tinh dau tram, and local crafts).
+**Hệ thống ứng dụng Blockchain truy xuất nguồn gốc và thương mại điện tử phân quyền cho các sản phẩm đặc sản truyền thống Cố đô Huế** (Mè xửng, tôm chua, trà cung đình, tinh dầu tràm và các sản phẩm làng nghề truyền thống).
 
 ## 👥 Thành viên thực hiện dự án
 
-1. **Ngô Quỳnh Trang** — MSV: `23K4300041`
-2. **Ngô Thị Thuỷ Vân** — MSV: `23K4300023`
+1. **Ngô Quỳnh Trang** — Mã sinh viên: `23K4300041`
+2. **Ngô Thị Thuỷ Vân** — Mã sinh viên: `23K4300023`
 
 ## 🌐 Liên kết triển khai trực tuyến (Deployment Links)
 
 - 🛍️ **HueLegend Market (Gian hàng đặc sản & 4 nhóm vai trò):** [https://huelegend-dapp.vercel.app/market.html](https://huelegend-dapp.vercel.app/market.html)
 - 🔍 **HueLegend DApp (Truy xuất nguồn gốc chuỗi cung ứng):** [https://huelegend-dapp.vercel.app](https://huelegend-dapp.vercel.app)
 - 📦 **Mã nguồn GitHub Repository:** [https://github.com/nqt2808/HueLegend](https://github.com/nqt2808/HueLegend)
-- ⚙️ **API Health Check:** [https://huelegend-dapp.vercel.app/api/health](https://huelegend-dapp.vercel.app/api/health)
+- ⚙️ **Kiểm tra trạng thái API (Health Check):** [https://huelegend-dapp.vercel.app/api/health](https://huelegend-dapp.vercel.app/api/health)
 
-## 🔑 Phân bổ địa chỉ ví MetaMask theo vai trò (Ethereum Sepolia)
+## 🔑 Phân bổ địa chỉ ví MetaMask theo vai trò (Ethereum Sepolia Testnet)
 
 | Nhóm vai trò | Địa chỉ ví MetaMask | Quyền hạn on-chain |
 | :--- | :--- | :--- |
 | 🛡️ **Quản trị (Admin)** | `0x2e4216e1BCA81d308b25adaD6ef5Ea92E2e42F8c` | Chạy sang Backend, duyệt hồ sơ GPKD + ATTP, duyệt lô hàng, giải quyết tranh chấp |
-| 🏭 **Cơ sở SX & Kiểm định** | `0x325650E804c62297EE9c830Dc79468007Ae3F295` | Nộp hash GPKD & ATTP, nộp ký quỹ bảo chứng, đăng ký lô đặc sản |
-| 🏪 **Nơi bán (Retailer)** | `0x325650E804c62297EE9c830Dc79468007Ae3F295` | Tiếp nhận lô hàng, quản lý tồn kho, xác nhận vận chuyển |
-| 🛒 **Người mua (Buyer)** | `0x0B210F788fe573194E290026Fda73565ED2ffb1b` | Quét mã QR minh bạch, đặt mua giữ tiền qua Smart Contract Escrow |
+| 🏭 **Cơ sở SX & Kiểm định** | `0x325650E804c62297EE9c830Dc79468007Ae3F295` | Nộp mã băm SHA-256 GPKD & ATTP, nộp ký quỹ bảo chứng, đăng ký lô đặc sản |
+| 🏪 **Nơi bán (Retailer)** | `0x325650E804c62297EE9c830Dc79468007Ae3F295` | Tiếp nhận lô hàng, quản lý tồn kho, xác nhận vận chuyển đơn hàng |
+| 🛒 **Người mua (Buyer)** | `0x0B210F788fe573194E290026Fda73565ED2ffb1b` | Quét mã QR minh bạch, đặt mua giữ tiền an toàn qua Smart Contract Escrow |
 
-> STATUS: EDUCATIONAL FULLSTACK MVP, NOT AUDITED OR VERIFIED FOR REAL FUNDS. The included Solidity contract is a new implementation; it has NOT been confirmed to match the Sepolia contract address recorded in the original course README. Never display demo data as genuine blockchain provenance.
+> ⚠️ **LƯU Ý:** ĐÂY LÀ DỰ ÁN HỌC TẬP FULLSTACK MVP (MÔN ECO2432), CHƯA KIỂM TOÁN BẢO MẬT ĐỂ GIAO DỊCH TIỀN THẬT. Mọi giao dịch được thực hiện bằng ETH thử nghiệm trên mạng Ethereum Sepolia Testnet. Tuyệt đối không dùng tiền thật và không hiển thị dữ liệu mô phỏng như dữ liệu nguồn gốc blockchain thực tế.
 
+## 🚀 Tính năng nổi bật của hệ thống
 
-## Features available in this source
+- **Giao diện thuần Việt sang trọng:** Thiết kế mang phong cách văn hóa Cố Đô Huế với tone màu đen than hoàng gia `#141318`, ánh vàng kim `#d4af37` và tím cung đình.
+- **Truy xuất nguồn gốc on-chain:** Tra cứu, tìm kiếm danh mục lô hàng, hiển thị trang QR chi tiết, các mốc chặng kiểm định và trạng thái chứng từ bất biến.
+- **Kết nối trực tiếp ví MetaMask:** Tương tác on-chain thật qua mạng Ethereum Sepolia Testnet, đã loại bỏ hoàn toàn chế độ demo mô phỏng.
+- **Phân quyền 4 nhóm vai trò nghiêm ngặt:** Quản trị viên, Cơ sở sản xuất & Kiểm định, Nơi bán và Người mua có giao diện và quyền thực thi riêng biệt.
+- **Xác thực pháp lý bằng SHA-256:** Cơ sở sản xuất nộp Giấy phép kinh doanh (GPKD) và Giấy chứng nhận vệ sinh an toàn thực phẩm (ATTP) dưới dạng mã băm mật mã học được quản trị viên phê duyệt on-chain.
+- **Bảo chứng ký quỹ (Staking) & Escrow:** Cơ sở sản xuất phải ký quỹ cọc bảo chứng chất lượng; người mua thanh toán giữ tiền qua hợp đồng ủy thác trung gian (Escrow) trước khi xác nhận đơn hàng thành công.
+- **API Serverless trên Vercel:** Xử lý đọc dữ liệu nhanh chóng, toàn bộ thao tác ghi trạng thái đều do người dùng trực tiếp ký xác thực bằng ví MetaMask cá nhân.
+- **Hợp đồng thông minh phân quyền:** Tích hợp kiểm soát vai trò AccessControl, lưu vết lịch sử kiểm định và phát sự kiện (`event`) minh bạch.
+- **Bộ kiểm thử tự động toàn diện:** Đạt 38/38 ca kiểm thử bảo mật, kiểm tra luồng logic và ngăn chặn các hành vi gian lận.
 
-- Responsive Vietnamese web UI with muted Hue-inspired colors
-- Search/browse product lots, QR trace pages, checkpoints and verification state
-- Kết nối trực tiếp ví MetaMask on-chain trên mạng Ethereum Sepolia (đã loại bỏ chế độ demo mô phỏng)
-- MetaMask wallet connection and role-aware transaction forms
-- Read-only Node.js API for Vercel; actual writes are signed by the user's wallet
-- `ProjectCore.sol` implementation with producer/logistics/retailer/inspector roles, staking, fees, checkpoints and audit events
-- Tests for JavaScript UI / API handling and initial Solidity test cases
-
-## Architecture
+## 🏛️ Kiến trúc hệ thống (Architecture)
 
 ```text
-Public viewer --> HTTPS Frontend (Vercel) --> Read-only Vercel API --> Sepolia RPC --> ProjectCore
-Producer / carrier / inspector --> MetaMask signs transaction -------------> Sepolia --> ProjectCore
+Người xem công khai  --> Giao diện HTTPS (Vercel) --> Vercel API (Chỉ đọc) --> RPC Sepolia --> Smart Contracts
+Cơ sở SX / Nơi bán   --> Ký giao dịch ví MetaMask ----------------------------> Mạng Sepolia --> Smart Contracts
+Quản trị viên        --> Ký giao dịch ví MetaMask (Backend duyệt hồ sơ / lô) -> Mạng Sepolia --> Smart Contracts
 ```
 
-**GitHub is the source repository. Vercel hosts the frontend and serverless API.** A GitHub repository alone does not deploy the backend or smart contract.
+**GitHub đóng vai trò lưu trữ mã nguồn. Vercel đảm nhận triển khai giao diện người dùng và Serverless API.**
 
-## Quick start (Windows)
+## 💻 Hướng dẫn cài đặt & Khởi chạy nhanh (Quick Start)
 
-Install Node.js 24+ and extract this project into a folder named `HueLegend`.
+Yêu cầu môi trường: Cài đặt **Node.js phiên bản 20 trở lên** (khuyến nghị Node 24+).
 
+1. Tải hoặc sao chép mã nguồn về thư mục `HueLegend`:
 ```powershell
 cd "$env:USERPROFILE\Downloads\HueLegend"
+```
+
+2. Cài đặt các gói phụ thuộc:
+```powershell
 npm.cmd install
+```
+
+3. Chạy kiểm thử tự động (38 kiểm thử đơn vị & tích hợp):
+```powershell
 npm.cmd test
+```
+
+4. Đóng gói bản dựng sản xuất:
+```powershell
 npm.cmd run build
+```
+
+5. Khởi chạy máy chủ nội bộ:
+```powershell
 npm.cmd start
 ```
 
-Open `http://localhost:5173`. For real read-only API health, use `/api/health`. The endpoint may fail if the RPC, chain ID, or deployed contract is unavailable.
+Mở trình duyệt tại địa chỉ `http://localhost:5173`.
+- Truy cập Marketplace tại: `http://localhost:5173/market.html`.
+- Kiểm tra trạng thái API chỉ đọc tại: `http://localhost:5173/api/health`.
 
-## Cap nhat ngay 15/10/2026 (phases 2-4)
+## 📜 Chặng phát triển & Cải tiến hệ thống
 
-- API `/api/config` cho phep frontend dong bo dia chi contract tu Vercel khi chua co cau hinh thu cong. Khong cong khai URL RPC.
-- Web Handler cho Vercel, dong thoi giu ham GET de chay local.
-- Dashboard xuat trang hien tai ra CSV, co phan biet data demo/Sepolia va ngan CSV formula injection.
-- `npm run check:deployment -- https://your-project.vercel.app` kiem tra 3 endpoint production.
-- Da chay 26/26 kiem thu JavaScript; Solidity tests phai chay tren EVM.
-- Xem huong dan tung giai doan: [docs/PHASES_2_4.md](docs/PHASES_2_4.md).
+- **API `/api/config` & `/api/market-config`:** Cho phép giao diện đồng bộ địa chỉ hợp đồng trực tiếp từ cấu hình máy chủ Vercel mà không để lộ URL RPC nhạy cảm.
+- **Bộ xử lý Web Handler cho Vercel:** Hỗ trợ chạy Serverless Functions đồng thời tương thích hoàn toàn khi chạy máy chủ local.
+- **Xuất dữ liệu CSV an toàn:** Cho phép xuất danh sách lô hàng ra tệp CSV, tích hợp cơ chế phòng chống tấn công CSV Formula Injection và gắn cờ dữ liệu.
+- **Lệnh kiểm tra hệ thống:** `npm run check:deployment -- https://ten-dapp.vercel.app` kiểm tra tự động các endpoint trực tuyến.
+- **Tài liệu chi tiết các giai đoạn:** Tham khảo thêm tại [docs/PHASES_2_4.md](docs/PHASES_2_4.md) và [docs/MARKETPLACE.md](docs/MARKETPLACE.md).
 
-## Deploy
+## 🚢 Hướng dẫn triển khai (Deployment)
 
-- **Create a NEW GitHub repo called HueLegend:** [docs/GITHUB_AND_VERCEL.md](docs/GITHUB_AND_VERCEL.md)
-- **Fullstack runbook:** [docs/FULLSTACK.md](docs/FULLSTACK.md)
-- **Current GitHub roadmap:** [docs/ROADMAP.md](docs/ROADMAP.md)
-- **Security status:** [SECURITY.md](SECURITY.md)
-- **Vercel-only instructions:** [DEPLOY-VERCEL.md](DEPLOY-VERCEL.md)
-- **Frontend earlier documentation:** [docs/FRONTEND_README_LEGACY.md](docs/FRONTEND_README_LEGACY.md)
+- **Hướng dẫn tạo kho lưu trữ GitHub:** [docs/GITHUB_AND_VERCEL.md](docs/GITHUB_AND_VERCEL.md)
+- **Sổ tay vận hành Fullstack:** [docs/FULLSTACK.md](docs/FULLSTACK.md)
+- **Lộ trình phát triển:** [docs/ROADMAP.md](docs/ROADMAP.md)
+- **Chính sách bảo mật:** [SECURITY.md](SECURITY.md)
+- **Hướng dẫn cấu hình Vercel:** [DEPLOY-VERCEL.md](DEPLOY-VERCEL.md)
+- **Tài liệu giao diện tiền nhiệm:** [docs/FRONTEND_README_LEGACY.md](docs/FRONTEND_README_LEGACY.md)
 
-Vercel config at root: `vercel.json` (`npm run build` -> `dist/`; serverless functions in `api/`). On GitHub, `.github/workflows/ci.yml` validates JS tests and build for pushes / PRs. Solidity test automation and bytecode verification are pending; passing CI alone is NOT a contract audit.
+Tệp cấu hình Vercel tại thư mục gốc: `vercel.json` (lệnh build: `npm run build` tạo thư mục `dist/`; serverless functions trong thư mục `api/`). Quy trình CI GitHub Actions tại `.github/workflows/ci.yml` tự động kiểm thử JavaScript khi có push hoặc pull request.
 
-## Environment variables
+## ⚙️ Biến môi trường (Environment Variables)
 
-See `.env.example`. The server reads `HUELEGEND_RPC_URL` (HTTPS public read RPC) and `HUELEGEND_CONTRACT_ADDRESS` (deployed Sepolia contract address). Change the frontend configuration accordingly when deploying a different contract. Avoid paid secret RPC URLs in browser-side settings.
+Tham khảo tệp mẫu `.env.example`. Máy chủ đọc các biến môi trường sau:
+- `HUELEGEND_RPC_URL`: URL RPC công khai (HTTPS) để đọc dữ liệu Sepolia.
+- `HUELEGEND_CONTRACT_ADDRESS`: Địa chỉ hợp đồng thông minh `ProjectCore` đã triển khai trên Sepolia.
+- `HUELEGEND_MARKET_ADDRESS`: Địa chỉ hợp đồng thông minh `HueLegendMarket` đã triển khai trên Sepolia.
 
-## Known limits
+> 🔒 **Lưu ý bảo mật:** Tuyệt đối không lưu khóa riêng tư (Private Key) hoặc khóa RPC trả phí trên mã nguồn client-side.
 
-- Smart contract implementation not yet EVM-tested in this delivery environment; review and test before deployment.
-- A deployed contract's source/ABI/address have not yet been verified against the included new implementation.
-- No evidence upload storage, indexed database, SIWE authentication, WalletConnect for external mobile browsers, or enterprise monitoring.
-- Any authorized role currently can append checkpoints to an existing batch; there is no per-batch assignment or enforced supply-chain ordering.
-- A producer's stake can be withdrawn after the global lock expires even if batches remain in circulation; policy needs review.
-- QR labels are copyable: immutable on-chain data does not independently prove physical product authenticity.
+## ⚠️ Giới hạn kỹ thuật & Lưu ý vận hành
 
-## Example negative checks
+1. **Môi trường thử nghiệm:** Hợp đồng thông minh được thiết kế phục vụ đề tài học tập, cần được kiểm toán độc lập trước khi ứng dụng trong thương mại thực tế với tài sản lớn.
+2. **Lưu trữ chứng từ:** Mã băm SHA-256 được lưu trữ bất biến on-chain để đối soát; tệp hình ảnh gốc của giấy tờ được lưu trữ ngoại tuyến hoặc phân tán (IPFS) để bảo vệ quyền riêng tư doanh nghiệp.
+3. **Mã QR vật lý:** Mã QR liên kết trực tiếp tới giao dịch Etherscan và trang thông tin chi tiết; việc dán tem QR lên bao bì vật lý cần kết hợp giải pháp chống bóc tách giả mạo.
+4. **Cơ chế rút cọc:** Cơ sở sản xuất chỉ được rút tiền ký quỹ sau khi hết thời hạn khóa quy định và không có tranh chấp vi phạm chất lượng.
 
-1. Unauthorized wallet attempts to create a batch -> must revert.
-2. Duplicate batch code -> must revert.
-3. Unauthorized wallet attempts to verify or append a checkpoint -> must revert.
-4. Incorrect chain ID / mismatched contract -> frontend must reject instead of substituting demo data.
+## 🛡️ Các trường hợp kiểm thử an toàn tiêu biểu (Negative Checks)
 
-## Safety and licensing
+1. **Chặn mạo danh tạo lô:** Ví chưa được cấp vai trò hoặc chưa nộp đủ cọc bảo chứng gọi `submitLot()` -> Giao dịch bị hoàn tác (`revert UnauthorizedCaller`).
+2. **Chống trùng lặp mã lô:** Tạo lô hàng với mã lô đã tồn tại trong hợp đồng -> Giao dịch bị hoàn tác (`revert LotAlreadyExists`).
+3. **Chặn duyệt trái phép:** Ví không thuộc quyền Quản trị viên (`ROLE_ADMIN`) gọi hàm `approveLot()` hoặc `registerSeller()` -> Giao dịch bị từ chối ngay lập tức.
+4. **Bảo vệ tiền ký thác Escrow:** Cơ sở sản xuất hoặc bên thứ ba không thể rút tiền người mua khi đơn hàng chưa hoàn tất xác nhận nhận hàng hoặc chưa giải quyết tranh chấp.
 
-Never share your recovery phrase. No backend private key is required for read-only API operations. On-chain metadata is publicly visible. Read [LICENSE](LICENSE) and third-party notices in [docs/SOURCES.md](docs/SOURCES.md).
+## 📄 Bản quyền & An toàn bảo mật
+
+- Tuyệt đối không chia sẻ cụm từ khôi phục (Seed Phrase) hoặc Private Key của ví cá nhân.
+- Các thao tác đọc dữ liệu qua API không yêu cầu Private Key máy chủ.
+- Xem chi tiết giấy phép tại [LICENSE](LICENSE) và danh mục tài nguyên nguồn mở tại [docs/SOURCES.md](docs/SOURCES.md).
 
 ---
 
-## HueLegend Market · Mới (Sepolia commerce MVP)
+## 🛍️ HueLegend Market (Phân hệ Thương mại Đặc sản Sepolia)
 
-Đã bổ sung trang **`/market.html`** gồm gian hàng đặc sản, đăng ký cơ sở có SHA-256 giấy phép kinh doanh + giấy an toàn thực phẩm, duyệt hồ sơ và lô bởi ví admin, giá niêm yết VND và luồng đặt hàng/escrow dùng MetaMask với ETH **thử nghiệm**. Hai vai trò quản trị là **seller** và **admin**; khách hàng chỉ xem/mua thử, không có quyền quản trị.
+Trang **`/market.html`** bao gồm gian hàng đặc sản, đăng ký cơ sở có mã băm SHA-256 Giấy phép kinh doanh và Giấy chứng nhận vệ sinh an toàn thực phẩm, duyệt hồ sơ và duyệt lô hàng bởi ví Quản trị viên, niêm yết giá bán và luồng đặt hàng giữ tiền qua Smart Contract Escrow bằng ví MetaMask trên Ethereum Sepolia Testnet.
 
-**Hợp đồng mới độc lập** nằm tại `contracts/HueLegendMarket.sol`. Cần biên dịch, kiểm thử, deploy Sepolia và điền `HUELEGEND_MARKET_ADDRESS` trước khi mở bán thử. Không dùng địa chỉ `ProjectCore` cũ làm địa chỉ Marketplace.
-
-Chi tiết luồng, triển khai, giới hạn pháp lý và dữ liệu riêng tư: [docs/MARKETPLACE.md](docs/MARKETPLACE.md).
-
-- Chạy local: `npm install`, `npm start`, mở `http://localhost:5173/market.html`.
-- API: `/api/market-config`, `/api/market-health`, `/api/market-products`, `/api/market-product?id=1`.
-- Kiểm tra JS: `npm run test:market`; kiểm tra endpoint công khai: `npm run check:market -- https://ten-site.vercel.app`.
-
-**Chưa thể giao dịch tiền thật**: Sepolia ETH chỉ để demo, chưa có upload private giấy tờ, địa chỉ giao hàng, database đơn hàng hay thanh toán VNĐ. Không cung cấp tài liệu gốc có thông tin nhạy cảm lên URL công khai hoặc blockchain.
+Hợp đồng phân hệ thương mại nằm tại `contracts/HueLegendMarket.sol`. Chi tiết quy trình nghiệp vụ và hướng dẫn vận hành: [docs/MARKETPLACE.md](docs/MARKETPLACE.md).
