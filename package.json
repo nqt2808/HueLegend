@@ -19,7 +19,9 @@
     "compile:contract": "hardhat compile",
     "check:deployment": "node scripts/check-deployment.mjs",
     "test:market": "node --test test/market-static.test.mjs",
-    "check:market": "node scripts/check-market-deployment.mjs"
+    "check:market": "node scripts/check-market-deployment.mjs",
+    "deploy:market": "node scripts/deploy-market.mjs"
+
   },
   "dependencies": {
     "ethers": "6.17.0",
