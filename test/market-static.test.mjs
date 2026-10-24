@@ -48,3 +48,28 @@ test('ABI: phan quyen va giao dich',()=>{
   assert(MARKET_ABI.some(x=>x.includes('placeOrder')));
   assert(MARKET_ABI.some(x=>x.includes('confirmReceived')));
 });
+
+// Kiem thu quy trinh 4 nhom vai tro theo yeu cau nguoi dung
+test('Frontend: du 4 nhom vai tro va luong chon vai tro -> vi -> kiem tra ky quy',()=>{
+  assert.match(market,/ROLES\s*=\s*\{/);
+  assert.match(market,/buyer:/);
+  assert.match(market,/producer:/);
+  assert.match(market,/retailer:/);
+  assert.match(market,/admin:/);
+  assert.match(market,/evaluateRoleAndStaking/);
+  assert.match(market,/wallet_requestPermissions/);
+});
+
+test('Frontend: ma QR va modal hien thi du thong tin, GPKD, ATTP va link Sepolia Etherscan',()=>{
+  assert.match(market,/openQRModal/);
+  assert.match(market,/https:\/\/sepolia\.etherscan\.io\/tx\//);
+  assert.match(market,/drawQR/);
+  assert.match(market,/businessLicenseSHA256/);
+  assert.match(market,/foodSafetySHA256/);
+});
+
+// Ca kiem thu gian lan: Co so chua duoc duyet hoac khong phai seller ma submit lo thi bi chan
+test('Ca gian lan: submitLot chan tai khoan chua duoc duyet',()=>{
+  assert.match(contract,/if \(!_validSeller\(msg\.sender\)\) revert NotApproved\(\)/);
+  assert.match(market,/sellerValid\(state\.seller\)/);
+});
