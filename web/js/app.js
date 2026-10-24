@@ -219,7 +219,7 @@ function accountDialog() {
 }
 function choosePersona() {
   openDialog("Chọn vai trải nghiệm",`<p class="dialog-description">Đây là tài khoản mẫu trên trình duyệt, không phải ví thật. Vai trò trên Sepolia chỉ có thể được chủ hợp đồng cấp.</p><div class="wallet-personas">${
-    [["PRODUCER","Cơ sở sản xuất","box"],["LOGISTICS","Vận chuyển","truck"],["RETAILER","Điểm bán","store"],["INSPECTOR","Kiểm định","shield"],["OWNER","Chủ hợp đồng","key"],["VISITOR","Khách tra cứu","search"]].map(([key,label,ico])=>`<button class="persona" data-action="persona" data-persona="${key}">${icon(ico)}${label}</button>`).join("")
+    [["PRODUCER","Cơ sở sản xuất","box"],["INSPECTOR","Kiểm định","shield"],["OWNER","Chủ hợp đồng","key"],["VISITOR","Khách tra cứu","search"]].map(([key,label,ico])=>`<button class="persona" data-action="persona" data-persona="${key}">${icon(ico)}${label}</button>`).join("")
   }</div>`);
 }
 async function connectWallet() {

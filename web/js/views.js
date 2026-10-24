@@ -9,7 +9,7 @@ export const NAV = [
   ["admin","key","Quản trị"]
 ];
 export const ROUTE_LABEL = Object.fromEntries([...NAV.map(([key,,label])=>[key,label]),["guide","Hướng dẫn"]]);
-export const ROLE_ICONS = { PRODUCER:"box", LOGISTICS:"truck", RETAILER:"store", INSPECTOR:"shield", ADMIN:"key" };
+export const ROLE_ICONS = { PRODUCER:"box", INSPECTOR:"shield", ADMIN:"key" };
 export const badge = verified => `<span class="badge ${verified ? "badge-success" : "badge-pending"}"><span class="dot"></span>${verified ? "Đã kiểm định" : "Chưa kiểm định"}</span>`;
 export function button(label, action, iconName = "", cls = "button-secondary", extra = "") {
   return `<button class="button ${cls}" data-action="${action}" ${extra}>${iconName ? icon(iconName) : ""}${label}</button>`;
@@ -69,7 +69,7 @@ export function dashboard(s) {
     <section class="hero" aria-label="Giới thiệu HueLegend">
       <div class="hero-content"><span class="eyebrow">ĐẶC SẢN HUẾ · NGUỒN GỐC MINH BẠCH</span>
       <h2>Mỗi đặc sản,<br>một hành trình rõ ràng.</h2>
-      <p>Kết nối làng nghề, đơn vị vận chuyển và người mua<br>qua những thông tin có thể đối chiếu.</p>
+      <p>Kết nối làng nghề đặc sản, cơ quan kiểm định và người mua<br>qua những thông tin có thể đối chiếu.</p>
       <div class="hero-actions">${button("Tra cứu nguồn gốc","navigate-trace","search","button-primary")}${button("Quét mã QR","scan","qr")}</div></div>
       <div class="hero-art" aria-hidden="true">
         <svg viewBox="0 0 350 250" fill="none">
@@ -254,7 +254,7 @@ export function guidePage() {
   return `${heading("Bắt đầu cùng HueLegend","Từ trải nghiệm mẫu đến thao tác với ví trên Sepolia.")}
     <div class="guide-grid">
       <article class="panel guide-card"><h2>01. Khám phá không cần ví</h2><p>Giữ chế độ “Trải nghiệm mẫu”, mở một lô hàng, xem timeline và tải QR. Đây là dữ liệu mô phỏng lưu riêng trong trình duyệt.</p><ol><li>Vào <strong>Tra cứu nguồn gốc</strong>.</li><li>Nhập mã lô hoặc chọn hành trình mẫu.</li><li>Mở hồ sơ, tải QR hoặc xuất JSON.</li></ol></article>
-      <article class="panel guide-card"><h2>02. Thử luồng theo vai trò</h2><p>Trong chế độ mẫu, bấm <strong>Kết nối ví</strong> để chọn vai minh hoạ: cơ sở sản xuất, vận chuyển, điểm bán, kiểm định hoặc chủ hợp đồng.</p><p>Chọn khách tra cứu để thử một thao tác không đủ quyền. Đây chỉ là kiểm thử giao diện/mô phỏng, không chứng minh độ an toàn của hợp đồng.</p></article>
+      <article class="panel guide-card"><h2>02. Thử luồng theo vai trò</h2><p>Trong chế độ mẫu, bấm <strong>Kết nối ví</strong> để chọn vai minh hoạ: cơ sở sản xuất, kiểm định hoặc chủ hợp đồng.</p><p>Chọn khách tra cứu để thử một thao tác không đủ quyền. Đây chỉ là kiểm thử giao diện/mô phỏng, không chứng minh độ an toàn của hợp đồng.</p></article>
       <article class="panel guide-card"><h2>03. Kết nối Sepolia</h2><ol><li>Đổi nguồn dữ liệu sang <strong>Sepolia Testnet</strong> ở góc trên.</li><li>Bấm <strong>Kết nối ví MetaMask</strong> (hệ thống tự động liên kết hợp đồng on-chain).</li><li>Chuyển mạng sang Sepolia khi MetaMask yêu cầu.</li><li>Chủ hợp đồng cấp vai; ví sản xuất nạp cọc trước khi tạo lô.</li></ol><p>Không nhập private key hoặc cụm từ khôi phục vào trang này. Khóa luôn nằm trong ví.</p></article>
       <article class="panel guide-card"><h2>04. Đọc phí và trạng thái</h2><p>Tra cứu là lời gọi đọc, không cần ký giao dịch. Tạo lô, thêm chặng, kiểm định và ký quỹ là lời gọi ghi; cần xác nhận trong ví và trả phí mạng.</p><p>DApp mô phỏng lời gọi trước khi gửi và chờ biên nhận. Khi giao dịch còn chờ, kiểm tra TxHash thay vì bấm gửi lại.</p></article>
       <article class="panel guide-card"><h2>05. Camera và tài liệu</h2><p>Camera cần HTTPS hoặc localhost và quyền truy cập. Khi không dùng được camera, chọn ảnh QR hoặc nhập mã thủ công. Trên điện thoại, thao tác ký thuận tiện hơn trong trình duyệt của ví.</p><p>Tính SHA-256 diễn ra trên máy, tối đa 10 MB/tài liệu. Trang không tự tải tài liệu lên IPFS; liên kết phải được bạn chuẩn bị trước.</p></article>
