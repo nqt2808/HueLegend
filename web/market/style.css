@@ -4,8 +4,8 @@
 .site-header{gap:clamp(10px,1.4vw,20px);position:relative;z-index:4}
 .site-header .logo.hl-brand{flex:0 1 330px;min-width:270px;max-width:370px;gap:10px;padding:10px 15px;box-sizing:border-box}
 .site-header .hl-brand .hl-mark{width:57px;height:57px}
-.site-header .hl-brand .hl-wordmark{font-size:clamp(29px,2.6vw,38px)}
-.site-header .hl-brand .hl-tagline{color:#e4cdb5;font-size:10px;line-height:1.35;white-space:normal}
+.site-header .hl-brand .hl-wordmark{color:var(--purple);font-size:clamp(29px,2.6vw,38px)}
+.site-header .hl-brand .hl-tagline{color:var(--accent);font-size:10px;line-height:1.35;white-space:normal}
 .site-header .hl-brand .hl-text{min-width:0;max-width:calc(100% - 69px)}
 .site-header .header-right{flex-shrink:0}
 .site-header .nav{min-width:0;gap:1px}
