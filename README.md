@@ -18,14 +18,14 @@
 - 📦 **Mã nguồn GitHub Repository:** [https://github.com/nqt2808/HueLegend](https://github.com/nqt2808/HueLegend)
 - ⚙️ **Kiểm tra trạng thái API (Health Check):** [https://huelegend-dapp.vercel.app/api/health](https://huelegend-dapp.vercel.app/api/health)
 
-## 🔑 Phân bổ địa chỉ ví MetaMask theo vai trò (Ethereum Sepolia Testnet)
+## 🔑 Phân chia vai trò & Cơ chế xác thực quyền (Ethereum Sepolia Testnet)
 
-| Nhóm vai trò | Địa chỉ ví MetaMask | Quyền hạn on-chain |
+| Nhóm vai trò | Cơ chế xác định quyền | Quyền hạn on-chain |
 | :--- | :--- | :--- |
-| 🛡️ **Quản trị (Admin)** | `0x2e4216e1BCA81d308b25adaD6ef5Ea92E2e42F8c` | Chạy sang Backend, duyệt hồ sơ GPKD + ATTP, duyệt lô hàng, giải quyết tranh chấp |
-| 🏭 **Cơ sở SX & Kiểm định** | `0x325650E804c62297EE9c830Dc79468007Ae3F295` | Nộp mã băm SHA-256 GPKD & ATTP, nộp ký quỹ bảo chứng, đăng ký lô đặc sản |
-| 🏪 **Nơi bán (Retailer)** | `0x325650E804c62297EE9c830Dc79468007Ae3F295` | Tiếp nhận lô hàng, quản lý tồn kho, xác nhận vận chuyển đơn hàng |
-| 🛒 **Người mua (Buyer)** | `0x0B210F788fe573194E290026Fda73565ED2ffb1b` | Quét mã QR minh bạch, đặt mua giữ tiền an toàn qua Smart Contract Escrow |
+| 🛡️ **Quản trị (Admin)** | Ví mặc định: `0x2e4216e1BCA81d308b25adaD6ef5Ea92E2e42F8c` (Deployer/Contract Owner) | Quản lý hệ thống, duyệt hồ sơ GPKD + ATTP, duyệt lô hàng, xử lý tranh chấp Escrow |
+| 🏭 **Cơ sở SX & Kiểm định** | Ví nộp hồ sơ on-chain & được Admin phê duyệt (kèm ký quỹ bảo chứng) | Nộp mã băm SHA-256 GPKD & ATTP, nộp ký quỹ bảo chứng, tạo và đăng ký lô đặc sản |
+| 🏪 **Nơi bán (Retailer)** | Ví được phân phối hoặc cơ sở liên kết tiếp nhận phân phối | Tiếp nhận lô hàng, quản lý tồn kho, xác nhận vận chuyển đơn hàng |
+| 🛒 **Người mua (Buyer)** | Bất kỳ ví cá nhân nào kết nối qua MetaMask | Quét mã QR minh bạch, đặt mua và giữ tiền an toàn qua Smart Contract Escrow |
 
 > ⚠️ **LƯU Ý:** ĐÂY LÀ DỰ ÁN HỌC TẬP FULLSTACK MVP (MÔN ECO2432), CHƯA KIỂM TOÁN BẢO MẬT ĐỂ GIAO DỊCH TIỀN THẬT. Mọi giao dịch được thực hiện bằng ETH thử nghiệm trên mạng Ethereum Sepolia Testnet. Tuyệt đối không dùng tiền thật và không hiển thị dữ liệu mô phỏng như dữ liệu nguồn gốc blockchain thực tế.
 

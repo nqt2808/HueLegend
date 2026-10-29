@@ -229,7 +229,25 @@ async function connectWallet() {
   finally{$("#connect-button").disabled=state.busy;}
 }
 function showSettings() {
-  toast("Hệ thống tự động kết nối với hợp đồng Sepolia đã định sẵn.", "info");
+  openDialog("Cấu hình Smart Contract Sepolia", `
+    <p class="dialog-description">Cấu hình địa chỉ hợp đồng ProjectCore mà nhóm bạn đã triển khai trên Ethereum Sepolia.</p>
+    <form class="panel form-panel" data-form="settings">
+      <div class="field">
+        <label for="config-address">Địa chỉ Smart Contract <span class="required">*</span></label>
+        <input type="text" id="config-address" name="config-address" placeholder="0x..." value="${h(state.config.contractAddress)}" maxlength="42" required autocomplete="off">
+        <small>Địa chỉ hợp đồng ProjectCore trên Sepolia Testnet.</small>
+      </div>
+      <div class="field">
+        <label for="config-rpc">Sepolia RPC URL</label>
+        <input type="url" id="config-rpc" name="config-rpc" placeholder="https://..." value="${h(state.config.rpcUrl)}" required>
+        <small>Điểm cuối RPC HTTPS công khai.</small>
+      </div>
+      <div class="form-bottom">
+        <button type="button" class="button button-ghost" data-action="default-config">Xóa trắng</button>
+        <button type="submit" class="button button-primary submit-button">Lưu cấu hình</button>
+      </div>
+    </form>
+  `);
 }
 function confirmTransaction(prepared,title,summary) {
   openDialog("Kiểm tra trước khi ký",`

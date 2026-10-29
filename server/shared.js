@@ -52,7 +52,11 @@ export function getOnly(handler) {
 
 export function publicConfig() {
   const rpc = process.env.HUELEGEND_RPC_URL || DEFAULT_RPC;
-  const contractAddress = process.env.HUELEGEND_CONTRACT_ADDRESS || DEFAULT_ADDRESS;
+  let contractAddress = process.env.HUELEGEND_CONTRACT_ADDRESS || DEFAULT_ADDRESS;
+  // Loai bo dia chi hop dong mau cu
+  if (contractAddress && contractAddress.toLowerCase() === "0x35655079aebb215e58e379d5a8c2f1f3a5323c6b".toLowerCase()) {
+    contractAddress = "";
+  }
   if (!/^https:\/\//.test(rpc)) throw new Error("HUELEGEND_RPC_URL phai la HTTPS.");
   if (!isAddress(contractAddress)) throw Object.assign(new Error("Chua cau hinh HUELEGEND_CONTRACT_ADDRESS tren Sepolia."), { status: 503 });
   return { rpc, contractAddress };

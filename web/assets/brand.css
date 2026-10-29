@@ -3,10 +3,10 @@
 .hl-brand *{box-sizing:border-box}
 .hl-mark{width:clamp(52px,5.2vw,67px);height:clamp(52px,5.2vw,67px);flex:0 0 auto;display:block;object-fit:contain;filter:drop-shadow(0 2px 8px rgba(105,83,123,.12))}
 .hl-text{display:flex;flex-direction:column;justify-content:center;min-width:0;max-width:100%}
-.hl-wordmark{font-family:"Cormorant Garamond",'Lora',serif;font-weight:700;letter-spacing:-.042em;line-height:.9;font-size:clamp(29px,2.5vw,40px);white-space:nowrap;display:block}
+.hl-wordmark{font-family:'Lora','Be Vietnam Pro',"Cormorant Garamond",serif;font-weight:700;letter-spacing:-.042em;line-height:.9;font-size:clamp(29px,2.5vw,40px);white-space:nowrap;display:block;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
 .hl-wordmark .hue{color:#523d65;text-shadow:none}
 .hl-wordmark .legend{background:linear-gradient(115deg,#a6731d 0%,#c99236 44%,#e5be6e 69%,#8d5810 100%);color:#a6731d;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.hl-tagline{font-family:'Lora',Georgia,serif;font-size:clamp(10px,.9vw,12px);line-height:1.45;color:#786683;letter-spacing:0;display:block;margin-top:6px;white-space:normal;overflow-wrap:normal;font-weight:550}
+.hl-tagline{font-family:'Be Vietnam Pro','Lora',Georgia,serif;font-size:clamp(10px,.9vw,12px);line-height:1.45;color:#786683;letter-spacing:0;display:block;margin-top:6px;white-space:normal;overflow-wrap:normal;font-weight:550;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
 .hl-brand-panel{padding:14px 15px;border-radius:20px;background:#ffffff;border:1px solid #ebdcc5;box-shadow:0 4px 18px rgba(90,60,110,.06)}
 .hl-brand:focus-visible{outline:3px solid #69537b;outline-offset:4px}
 @media(max-width:1050px){.hl-brand{gap:8px}.hl-mark{width:53px;height:53px}.hl-wordmark{font-size:28px}.hl-tagline{font-size:10px}}

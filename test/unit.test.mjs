@@ -74,14 +74,17 @@ test("TC-02: nop thieu phi bi chan, du lieu khong doi",async()=>{
   assert.equal((await service.getPage()).total,before);
 });
 test("TC-03 GIAN LAN: khach mao danh producer bi chan",async()=>{
-  const {service}=await demo("VISITOR");
+  const {service}=await demo("PRODUCER");
+  await service.send(await service.prepare("createBatch",["HL-TEST-002","Me","Hue",""],parseETH("0.001")));
+  await service.connect("VISITOR");
   await assert.rejects(service.prepare("createBatch",["HL-FAKE","Me","Hue",""],parseETH("0.001")),/UnauthorizedCaller/);
-  await assert.rejects(service.prepare("addCheckpoint",["HL-MEXUNG-2026-001",ROLE.LOGISTICS,"Kho gia","Ban giao gia",""]),/UnauthorizedCaller/);
-  await assert.rejects(service.prepare("verifyBatch",["HL-MEXUNG-2026-002","Kiem dinh gia",""]),/UnauthorizedCaller/);
+  await assert.rejects(service.prepare("addCheckpoint",["HL-TEST-002",ROLE.LOGISTICS,"Kho gia","Ban giao gia",""]),/UnauthorizedCaller/);
+  await assert.rejects(service.prepare("verifyBatch",["HL-TEST-002","Kiem dinh gia",""]),/UnauthorizedCaller/);
 });
 test("TC-04: ma lo trung bi chan",async()=>{
   const {service}=await demo();
-  await assert.rejects(service.prepare("createBatch",["HL-MEXUNG-2026-001","Me","Hue",""],parseETH("0.001")),/BatchAlreadyExists/);
+  await service.send(await service.prepare("createBatch",["HL-DUP-001","Me","Hue",""],parseETH("0.001")));
+  await assert.rejects(service.prepare("createBatch",["HL-DUP-001","Me","Hue",""],parseETH("0.001")),/BatchAlreadyExists/);
 });
 test("TC-05: rut coc som bi chan; het han thi reset so du va moc khoa",async()=>{
   const {service,advance}=await demo();
@@ -106,7 +109,9 @@ test("TC-08: doi vi giua luc chuan bi va xac nhan bi chan",async()=>{
   await service.connect("VISITOR");await assert.rejects(service.send(prepared),/CONTEXT_CHANGED/);
 });
 test("TC-09: kiem dinh va thu hoi them lich su thay vi xoa",async()=>{
-  const {service}=await demo("INSPECTOR");const code="HL-MEXUNG-2026-002";
+  const {service}=await demo("PRODUCER");const code="HL-VERIFY-001";
+  await service.send(await service.prepare("createBatch",[code,"Me","Hue",""],parseETH("0.001")));
+  await service.connect("INSPECTOR");
   const before=(await service.getCheckpoints(code)).length;
   await service.send(await service.prepare("verifyBatch",[code,"Ho so mau",""]));
   assert.equal((await service.getBatch(code)).isVerified,true);

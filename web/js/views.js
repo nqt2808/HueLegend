@@ -69,8 +69,7 @@ export function dashboard(s) {
     <section class="hero" aria-label="Giới thiệu HueLegend">
       <div class="hero-content"><span class="eyebrow">ĐẶC SẢN HUẾ · NGUỒN GỐC MINH BẠCH</span>
       <h2>Mỗi đặc sản,<br>một hành trình rõ ràng.</h2>
-      <p>Kết nối làng nghề đặc sản, cơ quan kiểm định và người mua<br>qua những thông tin có thể đối chiếu.</p>
-      <div class="hero-actions">${button("Tra cứu nguồn gốc","navigate-trace","search","button-primary")}${button("Quét mã QR","scan","qr")}</div></div>
+      <div class="hero-actions">${button("Tra cứu nguồn gốc","navigate-trace","search","button-primary")}${button("Quét mã QR","scan","qr")}<a href="./market.html" class="button button-secondary" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px"><span>🛍️</span> Chợ đặc sản & Quản trị ↗</a></div></div>
       <div class="hero-art" aria-hidden="true">
         <svg viewBox="0 0 350 250" fill="none">
           <circle cx="190" cy="128" r="105" stroke="currentColor" stroke-width=".5"/><circle cx="190" cy="128" r="84" stroke="currentColor" stroke-width=".5" stroke-dasharray="2 6"/>
@@ -242,6 +241,7 @@ function detail(s) {
       <span class="code">${h(b.batchCode)}</span><div class="qr-actions">
         ${button("Tải mã QR","download-qr","download","button-primary")}
         ${button("Sao chép liên kết","copy-link","copy")}
+        <a href="./market.html" class="button button-secondary" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px"><span>🛍️</span> Chợ đặc sản ↗</a>
         ${button("Xuất hồ sơ JSON","export","file","button-ghost")}
       </div><span class="qr-url">${h(share)}</span>
       ${note("QR chỉ trỏ đến hồ sơ. Mã QR có thể bị sao chép; hãy đối chiếu thêm bao bì và chứng từ.")}
@@ -262,6 +262,19 @@ export function guidePage() {
     </div>`;
 }
 export function errorPage(s) {
+  const isNoContract = !s.config.contractAddress || String(s.error).includes("Chưa triển khai hợp đồng");
+  if (isNoContract) {
+    return `${heading("Sẵn sàng triển khai","Toàn bộ dữ liệu mặt hàng và hợp đồng mẫu đã được dọn sạch.")}
+      <section class="panel empty-state">
+        <div class="empty-icon">${icon("box")}</div>
+        <h2>Hệ thống sẵn sàng tiếp nhận dữ liệu thật</h2>
+        <p>Địa chỉ hợp đồng mẫu và danh sách mặt hàng mẫu đã được gỡ bỏ hoàn toàn. Khi nhóm của bạn triển khai hợp đồng mới trên Sepolia, hãy cấu hình địa chỉ contract để kích hoạt hệ thống và bắt đầu tạo lô hàng mới.</p>
+        <div class="hero-actions" style="justify-content:center;margin-top:24px">
+          ${button("Cấu hình hợp đồng mới","settings","key","button-primary")}
+          <a href="./market.html" class="button button-secondary">Sang Chợ đặc sản ↗</a>
+        </div>
+      </section>`;
+  }
   return `${heading("Chưa thể đọc dữ liệu","Không thể kết nối hoặc tải dữ liệu từ hợp đồng Sepolia.")}
     <section class="panel empty-state"><div class="empty-icon">${icon("alert")}</div><h2>Kiểm tra nguồn dữ liệu</h2><p>${h(s.error)}</p><div class="hero-actions" style="justify-content:center;margin-top:20px">${button("Thử lại","refresh","refresh","button-primary")}</div></section>`;
 }

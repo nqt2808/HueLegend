@@ -10,7 +10,7 @@
   <link rel="icon" href="./assets/huelegend-icon.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:wght@600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Cormorant+Garamond:wght@600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="./assets/brand.css">
 </head>
@@ -21,7 +21,9 @@
     <a class="brand hl-brand hl-brand-panel" href="#/dashboard" aria-label="HueLegend - Song hành cùng thời gian"><img class="hl-mark" src="./assets/huelegend-official.webp" alt="" width="64" height="64"><span class="hl-text"><span class="hl-wordmark"><span class="hue">Hue</span><span class="legend">Legend</span></span><span class="hl-tagline">Song hành cùng thời gian</span></span></a>
 
     <div class="nav-label">KHÔNG GIAN LÀM VIỆC</div>
-    <nav id="navigation" aria-label="Chức năng chính"></nav><div class="nav-label">THƯƠNG MẠI</div><a class="nav-item" href="./market.html" style="font-weight:700"><span aria-hidden="true">◈</span> Gian hàng · Đăng ký bán</a>
+    <nav id="navigation" aria-label="Chức năng chính"></nav>
+    <div class="nav-label">THƯƠNG MẠI & QUẢN TRỊ</div>
+    <a class="nav-item market-nav-link" href="./market.html" style="font-weight:700;background:rgba(105,83,123,.08);color:var(--purple);border-left:3px solid var(--gold);"><span aria-hidden="true">🛍️</span> Gian hàng & Quản trị ↗</a>
     <div class="sidebar-bottom">
       <div class="sidebar-story"><span class="eyebrow">TỪ LÀNG NGHỀ ĐẾN TAY BẠN</span><p>Giữ câu chuyện thật<br>trong từng đặc sản.</p><span class="story-rule"></span><small>Minh bạch qua từng chặng.</small></div>
       <a class="nav-item" href="#/guide"><span data-icon="help"></span>Hướng dẫn sử dụng</a>
@@ -32,6 +34,7 @@
     <header class="topbar">
       <div class="topbar-left"><button class="icon-button mobile-toggle" data-action="menu" aria-label="Mở menu" aria-expanded="false"><span data-icon="menu"></span></button><span class="breadcrumb">Không gian làm việc <span>/</span> <strong id="breadcrumb-title">Tổng quan</strong></span></div>
       <div class="topbar-actions">
+        <a href="./market.html" class="button button-secondary topbar-market-btn" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px;font-weight:600;padding:8px 14px;border-radius:10px;background:#f5edf7;color:#523d65;border:1px solid #dfd1e6;"><span>🛍️</span><span>Chợ đặc sản & Quản trị ↗</span></a>
         <span class="network-badge"><span class="dot live-dot"></span>Sepolia Testnet</span>
         <button class="button button-primary wallet-button" data-action="connect" id="connect-button"><span data-icon="wallet"></span><span>Kết nối ví</span></button>
       </div>
@@ -40,7 +43,7 @@
     <div id="network-banner"></div>
     <div id="transaction-banner" aria-live="polite"></div>
     <main id="main-content" tabindex="-1"><div class="loading-page"><span class="spinner"></span> Đang chuẩn bị không gian HueLegend…</div></main>
-    <footer class="page-footer"><span>HueLegend <span class="footer-divider">/</span> Cố đô Huyền thoại - Song hành theo thời gian</span><span>Ethereum Sepolia · ETH thử nghiệm</span></footer>
+    <footer class="page-footer"><span>HueLegend <span class="footer-divider">/</span> Cố đô Huyền thoại - Song hành theo thời gian</span><span><a href="./market.html" style="color:var(--purple);font-weight:600;text-decoration:underline">🛍️ Chợ đặc sản & Kênh Quản trị ↗</a> · Ethereum Sepolia</span></footer>
   </div>
   <div id="toasts" class="toasts" aria-live="polite" aria-atomic="false"></div>
   <dialog id="app-dialog" aria-labelledby="dialog-title"></dialog>

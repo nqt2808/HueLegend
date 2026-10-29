@@ -1,9 +1,12 @@
 // Chi cau hinh RPC cong khai. Khong dat khoa bi mat trong frontend.
+export const DEFAULT_ADMIN_WALLET = "0x2e4216e1BCA81d308b25adaD6ef5Ea92E2e42F8c";
+
 export const DEFAULT_CONFIG = Object.freeze({
   chainId: 11155111,
   chainHex: "0xaa36a7",
   chainName: "Ethereum Sepolia",
   contractAddress: "",
+  adminAddress: DEFAULT_ADMIN_WALLET,
   rpcUrl: "https://ethereum-sepolia-rpc.publicnode.com",
   explorerUrl: "https://sepolia.etherscan.io",
   pageSize: 8,
@@ -23,7 +26,8 @@ export function loadConfig(storage) {
   try {
     const backing = storage ?? globalThis.localStorage;
     const saved = JSON.parse(backing?.getItem(STORAGE_KEYS.config) || "{}");
-    const addr = typeof saved.contractAddress === "string" && saved.contractAddress !== "0x35655079aebb215e58e379d5a8c2f1f3a5323c6b" ? saved.contractAddress : "";
+    const rawAddr = typeof saved.contractAddress === "string" ? saved.contractAddress.trim() : "";
+    const addr = rawAddr && rawAddr.toLowerCase() !== "0x35655079aebb215e58e379d5a8c2f1f3a5323c6b".toLowerCase() ? rawAddr : "";
     return { ...DEFAULT_CONFIG,
       contractAddress: addr,
       rpcUrl: typeof saved.rpcUrl === "string" ? saved.rpcUrl : DEFAULT_CONFIG.rpcUrl
