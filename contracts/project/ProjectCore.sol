@@ -33,9 +33,17 @@ contract ProjectCore is Ownable, ReentrancyGuard {
     event StakeLockDurationUpdated(uint256 oldDuration, uint256 newDuration); event BatchFeeCollected(address indexed producer, string indexed batchCode, uint256 feeAmount);
     event ExcessFeeRefunded(address indexed producer, uint256 refundAmount); event BatchCreationFeeUpdated(uint256 oldFee, uint256 newFee); event EcosystemFundUpdated(address indexed oldFund, address indexed newFund);
 
-    constructor() Ownable(msg.sender) {
-        _roles[msg.sender][ROLE_ADMIN] = true; _roles[msg.sender][ROLE_PRODUCER] = true; ecosystemFund = msg.sender;
-        emit RoleAssigned(msg.sender, ROLE_ADMIN); emit RoleAssigned(msg.sender, ROLE_PRODUCER); emit EcosystemFundUpdated(address(0), msg.sender);
+    address public constant ADMIN_WALLET =
+        0x2e4216e1BCA81d308b25adaD6ef5Ea92E2e42F8c;
+
+    constructor() Ownable(ADMIN_WALLET) {
+        _roles[ADMIN_WALLET][ROLE_ADMIN] = true;
+        _roles[ADMIN_WALLET][ROLE_PRODUCER] = true;
+        ecosystemFund = ADMIN_WALLET;
+
+        emit RoleAssigned(ADMIN_WALLET, ROLE_ADMIN);
+        emit RoleAssigned(ADMIN_WALLET, ROLE_PRODUCER);
+        emit EcosystemFundUpdated(address(0), ADMIN_WALLET);
     }
     modifier onlyRole(bytes32 role) { if (!_roles[msg.sender][role] && msg.sender != owner()) revert UnauthorizedCaller(msg.sender, role); _; }
     function grantRole(address account, bytes32 role) external onlyOwner { if (account == address(0)) revert InvalidAddress(); _roles[account][role] = true; emit RoleAssigned(account, role); }
