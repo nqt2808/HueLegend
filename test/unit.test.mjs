@@ -40,9 +40,8 @@ test("Metadata va RPC duoc kiem tra dau vao",()=>{
 });
 test("QR round-trip giu ma Unicode, mode va hop dong",()=>{
   const code="HL-HUẾ-001";
-  const sampleContract = DEMO_ACCOUNTS.VISITOR;
-  const url=makeBatchURL("https://example.org/repo/web/?other=1#/create",code,"sepolia",sampleContract);
-  assert.equal(parseBatchInput(url,{mode:"sepolia",contractAddress:sampleContract}),code);
+  const url=makeBatchURL("https://example.org/repo/web/?other=1#/create",code,"sepolia",DEFAULT_CONFIG.contractAddress);
+  assert.equal(parseBatchInput(url,{mode:"sepolia",contractAddress:DEFAULT_CONFIG.contractAddress}),code);
   assert(!/[^\x00-\x7F]/.test(url));
   assert.throws(()=>parseBatchInput(url,{mode:"demo"}),/chế độ/);
   assert.throws(()=>parseBatchInput(url,{mode:"sepolia",contractAddress:DEMO_ACCOUNTS.OWNER}),/hợp đồng khác/);
@@ -58,7 +57,7 @@ test("ABI dung ten ham va thu tu tham so cua nguon contract",()=>{
   assert(CONTRACT_ABI.some(x=>x.startsWith("function getCheckpoints(")));
   assert(CONTRACT_ABI.some(x=>x.startsWith("function verifyBatch(string batchCode, string inspectorNote, string certificateURI)")));
   assert(!CONTRACT_ABI.some(x=>x.startsWith("function stake(")));
-  assert(DEFAULT_CONFIG.contractAddress === "" || isAddress(DEFAULT_CONFIG.contractAddress));
+  assert(isAddress(DEFAULT_CONFIG.contractAddress));
 });
 test("TC-01: producer du coc tao lo va co chang khoi tao",async()=>{
   const {service}=await demo();const before=await service.getPage();
@@ -74,17 +73,14 @@ test("TC-02: nop thieu phi bi chan, du lieu khong doi",async()=>{
   assert.equal((await service.getPage()).total,before);
 });
 test("TC-03 GIAN LAN: khach mao danh producer bi chan",async()=>{
-  const {service}=await demo("PRODUCER");
-  await service.send(await service.prepare("createBatch",["HL-TEST-002","Me","Hue",""],parseETH("0.001")));
-  await service.connect("VISITOR");
+  const {service}=await demo("VISITOR");
   await assert.rejects(service.prepare("createBatch",["HL-FAKE","Me","Hue",""],parseETH("0.001")),/UnauthorizedCaller/);
-  await assert.rejects(service.prepare("addCheckpoint",["HL-TEST-002",ROLE.LOGISTICS,"Kho gia","Ban giao gia",""]),/UnauthorizedCaller/);
-  await assert.rejects(service.prepare("verifyBatch",["HL-TEST-002","Kiem dinh gia",""]),/UnauthorizedCaller/);
+  await assert.rejects(service.prepare("addCheckpoint",["HL-MEXUNG-2026-001",ROLE.LOGISTICS,"Kho gia","Ban giao gia",""]),/UnauthorizedCaller/);
+  await assert.rejects(service.prepare("verifyBatch",["HL-MEXUNG-2026-002","Kiem dinh gia",""]),/UnauthorizedCaller/);
 });
 test("TC-04: ma lo trung bi chan",async()=>{
   const {service}=await demo();
-  await service.send(await service.prepare("createBatch",["HL-DUP-001","Me","Hue",""],parseETH("0.001")));
-  await assert.rejects(service.prepare("createBatch",["HL-DUP-001","Me","Hue",""],parseETH("0.001")),/BatchAlreadyExists/);
+  await assert.rejects(service.prepare("createBatch",["HL-MEXUNG-2026-001","Me","Hue",""],parseETH("0.001")),/BatchAlreadyExists/);
 });
 test("TC-05: rut coc som bi chan; het han thi reset so du va moc khoa",async()=>{
   const {service,advance}=await demo();
@@ -109,9 +105,7 @@ test("TC-08: doi vi giua luc chuan bi va xac nhan bi chan",async()=>{
   await service.connect("VISITOR");await assert.rejects(service.send(prepared),/CONTEXT_CHANGED/);
 });
 test("TC-09: kiem dinh va thu hoi them lich su thay vi xoa",async()=>{
-  const {service}=await demo("PRODUCER");const code="HL-VERIFY-001";
-  await service.send(await service.prepare("createBatch",[code,"Me","Hue",""],parseETH("0.001")));
-  await service.connect("INSPECTOR");
+  const {service}=await demo("INSPECTOR");const code="HL-MEXUNG-2026-002";
   const before=(await service.getCheckpoints(code)).length;
   await service.send(await service.prepare("verifyBatch",[code,"Ho so mau",""]));
   assert.equal((await service.getBatch(code)).isVerified,true);

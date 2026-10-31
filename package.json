@@ -1,35 +1,32 @@
 {
-  "name": "huelegend-dapp",
-  "version": "1.0.0",
+  "name": "hue-legend",
   "private": true,
+  "version": "1.0.0",
   "type": "module",
-  "description": "HueLegend Fullstack + Marketplace 2 vai tro, Sepolia escrow testnet",
-  "engines": {
-    "node": ">=22.13.0"
-  },
   "scripts": {
-    "start": "node scripts/serve.mjs",
-    "dev": "node scripts/serve.mjs",
-    "test": "node --test test/*.test.mjs",
-    "postinstall": "node scripts/vendor.mjs",
-    "vendor": "node scripts/vendor.mjs",
-    "build": "node scripts/build.mjs",
-    "check:live": "node scripts/check-live.mjs",
-    "test:contract": "hardhat test solidity",
-    "compile:contract": "hardhat compile",
-    "check:deployment": "node scripts/check-deployment.mjs",
-    "test:market": "node --test test/market-static.test.mjs",
-    "check:market": "node scripts/check-market-deployment.mjs",
-    "deploy:market": "node scripts/deploy-market.mjs"
-
+    "dev": "vite --host 0.0.0.0 --port 3000",
+    "build": "tsc && vite build",
+    "lint": "tsc",
+    "preview": "vite preview --port 3000"
   },
   "dependencies": {
-    "ethers": "6.17.0",
-    "qr-scanner": "1.4.2",
-    "@openzeppelin/contracts": "5.4.0"
+    "clsx": "^2.1.1",
+    "ethers": "^6.13.5",
+    "html5-qrcode": "^2.3.8",
+    "lucide-react": "^0.475.0",
+    "qrcode.react": "^4.2.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwind-merge": "^3.0.1"
   },
   "devDependencies": {
-    "hardhat": "^3.0.0",
-    "typescript": "^5.8.3"
+    "@tailwindcss/vite": "^4.0.7",
+    "@types/node": "^22.13.4",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "tailwindcss": "^4.0.7",
+    "typescript": "^5.7.3",
+    "vite": "^6.1.0"
   }
 }

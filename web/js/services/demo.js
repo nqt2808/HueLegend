@@ -2,14 +2,14 @@ import { ROLE, WORKFLOW_ROLES } from "../roles.js";
 import { STORAGE_KEYS } from "../config.js";
 import { assertText, parseETH, isAddress, fault } from "../lib/utils.js";
 
-// Du lieu mo phong duoc gan truc tiep voi cac vi MetaMask chi dinh
+// Du lieu mo phong chi phuc vu giao dien, khong phai bang chung on-chain.
 export const DEMO_ACCOUNTS = Object.freeze({
-  OWNER: "0x2e4216e1BCA81d308b25adaD6ef5Ea92E2e42F8c",
-  PRODUCER: "0x325650E804c62297EE9c830Dc79468007Ae3F295",
+  OWNER: "0x1000000000000000000000000000000000000001",
+  PRODUCER: "0x2000000000000000000000000000000000000002",
   LOGISTICS: "0x3000000000000000000000000000000000000003",
   RETAILER: "0x4000000000000000000000000000000000000004",
   INSPECTOR: "0x5000000000000000000000000000000000000005",
-  VISITOR: "0x0B210F788fe573194E290026Fda73565ED2ffb1b"
+  VISITOR: "0x6000000000000000000000000000000000000006"
 });
 function makeSeed(now) {
   const owner = DEMO_ACCOUNTS.OWNER;
@@ -22,9 +22,34 @@ function makeSeed(now) {
       unlockAt: key === "PRODUCER" ? now + 25 * 86400 : 0
     };
   }
-  // Xoa toan bo du lieu lo hang mau de nguoi dung tu tao lo that
-  const products = [];
-  const batches = [];
+  const products = [
+    ["HL-TRAM-2026-006", "Tinh dầu tràm", "Phú Lộc, Huế", false],
+    ["HL-NON-2026-005", "Nón bài thơ", "Làng Tây Hồ, Huế", true],
+    ["HL-TRA-2026-004", "Trà cung đình", "Kim Long, Huế", false],
+    ["HL-TOMCHUA-2026-003", "Tôm chua Huế", "Phú Hội, Huế", true],
+    ["HL-MEXUNG-2026-002", "Mè xửng mè đen", "Phú Hòa, Huế", false],
+    ["HL-MEXUNG-2026-001", "Mè xửng truyền thống", "Phú Hòa, Huế", true]
+  ];
+  const batches = products.map(([batchCode, productName, origin, isVerified], i) => {
+    const createdAt = now - (8 - i) * 86400;
+    const checkpoints = [{
+      timestamp: createdAt, recorder: DEMO_ACCOUNTS.PRODUCER, role: ROLE.PRODUCER,
+      location: origin, action: "Khởi tạo lô tại cơ sở sản xuất mẫu", metadataURI: ""
+    }];
+    if (isVerified) checkpoints.push({
+      timestamp: createdAt + 3600, recorder: DEMO_ACCOUNTS.INSPECTOR, role: ROLE.INSPECTOR,
+      location: "Điểm kiểm định mẫu, Huế", action: "Kiểm định hồ sơ lô hàng (minh hoạ)", metadataURI: ""
+    });
+    checkpoints.push({
+      timestamp: createdAt + 7200, recorder: DEMO_ACCOUNTS.LOGISTICS, role: ROLE.LOGISTICS,
+      location: "Kho trung chuyển mẫu, Huế", action: "Tiếp nhận và bàn giao vận chuyển", metadataURI: ""
+    });
+    if (isVerified) checkpoints.push({
+      timestamp: createdAt + 14400, recorder: DEMO_ACCOUNTS.RETAILER, role: ROLE.RETAILER,
+      location: "Điểm bán mẫu, Đông Ba", action: "Nhận hàng tại điểm bán", metadataURI: ""
+    });
+    return { batchCode, productName, origin, createdAt, producer: DEMO_ACCOUNTS.PRODUCER, isVerified, exists: true, checkpoints };
+  });
   return { version: 1, owner, accounts, batches, fee: parseETH("0.001").toString(), lockDuration: 30 * 86400, fund: owner, events: [] };
 }
 export class DemoService {

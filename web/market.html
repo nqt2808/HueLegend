@@ -8,7 +8,7 @@
   <link rel="icon" href="./assets/huelegend-icon.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Cormorant+Garamond:wght@600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./market/style.css">
   <link rel="stylesheet" href="./assets/brand.css">
 </head>
@@ -16,28 +16,28 @@
   <a class="skip" href="#content">Bỏ qua menu</a>
   <div class="site-shell">
     <header class="site-header">
-      <a class="logo hl-brand hl-brand-panel" href="./market.html" aria-label="HueLegend Market - Song hành cùng thời gian"><img class="hl-mark" src="./assets/huelegend-official.webp" alt="" width="64" height="64"><span class="hl-text"><span class="hl-wordmark"><span class="hue">Hue</span><span class="legend">Legend</span></span><span class="hl-tagline">Song hành cùng thời gian</span></span></a>
+      <a class="logo hl-brand hl-brand-panel" href="./market.html" aria-label="HueLegend Market - Cố đô Huyền thoại - Song hành theo thời gian"><img class="hl-mark" src="./assets/huelegend-official.webp" alt="" width="64" height="64"><span class="hl-text"><span class="hl-wordmark"><span class="hue">Hue</span><span class="legend">Legend</span></span><span class="hl-tagline">Cố đô Huyền thoại - Song hành theo thời gian</span></span></a>
       <nav class="nav" aria-label="Điều hướng chính">
         <button type="button" data-tab="shop" class="active">Gian hàng</button>
-        <button type="button" data-tab="manage">Bán hàng & Quản trị</button>
+        <button type="button" data-tab="seller">Cơ sở & lô hàng</button>
         <button type="button" data-tab="orders">Đơn hàng</button>
-        <a href="./index.html" class="nav-qr-pill" style="text-decoration:none">🔍 Cổng Truy xuất DApp ↗</a>
+        <button type="button" data-tab="admin">Quản trị</button>
       </nav>
-      <div class="header-right"><a href="./index.html" class="btn btn-light hide-mobile" style="text-decoration:none">🔍 Cổng Truy xuất DApp ↗</a><button id="connect" class="btn btn-primary">Kết nối MetaMask</button></div>
+      <div class="header-right"><a href="./index.html#/dashboard" class="btn btn-light hide-mobile">Truy xuất QR ↗</a><button id="connect" class="btn btn-primary">Kết nối MetaMask</button></div>
     </header>
     <main id="content" tabindex="-1">
       <section class="hero">
         <div><div class="eyebrow"><span class="dot"></span> CHỢ ĐẶC SẢN HUẾ · NGUỒN GỐC ĐÃ KIỂM DUYỆT</div>
         <h1>Vị Huế nguyên bản.<br><em>Chọn mua an tâm.</em></h1>
         <p>Mỗi cơ sở phải khai báo giấy phép kinh doanh và chứng nhận an toàn thực phẩm. Mỗi lô hàng chỉ được mở bán sau khi quản trị viên phê duyệt trên blockchain.</p>
-        <div class="hero-actions"><button class="btn btn-primary" data-tab="shop">Khám phá sản phẩm <span>↗</span></button><button class="btn btn-outline" data-tab="manage">Bán hàng & Quản trị ↗</button><a href="./index.html" class="btn btn-light" style="text-decoration:none">🔍 Cổng Truy xuất DApp ↗</a></div>
+        <div class="hero-actions"><button class="btn btn-primary" data-tab="shop">Khám phá sản phẩm <span>↗</span></button><button class="btn btn-outline" data-tab="seller">Đăng ký bán hàng</button></div>
         <div class="hero-metrics"><span><strong>02</strong> lớp kiểm duyệt</span><span><strong>SHA-256</strong> chứng từ</span><span><strong>Sepolia</strong> testnet</span></div></div>
         <div class="hero-art" aria-hidden="true"><span class="orb orb-one"></span><span class="orb orb-two"></span><img class="hero-official-seal" src="./assets/huelegend-official.webp" alt="" width="340" height="340"><div class="art-tag">Truy xuất nguồn gốc<br>trên Ethereum Sepolia</div></div>
       </section>
       <div id="network-state" role="status" aria-live="polite"></div>
       <section class="section" id="content-section"><div class="loading">Đang chuẩn bị gian hàng HueLegend...</div></section>
     </main>
-    <footer class="footer"><span>HueLegend · Cố đô Huyền thoại - Song hành theo thời gian</span><span><a href="./index.html" style="color:#ffffff;text-decoration:underline;font-weight:600">🔍 Chuyển sang Cổng DApp Truy xuất nguồn gốc ↗</a></span><span>Ethereum Sepolia · <strong>Chỉ dùng ETH thử nghiệm</strong> · Không phải thanh toán thật</span></footer>
+    <footer class="footer"><span>HueLegend · Cố đô Huyền thoại - Song hành theo thời gian</span><span>Ethereum Sepolia · <strong>Chỉ dùng ETH thử nghiệm</strong> · Không phải thanh toán thật</span></footer>
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
   <script type="module" src="./market/app.js"></script>

@@ -1,0 +1,338 @@
+
+> hue-legend@1.0.0 test
+> node --test test/ui-access.test.cjs
+
+TAP version 13
+# Subtest: Guest sees exactly overview and store
+ok 1 - Guest sees exactly overview and store
+  ---
+  duration_ms: 1.956619
+  type: 'test'
+  ...
+# Subtest: Forged selected role without connected account cannot open menus
+ok 2 - Forged selected role without connected account cannot open menus
+  ---
+  duration_ms: 0.230329
+  type: 'test'
+  ...
+# Subtest: No privileged menus during status guest
+ok 3 - No privileged menus during status guest
+  ---
+  duration_ms: 0.129921
+  type: 'test'
+  ...
+# Subtest: No privileged menus during status connecting
+ok 4 - No privileged menus during status connecting
+  ---
+  duration_ms: 0.077164
+  type: 'test'
+  ...
+# Subtest: No privileged menus during status checking
+ok 5 - No privileged menus during status checking
+  ---
+  duration_ms: 0.159225
+  type: 'test'
+  ...
+# Subtest: No privileged menus during status wrong-network
+ok 6 - No privileged menus during status wrong-network
+  ---
+  duration_ms: 0.111985
+  type: 'test'
+  ...
+# Subtest: No privileged menus during status error
+ok 7 - No privileged menus during status error
+  ---
+  duration_ms: 0.062332
+  type: 'test'
+  ...
+# Subtest: Menu matrix: CUSTOMER
+ok 8 - Menu matrix: CUSTOMER
+  ---
+  duration_ms: 0.153766
+  type: 'test'
+  ...
+# Subtest: Menu matrix: PRODUCER
+ok 9 - Menu matrix: PRODUCER
+  ---
+  duration_ms: 0.259682
+  type: 'test'
+  ...
+# Subtest: Menu matrix: INSPECTOR
+ok 10 - Menu matrix: INSPECTOR
+  ---
+  duration_ms: 0.350946
+  type: 'test'
+  ...
+# Subtest: Menu matrix: LOGISTICS
+ok 11 - Menu matrix: LOGISTICS
+  ---
+  duration_ms: 0.134918
+  type: 'test'
+  ...
+# Subtest: Menu matrix: RETAILER
+ok 12 - Menu matrix: RETAILER
+  ---
+  duration_ms: 0.112215
+  type: 'test'
+  ...
+# Subtest: Menu matrix: ADMIN
+ok 13 - Menu matrix: ADMIN
+  ---
+  duration_ms: 0.051626
+  type: 'test'
+  ...
+# Subtest: ROLE_ADMIN alone is not owner for onlyOwner management methods
+ok 14 - ROLE_ADMIN alone is not owner for onlyOwner management methods
+  ---
+  duration_ms: 0.124023
+  type: 'test'
+  ...
+# Subtest: Owner may work in producer mode without exposing inspector/admin menus
+ok 15 - Owner may work in producer mode without exposing inspector/admin menus
+  ---
+  duration_ms: 0.076182
+  type: 'test'
+  ...
+# Subtest: Multiple roles do not leak into a different chosen workspace
+ok 16 - Multiple roles do not leak into a different chosen workspace
+  ---
+  duration_ms: 0.086968
+  type: 'test'
+  ...
+# Subtest: Public QR lookup remains readable; private paths are denied
+ok 17 - Public QR lookup remains readable; private paths are denied
+  ---
+  duration_ms: 0.079707
+  type: 'test'
+  ...
+# Subtest: Unknown legacy ALL does not become administrator
+ok 18 - Unknown legacy ALL does not become administrator
+  ---
+  duration_ms: 0.069332
+  type: 'test'
+  ...
+# Subtest: Role aliases map to producer and retailer
+ok 19 - Role aliases map to producer and retailer
+  ---
+  duration_ms: 0.052558
+  type: 'test'
+  ...
+# Subtest: Connect accepts verified PRODUCER
+ok 20 - Connect accepts verified PRODUCER
+  ---
+  duration_ms: 1.52915
+  type: 'test'
+  ...
+# Subtest: Connect accepts verified INSPECTOR
+ok 21 - Connect accepts verified INSPECTOR
+  ---
+  duration_ms: 0.461699
+  type: 'test'
+  ...
+# Subtest: Connect accepts verified LOGISTICS
+ok 22 - Connect accepts verified LOGISTICS
+  ---
+  duration_ms: 0.338939
+  type: 'test'
+  ...
+# Subtest: Connect accepts verified RETAILER
+ok 23 - Connect accepts verified RETAILER
+  ---
+  duration_ms: 0.345539
+  type: 'test'
+  ...
+# Subtest: Choosing Admin with ordinary wallet is downgraded to customer
+ok 24 - Choosing Admin with ordinary wallet is downgraded to customer
+  ---
+  duration_ms: 0.564671
+  type: 'test'
+  ...
+# Subtest: Owner is read dynamically rather than tied to a fixed address
+ok 25 - Owner is read dynamically rather than tied to a fixed address
+  ---
+  duration_ms: 0.458144
+  type: 'test'
+  ...
+# Subtest: A previously authorized extension does not auto-login on page load
+ok 26 - A previously authorized extension does not auto-login on page load
+  ---
+  duration_ms: 0.205493
+  type: 'test'
+  ...
+# Subtest: Switching away from Admin removes private menus immediately
+ok 27 - Switching away from Admin removes private menus immediately
+  ---
+  duration_ms: 14.422218
+  type: 'test'
+  ...
+# Subtest: Wallet lock clears account and privileges
+ok 28 - Wallet lock clears account and privileges
+  ---
+  duration_ms: 1.242488
+  type: 'test'
+  ...
+# Subtest: Wrong network clears private menus and recovery rechecks roles
+ok 29 - Wrong network clears private menus and recovery rechecks roles
+  ---
+  duration_ms: 1.355093
+  type: 'test'
+  ...
+# Subtest: User refusal to connect does not unlock anything
+ok 30 - User refusal to connect does not unlock anything
+  ---
+  duration_ms: 0.369434
+  type: 'test'
+  ...
+# Subtest: User refusal to switch network does not unlock anything
+ok 31 - User refusal to switch network does not unlock anything
+  ---
+  duration_ms: 0.199353
+  type: 'test'
+  ...
+# Subtest: Missing chain is added and switched before verification
+ok 32 - Missing chain is added and switched before verification
+  ---
+  duration_ms: 0.335324
+  type: 'test'
+  ...
+# Subtest: RPC role failure is fail-closed, not fallback permission
+ok 33 - RPC role failure is fail-closed, not fallback permission
+  ---
+  duration_ms: 0.325238
+  type: 'test'
+  ...
+# Subtest: Revoked permission blocks signing without waiting for page reload
+ok 34 - Revoked permission blocks signing without waiting for page reload
+  ---
+  duration_ms: 0.500016
+  type: 'test'
+  ...
+# Subtest: Disconnect is local logout and extension events do not log user in again
+ok 35 - Disconnect is local logout and extension events do not log user in again
+  ---
+  duration_ms: 2.44012
+  type: 'test'
+  ...
+# Subtest: Stale RPC reply cannot restore old Admin after logout
+ok 36 - Stale RPC reply cannot restore old Admin after logout
+  ---
+  duration_ms: 0.619251
+  type: 'test'
+  ...
+# Subtest: Stale verification cannot overwrite another wallet refresh
+ok 37 - Stale verification cannot overwrite another wallet refresh
+  ---
+  duration_ms: 1.290709
+  type: 'test'
+  ...
+# Subtest: Silent revalidation preserves current workspace while healthy
+ok 38 - Silent revalidation preserves current workspace while healthy
+  ---
+  duration_ms: 0.498654
+  type: 'test'
+  ...
+# Subtest: Listeners are removed on destroy
+ok 39 - Listeners are removed on destroy
+  ---
+  duration_ms: 0.157492
+  type: 'test'
+  ...
+# Subtest: Role read timeout rejects instead of hanging indefinitely
+ok 40 - Role read timeout rejects instead of hanging indefinitely
+  ---
+  duration_ms: 5.100314
+  type: 'test'
+  ...
+# Subtest: Actual desktop and mobile component menus agree for GUEST
+ok 41 - Actual desktop and mobile component menus agree for GUEST
+  ---
+  duration_ms: 1.487999
+  type: 'test'
+  ...
+# Subtest: Actual desktop and mobile component menus agree for CUSTOMER
+ok 42 - Actual desktop and mobile component menus agree for CUSTOMER
+  ---
+  duration_ms: 0.220935
+  type: 'test'
+  ...
+# Subtest: Actual desktop and mobile component menus agree for PRODUCER
+ok 43 - Actual desktop and mobile component menus agree for PRODUCER
+  ---
+  duration_ms: 0.239923
+  type: 'test'
+  ...
+# Subtest: Actual desktop and mobile component menus agree for INSPECTOR
+ok 44 - Actual desktop and mobile component menus agree for INSPECTOR
+  ---
+  duration_ms: 0.174196
+  type: 'test'
+  ...
+# Subtest: Actual desktop and mobile component menus agree for LOGISTICS
+ok 45 - Actual desktop and mobile component menus agree for LOGISTICS
+  ---
+  duration_ms: 0.189599
+  type: 'test'
+  ...
+# Subtest: Actual desktop and mobile component menus agree for RETAILER
+ok 46 - Actual desktop and mobile component menus agree for RETAILER
+  ---
+  duration_ms: 0.142139
+  type: 'test'
+  ...
+# Subtest: Actual desktop and mobile component menus agree for ADMIN
+ok 47 - Actual desktop and mobile component menus agree for ADMIN
+  ---
+  duration_ms: 0.19037
+  type: 'test'
+  ...
+# Subtest: Guest overview CTAs open store/connection, never create batch
+ok 48 - Guest overview CTAs open store/connection, never create batch
+  ---
+  duration_ms: 0.499405
+  type: 'test'
+  ...
+# Subtest: Producer overview exposes creation CTA
+ok 49 - Producer overview exposes creation CTA
+  ---
+  duration_ms: 0.152875
+  type: 'test'
+  ...
+# Subtest: No fixed role-wallet constant and no cached authorization in App
+ok 50 - No fixed role-wallet constant and no cached authorization in App
+  ---
+  duration_ms: 0.458414
+  type: 'test'
+  ...
+# Subtest: Role hashes and grantRole argument order follow supplied Solidity
+ok 51 - Role hashes and grantRole argument order follow supplied Solidity
+  ---
+  duration_ms: 0.214156
+  type: 'test'
+  ...
+# Subtest: Customer checkout does not mint a fake transaction or borrow retailer privileges
+ok 52 - Customer checkout does not mint a fake transaction or borrow retailer privileges
+  ---
+  duration_ms: 0.175859
+  type: 'test'
+  ...
+# Subtest: Transporter cannot select producer or retailer in checkpoint form
+ok 53 - Transporter cannot select producer or retailer in checkpoint form
+  ---
+  duration_ms: 0.610989
+  type: 'test'
+  ...
+# Subtest: Owner can choose the supported checkpoint roles
+ok 54 - Owner can choose the supported checkpoint roles
+  ---
+  duration_ms: 0.164221
+  type: 'test'
+  ...
+1..54
+# tests 54
+# suites 0
+# pass 54
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 582.675337

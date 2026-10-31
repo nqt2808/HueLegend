@@ -22,7 +22,7 @@ export class ChainService {
     this.backend = new BackendReadClient(config); this.backendEnabled = false;
   }
   async init() {
-    if (!isAddress(this.config.contractAddress)) throw new Error("Chưa triển khai hợp đồng trên Sepolia. Đang trong giai đoạn hoàn thiện luồng nghiệp vụ.");
+    if (!isAddress(this.config.contractAddress)) throw fault("InvalidAddress");
     this.ethers = await loadEthers();
     const { JsonRpcProvider, FetchRequest, Contract, getAddress } = this.ethers;
     this.contractAddress = getAddress(this.config.contractAddress);
@@ -89,22 +89,15 @@ export class ChainService {
     return injected?.providers?.find(p => p.isMetaMask) || injected?.providers?.[0] || injected;
   }
   async connect() {
+    if (!this.ready) throw fault("NO_CONNECTION");
     const raw = this.detectWallet(); if (!raw) throw fault("NO_WALLET");
-    let addresses;
-    try {
-      await raw.request({ method: "wallet_requestPermissions", params: [{ eth_accounts: {} }] });
-      addresses = await raw.request({ method: "eth_accounts" });
-    } catch {
-      addresses = await raw.request({ method: "eth_requestAccounts" });
-    }
+    const addresses = await raw.request({ method: "eth_requestAccounts" });
     if (!addresses?.length) throw fault("NO_WALLET");
     this.detachWallet();
-    this.raw = raw;
-    this.address = this.ethers ? this.ethers.getAddress(addresses[0]) : addresses[0];
-    this.contextVersion++;
+    this.raw = raw; this.address = this.ethers.getAddress(addresses[0]); this.contextVersion++;
     const changed = async accounts => {
       this.contextVersion++;
-      this.address = accounts?.[0] ? (this.ethers ? this.ethers.getAddress(accounts[0]) : accounts[0]) : null;
+      this.address = accounts?.[0] ? this.ethers.getAddress(accounts[0]) : null;
       this.onWalletChanged();
     };
     const chainChanged = () => { this.contextVersion++; this.onWalletChanged(); };
@@ -112,21 +105,7 @@ export class ChainService {
     for (const [event, fn] of [["accountsChanged", changed], ["chainChanged", chainChanged], ["disconnect", disconnected]]) {
       raw.on?.(event, fn); this.listeners.push([event, fn]);
     }
-    if (this.ready) {
-      return this.getAccount();
-    }
-    const chain = await raw.request({ method: "eth_chainId" });
-    const isCorrect = Number(BigInt(chain)) === this.config.chainId;
-    return {
-      address: this.address,
-      isOwner: this.address.toLowerCase() === "0x2e4216e1BCA81d308b25adaD6ef5Ea92E2e42F8c".toLowerCase(),
-      roles: [],
-      balance: 0n,
-      stake: 0n,
-      unlockAt: 0,
-      remaining: 0,
-      correctNetwork: isCorrect
-    };
+    return this.getAccount();
   }
   async switchNetwork() {
     const raw = this.raw || this.detectWallet(); if (!raw) throw fault("NO_WALLET");
@@ -155,8 +134,7 @@ export class ChainService {
       this.raw.request({ method: "eth_chainId" })
     ]);
     if (version !== this.contextVersion) throw fault("CONTEXT_CHANGED");
-    const isOwner = (owner && owner.toLowerCase() === address.toLowerCase()) || address.toLowerCase() === "0x2e4216e1BCA81d308b25adaD6ef5Ea92E2e42F8c".toLowerCase();
-    return { address, isOwner,
+    return { address, isOwner: owner.toLowerCase() === address.toLowerCase(),
       roles: Object.keys(ROLE).filter((_, i) => checks[i]), balance,
       stake: info.balance, unlockAt: Number(info.unlockAt), remaining: Number(info.remainingSeconds),
       correctNetwork: Number(BigInt(chain)) === this.config.chainId };

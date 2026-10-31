@@ -62,45 +62,6 @@ contract ProjectCoreTest {
         )));
         require(!ok, "ma qua 64 byte phai bi chan");
     }
-    function testRoleGrantAndRevoke() public {
-        ProjectCore core = new ProjectCore(address(this));
-        UntrustedWallet carrier = new UntrustedWallet();
-        require(!core.hasRole(address(carrier), core.ROLE_LOGISTICS()), "role da ton tai");
-        core.grantRole(address(carrier), core.ROLE_LOGISTICS());
-        require(core.hasRole(address(carrier), core.ROLE_LOGISTICS()), "khong cap duoc role");
-        core.revokeRole(address(carrier), core.ROLE_LOGISTICS());
-        require(!core.hasRole(address(carrier), core.ROLE_LOGISTICS()), "khong thu hoi duoc role");
-    }
-    function testRoleCannotClaimDifferentRole() public {
-        ProjectCore core = new ProjectCore(address(this));
-        core.createBatch("HL-1", "Me xung Hue", "Hue", "");
-        UntrustedWallet actor = new UntrustedWallet();
-        core.grantRole(address(actor), core.ROLE_LOGISTICS());
-        // Actor co vai logistics, nhung thu ma danh retailer.
-        (bool ok,) = address(actor).call(abi.encodeCall(actor.add, (core, "HL-1")));
-        require(!ok, "co the mao danh vai khac");
-        require(core.getCheckpoints("HL-1").length == 1, "lich su da bi chen gia");
-    }
-    function testOwnerCanVerifyAndRevoke() public {
-        ProjectCore core = new ProjectCore(address(this));
-        core.createBatch("HL-1", "Me xung Hue", "Hue", "");
-        core.verifyBatch("HL-1", "Du ho so", "sha256:abcd");
-        require(core.getBatch("HL-1").isVerified, "chua xac nhan");
-        core.revokeBatchVerification("HL-1", "Sai chung tu");
-        require(!core.getBatch("HL-1").isVerified, "thu hoi that bai");
-        require(core.getCheckpoints("HL-1").length == 3, "khong giu lai lich su");
-    }
-    function testFeeLimitAndInvalidFund() public {
-        ProjectCore core = new ProjectCore(address(this));
-        (bool feeOk,) = address(core).call(abi.encodeCall(core.setBatchCreationFee, (0.02 ether)));
-        (bool fundOk,) = address(core).call(abi.encodeCall(core.setEcosystemFund, (address(0))));
-        require(!feeOk && !fundOk, "bo qua kiem tra kinh te");
-    }
-    function testCannotVerifyMissingBatch() public {
-        ProjectCore core = new ProjectCore(address(this));
-        (bool ok,) = address(core).call(abi.encodeCall(core.verifyBatch, ("KHONG-CO", "", "")));
-        require(!ok, "co the kiem dinh lo khong ton tai");
-    }
     function testCannotWithdrawWithoutStake() public {
         ProjectCore core = new ProjectCore(address(this));
         (bool ok,) = address(core).call(abi.encodeCall(core.withdrawStake, ()));

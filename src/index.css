@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: 'Playfair Display', Georgia, serif;
+}
+
+@layer base {
+  :root {
+    --primary: #264939;
+    --primary-hover: #1c372b;
+    --primary-light: #E0ECE4;
+    --primary-tint: #F2F6F3;
+    --primary-border: #CCD8CF;
+    --text-main: #1A2820;
+    --text-body: #3B4D43;
+    --text-muted: #5E7166;
+    --text-light: #8A9D92;
+    --bg-body: #F4F1EA;
+    --bg-sidebar: #FAF9F5;
+    --bg-card: #FFFFFF;
+    --border-color: #E6E1D7;
+    --royal-gold: #C29B38;
+    --royal-gold-dark: #8C6D1F;
+  }
+
+  body {
+    font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--bg-body);
+    background-image: url('/assets/aistudio/nen_9abbde3c.png');
+    background-size: cover;
+    background-position: center bottom;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    color: var(--text-main);
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+  }
+
+  h1, h2, h3, h4, .font-serif {
+    font-family: 'Playfair Display', Georgia, serif !important;
+    letter-spacing: -0.02em;
+  }
+}
+
+.font-serif {
+  font-family: 'Playfair Display', Georgia, serif !important;
+}
+
+.font-sans {
+  font-family: 'Be Vietnam Pro', sans-serif !important;
+}
+
+/* Typography Utility Classes */
+.tracking-wide-caps {
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F4F1EA;
+}
+::-webkit-scrollbar-thumb {
+  background: #CCD8CF;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #264939;
+}
+
+/* Animations for Mobile Slidebar Drawer */
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0.8;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out forwards;
+}
+

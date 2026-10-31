@@ -86,7 +86,7 @@ export function parseBatchInput(raw, expected = {}) {
     if (!["http:", "https:"].includes(url.protocol)) throw new Error("Không mở liên kết không an toàn từ mã QR.");
     const mode = url.searchParams.get("mode"), chain = url.searchParams.get("chainId");
     const contract = url.searchParams.get("contract");
-    if (mode && expected.mode && mode !== expected.mode) throw new Error(`QR thuộc chế độ khác Sepolia. Hãy kiểm tra lại mã QR.`);
+    if (mode && expected.mode && mode !== expected.mode) throw new Error(`QR thuộc chế độ ${mode === "demo" ? "mẫu" : "Sepolia"}. Hãy tự chuyển đúng chế độ trước.`);
     if (chain && chain !== "11155111") throw new Error("QR không thuộc Ethereum Sepolia.");
     if (contract && expected.contractAddress && contract.toLowerCase() !== expected.contractAddress.toLowerCase()) throw new Error("QR thuộc hợp đồng khác. Kiểm tra nguồn trước khi thay đổi cấu hình.");
     const code = url.searchParams.get("batch");
@@ -171,18 +171,3 @@ export function errorText(error, iface) {
   return message.length > 260 ? "Thao tác không thành công. Kiểm tra thông báo trong ví và cấu hình kết nối." : message;
 }
 export function fault(code, detail = "") { return Object.assign(new Error(detail || code), { code }); }
-
-// Bao ve khi mo CSV tren Excel: chan gia lap cong thuc, xu ly nhay kep.
-export function csvCell(value) {
-  let data = String(value ?? "").replace(/\r\n?/g, "\n");
-  if (/^[\s]*[=+@-]/.test(data) || /^[\t\r]/.test(data)) data = "'" + data;
-  return `"${data.replace(/"/g, '""')}"`;
-}
-export function exportBatchesCSV(batches, mode) {
-  const lines = [["Che do", "Ma lo", "Ten dac san", "Nguon goc", "Thoi gian tao UTC", "Vi san xuat", "Trang thai kiem dinh"]];
-  for (const batch of batches) {
-    lines.push([mode === "sepolia" ? "SEPOLIA" : "DU LIEU MAU", batch.batchCode, batch.productName,
-      batch.origin, new Date(batch.createdAt * 1000).toISOString(), batch.producer, batch.isVerified ? "Da kiem dinh" : "Chua kiem dinh"]);
-  }
-  return "\uFEFF" + lines.map(row => row.map(csvCell).join(",")).join("\r\n") + "\r\n";
-}

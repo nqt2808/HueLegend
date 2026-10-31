@@ -1,0 +1,5 @@
+
+> hue-legend@1.0.0 check:source
+> node scripts/check-source.cjs
+
+25 TS/TSX files inspected; 0 syntax/conflict errors. This is not a full type-check or Vite build.

@@ -1,4 +1,4 @@
-import { getOnly, json, validHash, withChain } from "../server/shared.js";
+import { getOnly, json, validHash, withChain } from "./_shared.js";
 export const GET = getOnly(async url => {
   const hash = validHash(url.searchParams.get("hash"));
   return json(await withChain(async ({ provider }) => {
@@ -8,13 +8,3 @@ export const GET = getOnly(async url => {
     pendingOrUnknown: r === null };
   }));
 });
-
-// Tuong thich Vercel Web Handler; may chu local van goi GET truc tiep.
-export default {
-  fetch(request) {
-    if (request.method !== "GET" && request.method !== "HEAD") {
-      return new Response(null, { status: 405, headers: { Allow: "GET, HEAD" } });
-    }
-    return GET(request);
-  }
-};

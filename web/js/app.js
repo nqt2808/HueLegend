@@ -1,5 +1,6 @@
 import { DEFAULT_CONFIG, STORAGE_KEYS, loadConfig } from "./config.js";
 import { ROLE, ROLE_LABEL } from "./roles.js";
+import { DemoService } from "./services/demo.js";
 import { ChainService } from "./services/chain.js";
 import { discoverContract } from "./services/deployment.js";
 import { icon, logo } from "./lib/icons.js";
@@ -20,13 +21,13 @@ const params = new URLSearchParams(location.search);
 const readStorage = key => { try { return localStorage.getItem(key); } catch { return null; } };
 const saveStorage = (key,value) => { try { localStorage.setItem(key,value); } catch {} };
 const removeStorage = key => { try { localStorage.removeItem(key); } catch {} };
-const initialMode = "sepolia";
+const initialMode = params.get("mode") || readStorage(STORAGE_KEYS.mode) || DEFAULT_CONFIG.defaultMode;
 const routeFromHash = () => {
   const route = location.hash.replace(/^#\/?/, "").split("?")[0] || (params.get("batch") ? "trace" : "dashboard");
   return ROUTE_LABEL[route] ? route : "dashboard";
 };
 const state = {
-  config: loadConfig(), mode: "sepolia", route: routeFromHash(),
+  config: loadConfig(), mode: initialMode === "sepolia" ? "sepolia" : "demo", route: routeFromHash(),
   service: null, rules: null, account: null, pageData: null, page: 0, loading: true, error: "",
   detail: null, lookupInput: "", evidence: null, statusFilter: "all", search: "", busy: false,
   transaction: null, pending: null, drafts: {}, sourceVersion: 0
@@ -78,28 +79,28 @@ function updateCounters(input = null) {
   });
 }
 function renderHeader() {
-  const modeSelect = $("#mode-select");
-  if (modeSelect) { modeSelect.value = state.mode; modeSelect.disabled = state.busy; }
+  $("#mode-select").value = state.mode; $("#mode-select").disabled = state.busy;
   $("#breadcrumb-title").textContent = ROUTE_LABEL[state.route]||"Tổng quan";
   $("#navigation").innerHTML = NAV.map(([key,ico,label])=>`<a class="nav-item ${key===state.route?"active":""} ${key==="admin"?"nav-section-gap":""}" href="#/${key}" ${key===state.route?'aria-current="page"':""}>${icon(ico)}${label}</a>`).join("");
   const connect = $("#connect-button");
   connect.innerHTML = `${icon("wallet")}<span>${state.account?h(shortAddress(state.account.address)):"Kết nối ví"}</span>`;
   connect.disabled = state.busy; connect.title = state.account ? "Thông tin ví và vai trò" : "Kết nối ví";
   const banner = $("#mode-banner");
-  banner.className = "mode-banner live";
-  banner.innerHTML = `<span class="dot"></span><strong>SEPOLIA TESTNET</strong><span>· ${state.loading?"Đang kiểm tra kết nối":state.error?"Chưa triển khai hợp đồng on-chain":state.service?.backendEnabled ? "API on-chain + MetaMask" : "Đọc trực tiếp blockchain"} · ETH thử nghiệm</span>${state.config.contractAddress&&isAddress(state.config.contractAddress)?`<a class="inline-action" href="https://sepolia.etherscan.io/address/${encodeURIComponent(state.config.contractAddress)}" target="_blank" rel="noopener noreferrer" title="Hợp đồng Sepolia">${h(shortAddress(state.config.contractAddress))} ↗</a>`:""}`;
+  banner.className = `mode-banner ${state.mode==="sepolia"?"live":""}`;
+  banner.innerHTML = state.mode==="demo" ? `<span class="dot"></span><strong>CHẾ ĐỘ MẪU</strong><span>· Dữ liệu minh hoạ, không phải hồ sơ blockchain · Không dùng ETH thật</span><button class="inline-action" data-action="reset-demo">Đặt lại dữ liệu mẫu</button>` :
+    `<span class="dot"></span><strong>SEPOLIA TESTNET</strong><span>· ${state.loading?"Đang kiểm tra kết nối":state.error?"Chưa kết nối thành công":state.service?.backendEnabled ? "API on-chain + MetaMask" : "Đọc trực tiếp blockchain"} · ETH thử nghiệm</span><button class="inline-action" data-action="settings">${h(shortAddress(state.config.contractAddress))}</button>`;
   $("#network-banner").innerHTML = state.account&&!state.account.correctNetwork ?
     `<div class="banner">${icon("alert")}Ví đang ở mạng khác. Dữ liệu đọc vẫn từ Sepolia.${button("Chuyển sang Sepolia","switch-network","route","button-secondary button-small")}</div>`:"";
   renderTransaction();
 }
 function renderTransaction() {
-  const tx = state.transaction || state.pending;
+  const tx = state.transaction || (state.mode==="sepolia" ? state.pending : null);
   const holder = $("#transaction-banner");
-  if (!tx) { holder.innerHTML=""; return; }
+  if (!tx || (tx.demo && state.mode!=="demo") || (!tx.demo && state.mode!=="sepolia")) { holder.innerHTML=""; return; }
   const labels = {
-    checking:"Đang kiểm tra điều kiện và ước tính phí…",signing:"Xác nhận giao dịch trong ví của bạn.",
+    checking:"Đang kiểm tra điều kiện và ước tính phí…",signing:state.mode==="demo"?"Đang xử lý thao tác mẫu…":"Xác nhận giao dịch trong ví của bạn.",
     pending:"Giao dịch đang chờ xác nhận. Không gửi lại cùng thao tác.",
-    confirmed:"Giao dịch đã xác nhận thành công.",
+    confirmed:tx.demo?"Thao tác mẫu đã hoàn thành. Không có giao dịch blockchain.":"Giao dịch đã xác nhận thành công.",
     failed:"Giao dịch đã thất bại hoặc bị hoàn tác.", cancelled:"Giao dịch đã bị thay thế/hủy trong ví."
   };
   const pending = tx.state==="pending";
@@ -166,8 +167,7 @@ async function initSource() {
   state.transaction=null; state.drafts={}; state.lookupInput=""; renderPage();
   await syncDeploymentConfig();
   if(version!==state.sourceVersion)return;
-  // Luon su dung ChainService ket noi mang Sepolia on-chain
-  const service=new ChainService(state.config,async()=>{
+  const service=state.mode==="demo" ? new DemoService() : new ChainService(state.config,async()=>{
     if(version!==state.sourceVersion)return;
     try { await refreshData(); toast("Ví hoặc mạng vừa thay đổi. Quyền đã được kiểm tra lại."); }
     catch(error) { state.account=null; renderHeader(); toast(errorText(error,service.interface),"error"); }
@@ -208,18 +208,24 @@ async function lookup(raw,go=true) {
 function accountDialog() {
   const a=state.account;
   if(!a)return connectWallet();
-  openDialog("Ví đang kết nối",`
+  openDialog(state.mode==="demo"?"Ví minh hoạ":"Ví đang kết nối",`
     <div class="account-heading"><span class="account-avatar">${icon("wallet")}</span><div><strong>${h(shortAddress(a.address,10))}</strong><small>${a.isOwner?"Chủ sở hữu hợp đồng":a.roles.length?a.roles.map(k=>ROLE_LABEL[k]).join(" · "):"Khách tra cứu"}</small></div></div>
     <p class="mono" style="font-size:11px">${h(a.address)}</p>
-    <div class="info-row"><span>Số dư ví</span><strong>${h(formatETH(a.balance))} ETH</strong></div>
+    <div class="info-row"><span>Số dư ví ${state.mode==="demo"?"(mẫu)":""}</span><strong>${h(formatETH(a.balance))} ETH</strong></div>
     <div class="info-row"><span>Tiền cọc</span><strong>${h(formatETH(a.stake))} ETH</strong></div>
-    <div class="info-row"><span>Nguồn dữ liệu</span><strong>Ethereum Sepolia</strong></div>
+    <div class="info-row"><span>Nguồn dữ liệu</span><strong>${state.mode==="demo"?"Mô phỏng trên trình duyệt":"Ethereum Sepolia"}</strong></div>
     <p class="evidence-hint">Ngắt kết nối ở đây chỉ xoá phiên kết nối của trang. Có thể thu hồi quyền trang trong cài đặt ví.</p>
-    <div class="dialog-actions">${button("Sao chép địa chỉ","copy-address","copy")}${button("Ngắt kết nối","disconnect","logout","button-secondary")}</div>`);
+    <div class="dialog-actions">${state.mode==="demo"?button("Đổi vai minh hoạ","choose-persona","route"):button("Sao chép địa chỉ","copy-address","copy")}${button("Ngắt kết nối","disconnect","logout","button-secondary")}</div>`);
+}
+function choosePersona() {
+  openDialog("Chọn vai trải nghiệm",`<p class="dialog-description">Đây là tài khoản mẫu trên trình duyệt, không phải ví thật. Vai trò trên Sepolia chỉ có thể được chủ hợp đồng cấp.</p><div class="wallet-personas">${
+    [["PRODUCER","Cơ sở sản xuất","box"],["LOGISTICS","Vận chuyển","truck"],["RETAILER","Điểm bán","store"],["INSPECTOR","Kiểm định","shield"],["OWNER","Chủ hợp đồng","key"],["VISITOR","Khách tra cứu","search"]].map(([key,label,ico])=>`<button class="persona" data-action="persona" data-persona="${key}">${icon(ico)}${label}</button>`).join("")
+  }</div>`);
 }
 async function connectWallet() {
   if(state.busy)return;
   if(state.account)return accountDialog();
+  if(state.mode==="demo")return choosePersona();
   try {
     $("#connect-button").disabled=true;
     state.account=await state.service.connect();renderHeader();
@@ -229,36 +235,27 @@ async function connectWallet() {
   finally{$("#connect-button").disabled=state.busy;}
 }
 function showSettings() {
-  openDialog("Cấu hình Smart Contract Sepolia", `
-    <p class="dialog-description">Cấu hình địa chỉ hợp đồng ProjectCore mà nhóm bạn đã triển khai trên Ethereum Sepolia.</p>
-    <form class="panel form-panel" data-form="settings">
-      <div class="field">
-        <label for="config-address">Địa chỉ Smart Contract <span class="required">*</span></label>
-        <input type="text" id="config-address" name="config-address" placeholder="0x..." value="${h(state.config.contractAddress)}" maxlength="42" required autocomplete="off">
-        <small>Địa chỉ hợp đồng ProjectCore trên Sepolia Testnet.</small>
-      </div>
-      <div class="field">
-        <label for="config-rpc">Sepolia RPC URL</label>
-        <input type="url" id="config-rpc" name="config-rpc" placeholder="https://..." value="${h(state.config.rpcUrl)}" required>
-        <small>Điểm cuối RPC HTTPS công khai.</small>
-      </div>
-      <div class="form-bottom">
-        <button type="button" class="button button-ghost" data-action="default-config">Xóa trắng</button>
-        <button type="submit" class="button button-primary submit-button">Lưu cấu hình</button>
-      </div>
-    </form>
-  `);
+  if(state.busy)return toast("Hoàn tất hoặc hủy thao tác đang xác nhận trước.");
+  openDialog("Cấu hình kết nối",`
+    <p class="dialog-description">Dùng đúng địa chỉ ProjectCore đã triển khai trên Sepolia. Thay địa chỉ không chứng minh hợp đồng mới an toàn.</p>
+    <form data-form="settings"><div class="form-error" role="alert"></div>
+      ${field("config-address","Địa chỉ hợp đồng trên Sepolia",{required:true,value:state.config.contractAddress,extra:'spellcheck="false"'})}
+      ${field("config-rpc","RPC HTTPS công khai",{required:true,value:state.config.rpcUrl,hint:"Lưu ở trình duyệt. Không dán private key hoặc API key bí mật vào đây.",extra:'spellcheck="false"'})}
+      <div class="note">${icon("info")}<p>ABI đang dùng đã đối chiếu với ProjectCore trong repo dẫn ở README. Hợp đồng phiên bản khác có thể cần thay ABI và bộ nối.</p></div>
+      <div class="dialog-actions">${button("Mặc định","default-config","refresh","button-secondary",'type="button"')}<button class="button button-primary" type="submit">Lưu cấu hình</button></div>
+    </form>`);
 }
 function confirmTransaction(prepared,title,summary) {
-  openDialog("Kiểm tra trước khi ký",`
+  const mode=state.mode;
+  openDialog(mode==="demo"?"Xác nhận thao tác mẫu":"Kiểm tra trước khi ký",`
     <p class="dialog-description">${h(title)}</p>
     <div class="confirm-args">${h(summary)}</div>
     <div class="info-row"><span>Ví thực hiện</span><strong class="mono">${h(shortAddress(prepared.account,10))}</strong></div>
-    <div class="info-row"><span>Hợp đồng nhận lời gọi</span><strong class="mono">${h(state.config.contractAddress)}</strong></div>
+    ${mode==="sepolia"?`<div class="info-row"><span>Hợp đồng nhận lời gọi</span><strong class="mono">${h(state.config.contractAddress)}</strong></div>`:""}
     <div class="info-row"><span>ETH gửi kèm</span><strong>${h(formatETH(prepared.value,18))} ETH</strong></div>
-    <div class="info-row"><span>Phí mạng tham khảo</span><strong>${h(formatETH(prepared.networkFee,18))} ETH</strong></div>
-    <p class="evidence-hint">Phí mạng thực tế có thể thay đổi; kiểm tra lần cuối trong ví. Đã mô phỏng lời gọi để phát hiện lỗi trước khi gửi.</p>
-    <div class="dialog-actions">${button("Quay lại","cancel-confirm","","button-secondary")}<button class="button button-primary" data-action="confirm-transaction">Tiếp tục trong ví${icon("arrow")}</button></div>`);
+    <div class="info-row"><span>${mode==="demo"?"Phí mạng mẫu":"Phí mạng tham khảo"}</span><strong>${mode==="demo"?"Không có":`${h(formatETH(prepared.networkFee,18))} ETH`}</strong></div>
+    <p class="evidence-hint">${mode==="demo"?"Không gửi giao dịch thật. Đây chỉ là diễn tập trong trình duyệt.":"Phí mạng thực tế có thể thay đổi; kiểm tra lần cuối trong ví. Đã mô phỏng lời gọi để phát hiện lỗi trước khi gửi."}</p>
+    <div class="dialog-actions">${button("Quay lại","cancel-confirm","","button-secondary")}<button class="button button-primary" data-action="confirm-transaction">${mode==="demo"?"Thực hiện mẫu":"Tiếp tục trong ví"}${icon("arrow")}</button></div>`);
   return new Promise(resolve=>{confirmResolver=resolve;});
 }
 function progress(update) {
@@ -429,6 +426,12 @@ async function clickAction(node) {
     case "settings":return showSettings();
     case "close-dialog":return closeDialog();
     case "connect":return connectWallet();
+    case "choose-persona":return choosePersona();
+    case "persona":{
+      if(state.mode!=="demo")return;
+      state.account=await state.service.connect(node.dataset.persona);rememberDrafts();closeDialog();await refreshData();
+      toast("Đã đổi tài khoản mẫu.","success");return;
+    }
     case "disconnect":await state.service.disconnect();state.account=null;rememberDrafts();closeDialog();renderPage();return;
     case "switch-network":state.account=await state.service.switchNetwork();rememberDrafts();renderPage();return;
     case "refresh":return refresh();
@@ -490,6 +493,11 @@ async function clickAction(node) {
         toast(`Đã tìm thấy ${result.logs.length} sự kiện trong phạm vi đã chọn.`);
       }finally{if(node.isConnected){node.disabled=false;node.innerHTML=`${icon("link")}Tìm giao dịch`;}}return;
     }
+    case "reset-demo":{
+      if(state.mode!=="demo"||state.busy)return;
+      openDialog("Đặt lại dữ liệu mẫu",`<p class="dialog-description">Xoá các thay đổi demo lưu trên trình duyệt này và khôi phục 6 lô mẫu. Không tác động dữ liệu Sepolia.</p><div class="dialog-actions">${button("Giữ lại","close-dialog")}${button("Đặt lại","confirm-reset","refresh","button-primary")}</div>`);return;
+    }
+    case "confirm-reset":await state.service.reset();closeDialog();state.detail=null;state.drafts={};await refreshData({preserve:false});return;
   }
 }
 document.addEventListener("click",event=>{
@@ -514,6 +522,14 @@ document.addEventListener("input",event=>{
 document.addEventListener("change",async event=>{
   const input=event.target;
   try{
+    if(input.id==="mode-select"){
+      if(state.busy){input.value=state.mode;return;}
+      if(state.pending&&input.value==="demo"){toast("Có giao dịch Sepolia đang chờ. Trạng thái được giữ lại để kiểm tra sau.");}
+      state.mode=input.value;saveStorage(STORAGE_KEYS.mode,state.mode);
+      // Xoa ngu canh QR cu khi nguoi dung chu dong doi nguon.
+      const url=new URL(location.href);url.search="";history.replaceState(null,"",url);
+      closeDialog();await initSource();return;
+    }
     if(input.id==="qr-upload"&&input.files?.[0]){
       const file=input.files[0];if(file.size>10*1024*1024)throw new Error("Ảnh QR tối đa 10 MB.");
       const Scanner=await loadScanner();

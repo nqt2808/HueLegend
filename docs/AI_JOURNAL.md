@@ -2,7 +2,7 @@
 
 Dự án: **HueLegend — Nền tảng Truy xuất Đặc sản Huế trên Blockchain**  
 Học phần: **ECO2432 — Tiền điện tử & Hợp đồng thông minh**  
-Trợ lý AI: **Antigravity IDE (Gemini 3.8 Flash)**
+Trợ lý AI: **Google AI Studio Engine (Gemini 3.6 Flash / Antigravity Agent)**
 
 ---
 
@@ -220,29 +220,376 @@ Nhóm đã triển khai kiểm thử toàn diện tại [`test/ProjectCore.test.
 
 ---
 
-## 10. Phiên làm việc Lab 15: Hoàn thiện DApp Web3 công khai, Tích hợp Ethers.js v6 & Kịch bản thuyết trình
+## 11. Phiên làm việc Lab 15: Tích hợp Popup Chọn Vai Trò trước khi Kết nối MetaMask
 
-### 10.1. Câu lệnh (Prompt) đưa vào trợ lý AI:
-> *"Tiến hành hoàn thiện bài Lab 15 (Giao diện Web và đưa sản phẩm lên mạng):
-> 1. Nối giao diện web với hợp đồng ProjectCore.sol đã triển khai trên Sepolia (0x35655079aEbB215E58e379D5a8c2f1f3a5323C6b), trích xuất và tích hợp compact ABI 50 định nghĩa vào CONTRACT_ABI.
-> 2. Lập bảng ánh xạ kết nối 4 thành phần theo đúng yêu cầu đề bài và bổ sung vào README.md.
-> 3. Cài đặt cơ chế bắt lỗi try/catch thông minh trên giao diện Web3, dịch tên các custom error (UnauthorizedCaller, InsufficientBatchFee, BatchAlreadyExists, StringTooLong, StillLocked) sang tiếng Việt người dùng dễ hiểu.
-> 4. Tinh chỉnh giao diện mobile-responsive theo phong cách Cố Đô Huế hoàng gia (Huế Royal Purple & Golden Lotus), có nút chuyển mạng tự động sang Sepolia (Chain ID 11155111) và hiệu ứng loading rõ ràng.
-> 5. Soạn thảo kịch bản trình bày docs/PRESENTATION_PLAN.md chuẩn 5 phút, phân vai 2:30 cho từng thành viên, mỗi người gắn chặt với một artifact chuyên trách."*
+### 11.1. Câu lệnh (Prompt) đưa vào trợ lý AI:
+> *"Khi bấm vào kết nối ví thì sẽ hiện popup:
+> 👑 Quản trị hệ thống
+> 📦 Chuỗi cung ứng & Vận hành
+> 🏪 Thương mại & Bán hàng
+> 🔍 Khách hàng
+> Khi bấm vào 1 trong 4 cái thì mới hiện liên kết qua MetaMask."*
 
-### 10.2. Phân tích của Trợ lý AI và Kết quả tiếp thu của Nhóm:
-1. **Phân tích kết nối Web3 và Khắc phục bẫy thường gặp:**
-   - Trợ lý AI chỉ rõ bẫy phổ biến nhất là người dùng mở DApp bằng ví đang kết nối mạng khác (Mainnet hoặc testnet khác). Giải pháp: Bổ sung đoạn mã kiểm tra `network.chainId === 11155111`, nếu sai sẽ hiển thị banner cảnh báo và kích hoạt `wallet_switchEthereumChain` sang Sepolia.
-   - Bẫy thứ hai là người dùng xem link trên điện thoại chưa có MetaMask: Bổ sung chế độ **Interactive Demo Engine / Read-only RPC Fallback** để bất kỳ ai mở link công khai cũng tra cứu và trải nghiệm trọn vẹn luồng sản phẩm mà không bị crash.
-2. **Chi tiết bắt lỗi người dùng (Custom Error Translation):**
-   - Không hiển thị chuỗi JSON RPC hay stack trace phức tạp. Sử dụng `error.shortMessage || error.message` để ánh xạ chính xác:
-     + `UnauthorizedCaller` $\to$ Cảnh báo lỗi phân quyền, thiếu vai trò hợp lệ.
-     + `InsufficientBatchFee` $\to$ Nhắc nhở nộp đủ mức phí 0.001 ETH quy định.
-     + `BatchAlreadyExists` $\to$ Cảnh báo mã lô đã tồn tại trên chuỗi.
-     + `StringTooLong` $\to$ Cảnh báo dữ liệu vượt quá độ dài trần chống spam gas.
-3. **Kịch bản phân vai 5 phút:**
-   - Ngô Thị Thuỷ Vân phụ trách `docs/SPEC.md` và Live Demo DApp trên điện thoại qua GitHub Pages.
-   - Ngô Quỳnh Trang phụ trách `contracts/ProjectCore.sol`, `docs/AUDIT_REPORT.md` và đối soát giao dịch Sepolia.
-4. **Đóng gói sản phẩm:**
-   - Triển khai công khai tại GitHub Pages: `https://munniu56.github.io/hce-web3-starter/HueLegend/web/`.
-   - Tạo tag phát hành: `v0.1-demo` và commit nộp bài: `lab-15: public dapp va presentation plan`.
+### 11.2. Phân tích của Trợ lý AI và Kết quả triển khai:
+1. **Xây dựng Modal Chọn Vai Trò (`RoleConnectModal.tsx`):**
+   - Khi người dùng nhấn nút *"Kết Nối Ví MetaMask"* hoặc *"Chọn Vai Trò & Kết Nối Ví"*, ứng dụng sẽ hiển thị ngay một Popup modal đẹp mắt với 4 lựa chọn vai trò chính chủ:
+     - 👑 **Quản trị hệ thống** (`ADMIN` - Quản trị viên & Ban quản lý OCOP)
+     - 📦 **Chuỗi cung ứng & Vận hành** (`SUPPLY_CHAIN` - Producer & Logistics)
+     - 🏪 **Thương mại & Bán hàng** (`COMMERCE` - Retailer)
+     - 🔍 **Khách hàng / Quét QR** (`CUSTOMER` - Khách hàng & Inspector)
+2. **Kích hoạt MetaMask theo luồng chọn vai trò:**
+   - Khi người dùng nhấp chọn 1 trong 4 vai trò nêu trên trong Popup, hệ thống lập tức lưu góc nhìn vai trò tương ứng và tự động gọi yêu cầu kích hoạt ví MetaMask (`eth_requestAccounts`) để hoàn tất kết nối Sepolia Testnet.
+3. **Cập nhật AI_JOURNAL.md:**
+   - Đã ghi chép nhật ký công việc vào tệp `/docs/AI_JOURNAL.md`.
+
+---
+
+## 12. Phiên làm việc Lab 16: Tắt Tự Động Kết Nối Ví & Bổ Sung Modal Thông Số Ví Kết Nối
+
+### 12.1. Câu lệnh (Prompt) đưa vào trợ lý AI:
+> *"không tự lưu tài khoản mỗi lần đăng nhập đều phải hiện cửa sổ MetaMask để đăng nhập"*
+
+### 12.2. Phân tích của Trợ lý AI và Kết quả triển khai:
+1. **Loại bỏ Tự động Lưu & Tự động Đăng nhập:**
+   - Hoàn toàn không lưu địa chỉ ví vào `localStorage`, `sessionStorage` hay state kéo dài.
+   - Hàm lắng nghe `accountsChanged` chỉ được xử lý khi người dùng đã có phiên đăng nhập chủ động. Nếu đang ở trạng thái chưa kết nối (`currentAccount === null`), sự kiện thay đổi ví trên MetaMask sẽ không tự động kích hoạt đăng nhập dApp.
+2. **Ép Bật Cửa Sổ MetaMask (`wallet_requestPermissions`) mỗi lần Đăng nhập:**
+   - Mỗi lần bấm "Kết nối ví" và chọn 1 trong 4 vai trò, hệ thống gửi lệnh `wallet_requestPermissions` trực tiếp ép mở cửa sổ popup MetaMask yêu cầu chọn tài khoản & ủy quyền cấp phép.
+   - Chỉ khi người dùng bấm xác nhận trên cửa sổ MetaMask thì dApp mới chính thức thiết lập trạng thái `currentAccount`.
+3. **Xây dựng Modal Chi Tiết Thông Số Ví (`WalletDetailsModal.tsx`):**
+   - Khi người dùng đã kết nối thành công, nhấp vào nút ví trên Header (`0x...3C6b`) sẽ mở Modal hiển thị chi tiết các thông số:
+     - **Địa chỉ ví đầy đủ & Nút liên kết Etherscan Sepolia**
+     - **Thông số mạng lưới:** Mạng Sepolia Testnet (Chain ID: 11155111)
+     - **Vai trò đã xác thực:** Tương ứng với vai trò đã chọn
+     - **Số dư ký quỹ Producer:** Đọc thời gian thực từ Smart Contract
+     - **Nút "Ngắt Kết Nối Ví" (Disconnect Wallet):** Cho phép đăng xuất ví thủ công chỉ với một nhấp.
+4. **Cập nhật AI_JOURNAL.md:**
+   - Đã ghi chép đầy đủ tiến trình nâng cấp vào nhật ký AI_JOURNAL.md.
+
+---
+
+## 13. Phiên làm việc Lab 17: Tối Giản Giao Diện Thanh Header
+
+### 13.1. Câu lệnh (Prompt) đưa vào trợ lý AI:
+> *"Ẩn 2 phần này (Hình ảnh đính kèm chọn vai trò giả lập & nút chuyển đổi Chế độ Xem Trước / Web3 Thật)"*
+
+### 13.2. Phân tích của Trợ lý AI và Kết quả triển khai:
+1. **Loại bỏ Thanh chọn Vai trò Giả lập (`Role Simulator`) & Nút Chuyển Chế độ (`Demo Toggle`):**
+   - Đã ẩn/gỡ bỏ 2 thành phần điều khiển dư thừa khỏi tệp `src/components/Header.tsx`.
+   - Giúp giao diện thanh tiêu đề (Header) gọn gàng, tinh tế và tập trung hoàn toàn vào trạng thái kết nối Sepolia Testnet cùng Nút kích hoạt ví MetaMask.
+2. **Cập nhật AI_JOURNAL.md:**
+   - Đã ghi nhận đầy đủ bước tối giản giao diện vào nhật ký công việc `AI_JOURNAL.md`.
+
+---
+
+## 14. Phiên làm việc Lab 18: Chuẩn Hóa 4 Vai Trò Đăng Nhập Ví Trong Popup
+
+### 14.1. Câu lệnh (Prompt) đưa vào trợ lý AI:
+> *"Khi hiện popup khi bấm kết nối ví sửa lại có 4 vai trò:
+> 👑 Quản trị hệ thống
+> 📦 Chuỗi cung ứng & Vận hành
+> 🏪 Thương mại & Bán hàng
+> 🔍 Khách hàng"*
+
+### 14.2. Phân tích của Trợ lý AI và Kết quả triển khai:
+1. **Chuẩn hóa nhãn 4 vai trò trong Modal (`RoleConnectModal.tsx`):**
+   - Đã đồng bộ chính xác nhãn tiêu đề 4 vai trò đăng nhập trong Popup theo đúng yêu cầu:
+     - 👑 **Quản trị hệ thống**
+     - 📦 **Chuỗi cung ứng & Vận hành**
+     - 🏪 **Thương mại & Bán hàng**
+     - 🔍 **Khách hàng**
+2. **Cập nhật AI_JOURNAL.md:**
+   - Đã ghi nhận đầy đủ bước chuẩn hóa tiêu đề vai trò vào tệp `AI_JOURNAL.md`.
+
+---
+
+## 15. Phiên làm việc Lab 19: Bổ Sung "Cửa Hàng Đặc Sản" & Ẩn "Quản Trị Hệ Thống" Trên Thanh Bên
+
+### 15.1. Câu lệnh (Prompt) đưa vào trợ lý AI:
+> *"Thanh bên trái phần chức năng quản trị bổ sung thêm Cửa Hàng Đặc Sản và ẩn mục Quản Trị Hệ Thống"*
+
+### 15.2. Phân tích của Trợ lý AI và Kết quả triển khai:
+1. **Bổ sung mục "Cửa Hàng Đặc Sản" (`StoreTab.tsx` & `Sidebar.tsx`):**
+   - Đã tạo giao diện `StoreTab.tsx` phục vụ kênh đại lý phân phối, cửa hàng OCOP Cố Đô Huế (xem các cửa hàng đại lý, tra cứu danh sách lô hàng đặc sản đang phân phối on-chain, nút quét QR trực tiếp).
+   - Thêm nút chuyển tab `Cửa Hàng Đặc Sản` vào danh sách `navItems` trên thanh Sidebar.
+2. **Ẩn mục "Quản Trị Hệ Thống":**
+   - Đã ẩn/gỡ bỏ mục `Quản Trị Hệ Thống` khỏi danh sách điều hướng thanh bên trái theo đúng chỉ đạo.
+3. **Cập nhật AI_JOURNAL.md:**
+   - Đã ghi nhật ký chi tiết bước cập nhật thanh điều hướng Sidebar vào `AI_JOURNAL.md`.
+
+---
+
+## 16. Phiên làm việc Lab 20: Tinh Gọn Mục "Cửa Hàng Đặc Sản" (Bỏ Demo Mẫu Cửa Hàng)
+
+### 16.1. Câu lệnh (Prompt) đưa vào trợ lý AI:
+> *"Ở Mục Cửa Hàng Đặc Sản không cần demo mẫu cửa hàng"*
+
+### 16.2. Phân tích của Trợ lý AI và Kết quả triển khai:
+1. **Loại bỏ thẻ mẫu cửa hàng demo (`StoreTab.tsx`):**
+   - Đã gỡ bỏ khối danh sách thẻ mẫu cửa hàng demo khỏi màn hình `StoreTab.tsx`.
+   - Giúp màn hình Cửa Hàng Đặc Sản tập trung hoàn toàn vào việc hiển thị danh sách các lô hàng đặc sản OCOP đang được kệ phân phối On-Chain thực tế trên Sepolia Testnet.
+2. **Cập nhật AI_JOURNAL.md:**
+   - Đã lưu nhật ký đầy đủ cho bước tinh gọn giao diện vào `AI_JOURNAL.md`.
+
+---
+
+## 17. Phiên làm việc Lab 21: Tối Ưu Luồng Trạng Thái & Tinh Gọn Sidebar DApp HueLegend
+
+### 17.1. Câu lệnh (Prompt) đưa vào trợ lý AI:
+> *"Hãy cập nhật lại giao diện Sidebar và Smart Contract flow cho DApp HueLegend để bỏ bớt bước 'Ghi Chặng Supply Chain':
+> 1. Xóa/Ẩn mục 'Ghi Chặng Supply Chain' khỏi Menu Sidebar.
+> 2. Danh sách Menu Sidebar thu gọn:
+>    - Tổng Quan Hệ Thống (Dashboard)
+>    - Tra Cứu Tem QR (Public Trace)
+>    - Cửa Hàng Đặc Sản (Mua hàng bằng Sepolia ETH)
+>    - Tạo Lô Hàng (Producer)
+>    - Kiểm Định OCOP (Inspector)
+>    - Quản Lý Niêm Yết (Retailer)
+>    - Quản Trị Hệ Thống (Admin)
+> 3. Tối ưu luồng trạng thái (State Transition): Sau khi Inspector bấm 'Kiểm Định OCOP', lô hàng sẽ chuyển thẳng sang trạng thái sẵn sàng để Retailer nhập kho/niêm yết giá bán (InRetail)."*
+
+### 17.2. Phân tích của Trợ lý AI và Kết quả triển khai:
+1. **Loại bỏ bước "Ghi Chặng Supply Chain" khỏi Sidebar (`Sidebar.tsx`):**
+   - Đã xóa hoàn toàn mục "Ghi Chặng Supply Chain" (`checkpoint`) khỏi thanh điều hướng Sidebar.
+   - Thu gọn danh sách menu gồm đầy đủ các vai trò tương tác chính:
+     - 📊 **Tổng Quan Hệ Thống** (`overview`)
+     - 🔍 **Tra Cứu Tem QR** (`lookup`)
+     - 🏪 **Cửa Hàng Đặc Sản** (`store`)
+     - 📦 **Tạo Lô Hàng** (`create-batch`)
+     - 🛡️ **Kiểm Định OCOP** (`inspector`)
+     - 🏷️ **Quản Lý Niêm Yết** (`retailer`)
+     - ⚙️ **Quản Trị Hệ Thống** (`admin`)
+2. **Xây dựng Màn hình "Quản Lý Niêm Yết (Retailer)" (`RetailerTab.tsx`):**
+   - Tạo mới giao diện `RetailerTab.tsx` dành cho đại lý bán lẻ nhập kho, thiết lập giá niêm yết On-Chain bằng Sepolia ETH và cập nhật trạng thái bán.
+3. **Tối ưu Luồng Trạng Thái (State Transition `InRetail`):**
+   - Sau khi Kiểm định viên (`Inspector`) thẩm định OCOP, lô hàng tự động chuyển thẳng sang trạng thái sẵn sàng niêm yết `InRetail` ("Sẵn sàng Niêm Yết tại Cửa Hàng").
+4. **Cập nhật AI_JOURNAL.md:**
+   - Đã ghi lại nhật ký toàn bộ quá trình tối ưu luồng nghiệp vụ DApp vào `AI_JOURNAL.md`.
+
+---
+
+## 18. Phiên làm việc Lab 22: Loại Bỏ Chữ Tiếng Anh Vai Trò Trên Thanh Chức Năng Sidebar
+
+### 18.1. Câu lệnh (Prompt) đưa vào trợ lý AI:
+> *"xoá chữ (Producer), (Inspector), (Retailer), (Admin) ở thanh chức năng"*
+
+### 18.2. Phân tích của Trợ lý AI và Kết quả triển khai:
+1. **Loại bỏ nhãn tiếng Anh mở ngoặc trong Sidebar (`Sidebar.tsx`):**
+   - Đã gỡ bỏ các cụm từ tiếng Anh `(Producer)`, `(Inspector)`, `(Retailer)`, `(Admin)` trong phần mô tả phụ (`sublabel`) của danh sách điều hướng.
+   - Giúp giao diện tiếng Việt trở nên nhất quán, gọn gàng và thuần Việt 100%:
+     - **Tạo Lô Hàng**: "Dành cho cơ sở sản xuất"
+     - **Kiểm Định OCOP**: "Thẩm định & cấp chứng nhận"
+     - **Quản Lý Niêm Yết**: "Nhập kho & niêm yết bán lẻ"
+     - **Quản Trị Hệ Thống**: "Phân quyền RBAC & đổi phí"
+2. **Cập nhật AI_JOURNAL.md:**
+   - Đã ghi chép nhật ký đầy đủ cho bước tinh chỉnh giao diện tiếng Việt vào `AI_JOURNAL.md`.
+
+---
+
+## 19. Phiên làm việc Lab 23: Tinh Gọn Màn Hình Tạo Lô Hàng (Xóa Phần Tiền Ký Quỹ Producer)
+
+### 19.1. Câu lệnh (Prompt) đưa vào trợ lý AI:
+> *"xoá phần Tiền Ký Quỹ Producer trong phần Tạo Lô Hàng"*
+
+### 19.2. Phân tích của Trợ lý AI và Kết quả triển khai:
+1. **Gỡ bỏ khối giao diện "Tiền Ký Quỹ Producer" (`CreateBatchTab.tsx`):**
+   - Đã loại bỏ hoàn toàn thẻ hiển thị "Tiền Ký Quỹ Producer", khung số dư cọc ký quỹ, ô nhập tiền đặt cọc thêm và nút "Rút Ký Quỹ" khỏi tab Tạo Lô Hàng.
+   - Chuyển giao diện biểu mẫu "Khai Báo Lô Hàng On-Chain" sang bố cục căn giữa gọn gàng (`max-w-3xl mx-auto`), giúp quy trình khởi tạo lô hàng tập trung và trực quan hơn.
+2. **Cập nhật AI_JOURNAL.md:**
+   - Đã lưu nhật ký cho bước tối giản màn hình Tạo Lô Hàng vào `AI_JOURNAL.md`.
+
+---
+
+## 20. Phiên làm việc Lab 24: Cập Nhật Logic Kiểm Tra Phân Quyền (RBAC Check) & Cảnh Báo Chuyển Ví
+
+### 20.1. Câu lệnh (Prompt) đưa vào trợ lý AI:
+> *"Hãy cập nhật logic kiểm tra phân quyền (RBAC Check) trong web/src/:
+> 1. Phân tách rõ ràng giữa Admin và Retailer:
+>    - Trang Quản Trị Hệ Thống chỉ cho phép ví Owner/Admin truy cập để gán quyền, cấu hình phí và rút phí treasury.
+>    - Trang Quản Lý Niêm Yết yêu cầu ví phải có vai trò RETAILER. Khi bán thành công, Smart Contract chuyển trực tiếp ETH về ví RETAILER thực hiện niêm yết (msg.sender / seller).
+> 2. Cảnh báo chuyển ví trên UI:
+>    - Nếu ví hiện tại không phải là RETAILER khi vào tab Quản Lý Niêm Yết, hiển thị thông báo: 'Vui lòng kết nối ví Đại lý (Retailer) đã được Admin cấp quyền để thực hiện niêm yết sản phẩm.'"*
+
+### 20.2. Phân tích của Trợ lý AI và Kết quả triển khai:
+1. **Kiểm tra vai trò On-Chain & Phân tách Admin / Retailer:**
+   - Trong `App.tsx`, thực hiện kiểm tra trực tiếp từ Smart Contract qua `hasRole(account, ROLE_ADMIN)`, `hasRole(account, ROLE_RETAILER)` và `owner()`.
+   - Trang **Quản Trị Hệ Thống** (`AdminTab.tsx`): Yêu cầu ví phải có quyền Admin/Owner để thao tác gán quyền RBAC, cấu hình phí `batchCreationFee` và quản lý Treasury Quỹ Ecosystem.
+   - Trang **Quản Lý Niêm Yết** (`RetailerTab.tsx`): Yêu cầu ví phải có vai trò `ROLE_RETAILER`. Lưu trực tiếp địa chỉ ví Retailer (`msg.sender` / `seller`) khi niêm yết lô hàng để nhận 100% doanh thu chuyển thẳng về ví.
+2. **Cảnh Báo Chuyển Ví Trên UI (Warning Banner):**
+   - Khi truy cập tab **Quản Lý Niêm Yết** mà ví chưa có quyền Retailer, hiển thị banner cảnh báo nổi bật:
+     > *"Vui lòng kết nối ví Đại lý (Retailer) đã được Admin cấp quyền để thực hiện niêm yết sản phẩm."*
+   - Tương tự, khi vào tab **Quản Trị Hệ Thống** bằng ví không phải Admin/Owner, hiển thị cảnh báo yêu cầu kết nối ví Quản trị viên.
+   - Bổ sung nút **"Chuyển Ví / Chọn Role"** trực tiếp trên banner để hỗ trợ chuyển ví và xác thực nhanh chóng.
+3. **Cập nhật AI_JOURNAL.md:**
+   - Đã ghi chép đầy đủ nhật ký công việc vào `AI_JOURNAL.md`.
+
+---
+
+## 21. Phiên làm việc Lab 25: Nâng Cấp Trang Quản Trị Hệ Thống (Admin Panel) Chuẩn Production
+
+### 21.1. Câu lệnh (Prompt) đưa vào trợ lý AI:
+> *"Hãy nâng cấp trang Quản Trị Hệ Thống (Admin Panel) trong web/src/ đầy đủ 5 mục chức năng quản trị production:
+> 1. Quản Lý Phân Quyền (RBAC): Gán quyền (Grant Role), Bảng danh sách ví đã cấp quyền, và Nút thu hồi quyền (Revoke Role).
+> 2. Quản Lý Phí & Quỹ (Treasury): Cấu hình phí Mint lô hàng, Xem số dư ETH tích lũy trong hợp đồng và Nút 'Rút Phí Về Ví Admin' (withdrawFees).
+> 3. An Toàn Hệ Thống (Emergency): Nút Bật/Tắt trạng thái Tạm dừng hợp đồng (pause() / unpause()).
+> 4. Nhật Ký Sự Kiện (Event Logs): Bảng hiển thị lịch sử giao dịch gần đây kèm link chuyển hướng sang Sepolia Etherscan.
+> Yêu cầu: Ràng buộc chặt chẽ: Chỉ ví có quyền ADMIN/OWNER mới thao tác được các nút này. Giữ nguyên tone màu và style thiết kế CSS hiện tại của HueLegend."*
+
+### 21.2. Phân tích của Trợ lý AI và Kết quả triển khai:
+1. **Nâng cấp 5 Khối Chức Năng Quản Trị Production (`AdminTab.tsx`):**
+   - **Quản Lý Phân Quyền (RBAC)**: Form gán quyền on-chain, Bảng danh sách tất cả các ví đã được cấp quyền, tìm kiếm địa chỉ ví/vai trò và Nút **Thu Hồi Quyền** (Revoke Role) từng dòng.
+   - **Quản Lý Phí & Quỹ Treasury**: Hiển thị số dư ETH tích lũy trong Smart Contract, form điều chỉnh mức phí tạo lô `setBatchCreationFee`, và Nút **"Rút Phí Về Ví Admin"** (`withdrawFees`).
+   - **An Toàn Hệ Thống (Emergency Circuit Breaker)**: Hiển thị badge trạng thái `Active (Bình Thường)` / `Paused (Tạm Dừng)`, Nút **Tạm Dừng** (`pause()`) và Nút **Kích Hoạt Lại** (`unpause()`).
+   - **Nhật Ký Sự Kiện On-Chain (Event Logs)**: Bảng lịch sử các giao dịch sự kiện gần nhất (`BatchCreated`, `BatchVerified`, `RoleAssigned`, `BatchFeeCollected`) kèm link chuyển hướng sang Sepolia Etherscan.
+2. **Ràng Bắt Buộc Quyền Admin/Owner**:
+   - Mọi nút bấm thao tác gán/thu hồi quyền, đổi phí, rút quỹ Treasury và tạm dừng hệ thống đều được vô hiệu hóa nếu ví kết nối không có quyền Admin/Owner, đồng thời hiển thị banner cảnh báo đỏ yêu cầu chuyển ví.
+3. **Cập nhật AI_JOURNAL.md:**
+   - Đã cập nhật đầy đủ nhật ký tiến trình làm việc vào `AI_JOURNAL.md`.
+
+---
+
+## 22. Phiên làm việc Lab 26: Loại Bỏ Vai Trò Đơn Vị Vận Chuyển (Logistics Role Removal)
+
+### 22.1. Câu lệnh (Prompt) đưa vào trợ lý AI:
+> *"vai trò bỏ đơn vị vận chuyển"*
+
+### 22.2. Phân tích của Trợ lý AI và Kết quả triển khai:
+1. **Loại bỏ vai trò Đơn vị vận chuyển (Logistics) khỏi giao diện DApp:**
+   - **Popup Chọn Vai Trò (`RoleConnectModal.tsx`)**: Chuyển tùy chọn thành pure "Cơ sở sản xuất" (Producer) chuyên trách khởi tạo lô hàng đặc sản OCOP.
+   - **Trang Quản Trị Hệ Thống (`AdminTab.tsx`)**: Gỡ bỏ vai trò `ROLE_LOGISTICS (Đơn Vị Vận Chuyển)` khỏi danh sách các quyền được cấp trong menu Dropdown và danh sách ví đã phân quyền.
+   - **Hệ thống Phân Quyền (`App.tsx`)**: Loại bỏ ánh xạ vai trò `ROLE_LOGISTICS` khỏi bộ chuyển đổi nhãn hiển thị vai trò `getRoleTitle`.
+2. **Cập nhật AI_JOURNAL.md:**
+   - Đã ghi chép đầy đủ nhật ký công việc vào `AI_JOURNAL.md`.
+
+---
+
+## 23. Phiên làm việc Lab 27: Loại Bỏ Dữ Liệu Mẫu Demo Trong Trang Quản Trị Hệ Thống
+
+### 23.1. Câu lệnh (Prompt) đưa vào trợ lý AI:
+> *"phần phần quản trị hệ thống không cần tạo demo mẫu"*
+
+### 23.2. Phân tích của Trợ lý AI và Kết quả triển khai:
+1. **Loại bỏ hoàn toàn dữ liệu giả lập/demo mẫu trong Trang Quản Trị Hệ Thống (`AdminTab.tsx`):**
+   - **Danh sách Ví Đã Cấp Quyền RBAC (`grantedWallets`)**: Khởi tạo bằng mảng rỗng `[]` (Zero Hardcoded Mock Data). Khi Admin thực hiện gán quyền mới thông qua biểu mẫu on-chain, ví được thêm trực tiếp vào danh sách.
+   - **Nhật Ký Sự Kiện On-Chain (`recentEventLogs`)**: Chuyển sang cơ chế truy xuất động từ dữ liệu lô hàng thực tế (`batches`) trên Sepolia Testnet thông qua `React.useMemo`. Mọi sự kiện tạo lô (`BatchCreated`), thẩm định OCOP (`BatchVerified`) và cập nhật chặng vận hành (`CheckpointAdded`) đều được trích xuất từ dữ liệu thực tế.
+2. **Giao Diện Trạng Thái Rỗng Sạch Sẽ (Clean Empty States):**
+   - Khi chưa có ví được phân quyền hoặc chưa có giao dịch lô hàng nào, hiển thị thẻ thông báo phẳng với icon trực quan và hướng dẫn rõ ràng.
+   - Giữ nguyên màu sắc thương hiệu Cố Đô HueLegend (`#264939`, `#C29B38`, `#FAF9F5`).
+3. **Cập nhật AI_JOURNAL.md:**
+   - Đã ghi nhận đầy đủ tiến trình tinh gọn dữ liệu Admin Panel vào `AI_JOURNAL.md`.
+
+---
+
+## 24. Phiên làm việc Lab 28: Đọc Số Dư Thực Tế Quỹ Treasury Từ Sepolia Smart Contract
+
+### 24.1. Câu lệnh (Prompt) đưa vào trợ lý AI:
+> *"số dư trong mục Quản Lý Phí & Treasury sao lại hiện 0.005 không cần dữ liệu demo mà"*
+
+### 24.2. Phân tích của Trợ lý AI và Kết quả triển khai:
+1. **Loại bỏ số dư demo mẫu `0.005 ETH` (`App.tsx`):**
+   - Đổi giá trị khởi tạo `contractBalanceEth` từ `'0.005'` về `'0.00'`.
+   - Bổ sung hàm đọc trực tiếp số dư tài khoản Smart Contract `provider.getBalance(CONTRACT_ADDRESS)` trên Sepolia Testnet trong hàm `fetchContractData`.
+2. **Cập nhật AI_JOURNAL.md:**
+   - Đã lưu thông tin xử lý vào tệp `AI_JOURNAL.md`.
+
+---
+
+## 25. Phiên làm việc Lab 29: Chuẩn Hóa Ô Nhập Liệu (Dùng Placeholder Hướng Dẫn, Không Tự Điền Giá Trị Mẫu)
+
+### 25.1. Câu lệnh (Prompt) đưa vào trợ lý AI:
+> *"ở các mục có ô để nhập thì hiện chữ mẫu hướng dẫn chứ không tự điền trực tiếp vào"*
+
+### 25.2. Phân tích của Trợ lý AI và Kết quả triển khai:
+1. **Xóa bỏ các chuỗi tự điền mặc định trong State (`useState('')`):**
+   - **Tạo Lô Hàng (`CreateBatchTab.tsx`)**: Đã xóa các giá trị khởi tạo sẵn như mã lô, tên đặc sản, nguồn gốc và link IPFS metadata, chuyển về chuỗi rỗng `''`.
+   - **Thẩm Định OCOP (`InspectorTab.tsx`)**: Đã xóa văn bản tự điền ở phần ghi chú thẩm định và link chứng nhận OCOP IPFS.
+   - **Quản Lý Niêm Yết (`RetailerTab.tsx`)**: Đã xóa giá trị mặc định của địa điểm cửa hàng, giá bán niêm yết (ETH) và số lượng tồn kho.
+   - **Ghi Chặng Supply Chain (`CheckpointTab.tsx`)**: Đã xóa các đoạn văn bản tự điền ở tên chặng, địa điểm thực hiện, nội dung công việc và điều kiện bảo quản.
+   - **Quản Trị Hệ Thống (`AdminTab.tsx`)**: Đã xóa giá trị cấu hình phí tạo lô mặc định trong ô nhập.
+2. **Bổ sung chữ mẫu hướng dẫn trực quan (`placeholder`):**
+   - Tất cả các ô nhập liệu được bổ sung văn bản hướng dẫn rõ ràng dạng `Ví dụ: HL-MEXUNG-2026-001`, `Ví dụ: Mè Xửng Dừa Hoàng Gia Huế...`, `Ví dụ: 0.002`... giúp người dùng dễ dàng hiểu cú pháp cần nhập mà không bị rối bởi dữ liệu điền sẵn.
+3. **Cập nhật AI_JOURNAL.md:**
+   - Đã lưu thông tin xử lý vào tệp `AI_JOURNAL.md`.
+
+---
+
+## 26. Phiên làm việc Lab 30: Tối Ưu Trang Tạo Lô Hàng & Tự Động Sinh IPFS Metadata URI Kèm Lưu Mã Băm Giao Dịch (Tx Hash)
+
+### 26.1. Câu lệnh (Prompt) đưa vào trợ lý AI:
+> *"Hãy cập nhật trang Tạo Lô Hàng (Create Batch) trong web/src/:
+> 1. Xóa ô nhập liệu Metadata IPFS URI: Xóa bỏ hoàn toàn ô input Metadata IPFS URI khỏi giao diện HTML/JSX. Khi gọi hàm Smart Contract, tự động sinh ra chuỗi Metadata URI theo dạng: ipfs://huelegend/batch/${maLoHang} để truyền vào tham số contract.
+> 2. Lưu Mã Băm Giao Dịch (Tx Hash): Sau khi giao dịch MetaMask thành công (tx.wait()), lấy txHash của Sepolia Testnet. Lưu txHash này cùng với Lô Hàng để hiển thị đường link Etherscan trên trang Tra Cứu Tem QR.
+> 3. Giữ nguyên 3 ô nhập liệu chính: Mã Lô Hàng, Tên Đặc Sản, Địa Danh / Nguồn Gốc."*
+
+### 26.2. Phân tích của Trợ lý AI và Kết quả triển khai:
+1. **Gỡ bỏ ô nhập liệu Metadata IPFS URI (`CreateBatchTab.tsx`):**
+   - Đã xóa hoàn toàn ô input `Metadata IPFS URI` và state `metadataURI` khỏi biểu mẫu HTML/JSX.
+   - Bố cục trang giữ nguyên 3 ô nhập liệu chính cốt lõi: **Mã Lô Hàng** (`batchCode`), **Tên Đặc Sản** (`productName`), **Địa Danh / Nguồn Gốc** (`origin`).
+2. **Tự Động Sinh Chuỗi Metadata URI On-Chain:**
+   - Trong `handleSubmitBatch`, ứng dụng tự động xây dựng chuỗi Metadata URI chuẩn theo cú pháp: `ipfs://huelegend/batch/${batchCode.trim()}` trước khi truyền vào hàm `createBatch` của Smart Contract.
+3. **Lưu & Truy Xuất Mã Băm Giao Dịch Sepolia (`txHash`):**
+   - Sau khi giao dịch MetaMask được phát hành (`tx.hash`) và xác nhận khối thành công (`tx.wait()`), `txHash` được ghi nhận trực tiếp vào state lô hàng cũng như bộ lưu trữ `localStorage` (`hl_batch_txhashes`).
+   - Trong `fetchContractData` (`App.tsx`), hệ thống truy vấn các sự kiện `BatchCreated` on-chain để trích xuất chính xác `transactionHash` Sepolia của từng lô hàng.
+4. **Hiển thị Link Etherscan trên Màn hình "Tra Cứu Tem QR" (`LookupTab.tsx`):**
+   - Thêm khối hiển thị **Mã Băm Giao Dịch (Tx Hash)** tại thông tin chi tiết lô hàng kèm liên kết trực tiếp tới Etherscan Sepolia (`https://sepolia.etherscan.io/tx/${txHash}`) với biểu tượng `ExternalLink` và font monospace font-mono.
+5. **Cập nhật AI_JOURNAL.md:**
+   - Đã ghi nhật ký chi tiết quá trình nâng cấp vào tệp `AI_JOURNAL.md`.
+
+---
+
+## 27. Phiên làm việc Lab 31: Tự Động Sinh Mã Lô Hàng Dựa Trên Tên Đặc Sản
+
+### 27.1. Câu lệnh (Prompt) đưa vào trợ lý AI:
+> *"Sau khi nhập Tên Đặc Sản thì dựa vào tên đặc sản để tạo Mã Lô Hàng chứ không tự nhập Mã Lô Hàng"*
+
+### 27.2. Phân tích của Trợ lý AI và Kết quả triển khai:
+1. **Thuật toán Tự Động Sinh Mã Lô Hàng (`generateBatchCodeFromProductName`):**
+   - Loại bỏ dấu tiếng Việt (NFD normalization + regex stripping).
+   - Trích xuất 3 từ viết tắt / từ khóa đầu tiên của tên đặc sản (ví dụ: "Mè Xửng Dừa Hoàng Gia Huế" -> `MEXUNGDUA`).
+   - Tự động ghép thành mã định danh lô hàng chuẩn On-Chain: `HL-${prefix}-${năm}-001` (ví dụ: `HL-MEXUNGDUA-2026-001`).
+2. **Khóa Ô Nhập Mã Lô Hàng (`readOnly`):**
+   - Chuyển ô input "Mã Lô Hàng On-Chain" sang chế độ chỉ đọc `readOnly` với huy hiệu thông báo `⚡ Tự động tạo từ Tên Đặc Sản`.
+   - Ngay khi người dùng nhập thông tin ở ô **Tên Đặc Sản**, ô Mã Lô Hàng sẽ tự động được điền mã phù hợp mà không cần thao tác gõ thủ công.
+3. **Cập nhật AI_JOURNAL.md:**
+   - Đã ghi nhật ký chi tiết bước cập nhật vào tệp `AI_JOURNAL.md`.
+
+---
+
+## 28. Phiên làm việc Lab 32: Loại Bỏ Ô Nhập Liệu Certificate IPFS URI Trong Trang Thẩm Định OCOP
+
+### 28.1. Câu lệnh (Prompt) đưa vào trợ lý AI:
+> *"Xóa ô input Certificate IPFS URI"*
+
+### 28.2. Phân tích của Trợ lý AI và Kết quả triển khai:
+1. **Loại Bỏ Ô Nhập Certificate IPFS URI (`InspectorTab.tsx`):**
+   - Đã gỡ bỏ hoàn toàn ô input "Certificate IPFS URI" và state `certificateURI` khỏi biểu mẫu thẩm định OCOP trong `InspectorTab.tsx`.
+2. **Tự Động Sinh Chuỗi Certificate IPFS URI On-Chain:**
+   - Trong hàm `handleVerify`, ứng dụng tự động sinh ra chuỗi Certificate URI chuẩn theo cú pháp: `ipfs://huelegend/cert/${selectedBatchCode}` trước khi gọi `onVerifyBatch`.
+3. **Cập nhật AI_JOURNAL.md:**
+   - Đã ghi nhật ký chi tiết bước cập nhật vào tệp `AI_JOURNAL.md`.
+
+---
+
+## 29. Phiên làm việc Lab 33: Nâng Cấp Logic Phí Thẩm Định OCOP & Trang Thẩm Định / Tra Cứu QR
+
+### 29.1. Câu lệnh (Prompt) đưa vào trợ lý AI:
+> *"Hãy cập nhật logic Phí Thẩm Định (Inspection Fee) và giao diện trang Kiểm Định OCOP trong web/src/:
+> 1. Thu Phí Thẩm Định ở bước Tạo Lô Hàng (Producer): Phí Thẩm Định (0.002 ETH) do Nhà sản xuất chi trả gộp vào giao dịch Create Batch.
+> 2. Cập nhật Giao diện & Logic trang Kiểm Định OCOP (Inspector): Thêm ô chọn Hạng Sao OCOP (3 Sao, 4 Sao, 5 Sao); Dòng trạng thái minh bạch 'Trạng thái phí: Đã được Cơ sở sản xuất thanh toán (0.002 ETH)'; Ràng buộc RBAC Kiểm định viên; Người thẩm định KHÔNG TRẢ PHÍ (0 ETH), chỉ trả phí Gas Sepolia nhỏ; Tự động mã hóa chuỗi Metadata Certificate ngầm (ipfs://huelegend/cert/${batchId}).
+> 3. Đồng bộ QR Trace: Lưu Hạng sao, Ghi chú và Tx Hash thẩm định để hiển thị đầy đủ trên trang Tra Cứu Tem QR."*
+
+### 29.2. Phân tích của Trợ lý AI và Kết quả triển khai:
+1. **Thu Phí Thẩm Định Gộp Ở Bước Tạo Lô Hàng (`CreateBatchTab.tsx` & `App.tsx`):**
+   - Khi Cơ sở sản xuất (Producer) bấm Khởi Tạo Lô Hàng, giá trị giao dịch `createBatch` bao gồm cả Phí Tạo Lô (0.001 ETH) + Phí Thẩm Định OCOP (0.002 ETH) = Tổng **0.003 ETH**.
+   - Bổ sung thẻ chi tiết phí minh bạch trên biểu mẫu để Nhà sản xuất dễ dàng theo dõi.
+2. **Nâng Cấp Màn Hình Thẩm Định OCOP (`InspectorTab.tsx`):**
+   - **Xếp Hạng Sao OCOP**: Bổ sung bộ chọn hạng sao OCOP trực quan: ⭐ 3 Sao (Cấp Tỉnh), ⭐⭐ 4 Sao (Chất Lượng Cao Tỉnh), ⭐⭐⭐ 5 Sao (Cấp Quốc Gia).
+   - **Trạng Thái Phí Minh Bạch**: Hiển thị thẻ báo xanh *"Trạng thái phí thẩm định: Đã được Cơ sở sản xuất thanh toán (0.002 ETH)"*.
+   - **Ràng Bắt Buộc RBAC & Cảnh Báo Chuyển Ví**: Hiển thị banner cảnh báo nếu ví hiện tại chưa có quyền `ROLE_INSPECTOR` kèm nút hỗ trợ chuyển ví nhanh.
+   - **Miễn Phí Cho Người Thẩm Định**: Kiểm định viên không cần gửi kèm ETH (`value: 0 ETH`), chỉ trả phí gas Sepolia nhỏ để ký chứng nhận.
+   - **Tự Động Mã Hóa Certificate URI**: Chuỗi `ipfs://huelegend/cert/${batchCode}` được tự động khởi tạo ngầm.
+3. **Đồng Bộ Dữ Liệu Tra Cứu Tem QR (`LookupTab.tsx`):**
+   - Khi tra cứu lô hàng đã thẩm định, giao diện hiển thị huy hiệu OCOP kèm số sao chính thức (⭐ 3-5 Sao), ghi chú đánh giá của Kiểm định viên, xác nhận phí đã thanh toán và **Mã Băm Giao Dịch Thẩm Định (Verify Tx Hash)** kết nối trực tiếp Sepolia Etherscan.
+4. **Cập nhật AI_JOURNAL.md:**
+   - Đã ghi chép nhật ký đầy đủ vào tệp `AI_JOURNAL.md`.
+
