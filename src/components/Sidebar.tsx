@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import {
   LayoutDashboard,
   QrCode,
@@ -15,11 +15,7 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { TabId } from '../lib/access';
-<<<<<<< HEAD
-import { CONTRACT_ADDRESS, ETHERSCAN_BASE_URL, OWNER_WALLET } from '../constants';
-=======
 import { ETHERSCAN_BASE_URL, OWNER_WALLET } from '../constants';
->>>>>>> a697c56ebb70d61b5be6a91dc6418662d7dcaed5
 
 interface SidebarProps {
   activeTab: string;
@@ -31,50 +27,50 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, allowedTabs, onTabC
   const navItems = [
     {
       id: 'overview',
-      label: 'Tá»•ng Quan Há»‡ Thá»‘ng',
-      sublabel: 'Báº£ng Ä‘iá»u khiá»ƒn & thá»‘ng kÃª',
+      label: 'Tổng Quan Hệ Thống',
+      sublabel: 'Bảng điều khiển & thống kê',
       icon: LayoutDashboard,
     },
     {
       id: 'lookup',
-      label: 'Tra Cá»©u Tem QR',
-      sublabel: 'XÃ¡c thá»±c & quÃ©t mÃ£ camera',
+      label: 'Tra Cứu Tem QR',
+      sublabel: 'Xác thực & quét mã camera',
       icon: QrCode,
     },
     {
       id: 'store',
-      label: 'Cá»­a HÃ ng Äáº·c Sáº£n',
-      sublabel: 'Mua hÃ ng báº±ng Sepolia ETH',
+      label: 'Cửa Hàng Đặc Sản',
+      sublabel: 'Mua hàng bằng Sepolia ETH',
       icon: Store,
     },
     {
       id: 'create-batch',
-      label: '1. Táº¡o LÃ´ HÃ ng',
-      sublabel: 'BÆ°á»›c 1: Khai bÃ¡o lÃ´ & tráº£ phÃ­ tháº©m Ä‘á»‹nh',
+      label: '1. Tạo Lô Hàng',
+      sublabel: 'Bước 1: Khai báo lô & trả phí thẩm định',
       icon: PlusCircle,
     },
     {
       id: 'inspector',
-      label: '2. Kiá»ƒm Äá»‹nh OCOP',
-      sublabel: 'BÆ°á»›c 2: Tháº©m Ä‘á»‹nh & cáº¥p chá»©ng nháº­n',
+      label: '2. Kiểm Định OCOP',
+      sublabel: 'Bước 2: Thẩm định & cấp chứng nhận',
       icon: ShieldCheck,
     },
     {
       id: 'checkpoint',
-      label: '3. Váº­n Chuyá»ƒn',
-      sublabel: 'BÆ°á»›c 3: Nháº­t kÃ½ váº­n chuyá»ƒn & kho',
+      label: '3. Vận Chuyển',
+      sublabel: 'Bước 3: Nhật ký vận chuyển & kho',
       icon: Truck,
     },
     {
       id: 'retailer',
-      label: '4. Quáº£n LÃ½ NiÃªm Yáº¿t',
-      sublabel: 'BÆ°á»›c 4: Nháº­p kho & niÃªm yáº¿t bÃ¡n láº»',
+      label: '4. Quản Lý Niêm Yết',
+      sublabel: 'Bước 4: Nhập kho & niêm yết bán lẻ',
       icon: Tag,
     },
     {
       id: 'admin',
-      label: 'Quáº£n Trá»‹ Há»‡ Thá»‘ng',
-      sublabel: 'PhÃ¢n quyá»n RBAC & Ä‘á»•i phÃ­',
+      label: 'Quản Trị Hệ Thống',
+      sublabel: 'Phân quyền RBAC & đổi phí',
       icon: Settings,
     },
   ];
@@ -110,10 +106,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, allowedTabs, onTabC
         {/* Navigation Section */}
         <div>
           <div className="text-xs font-black text-[#6B8073] uppercase tracking-widest px-2 mb-2.5">
-            CHá»¨C NÄ‚NG Há»† THá»NG
+            CHỨC NĂNG HỆ THỐNG
           </div>
 
-          <nav aria-label="Äiá»u hÆ°á»›ng chÃ­nh" className="flex flex-col gap-2">
+          <nav aria-label="Điều hướng chính" className="flex flex-col gap-2">
             {filteredNavItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -149,17 +145,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, allowedTabs, onTabC
         <div className="bg-gradient-to-br from-[#E0ECE4]/90 to-[#F2F6F3] p-4 rounded-2xl border border-[#CCD8CF] space-y-2.5">
           <div className="flex items-center gap-2 text-sm font-extrabold text-[#264939]">
             <Sparkles className="w-4 h-4 text-[#C29B38] shrink-0" />
-            <span className="font-serif text-sm">TiÃªu Chuáº©n OCOP Huáº¿</span>
+            <span className="font-serif text-sm">Tiêu Chuẩn OCOP Huế</span>
           </div>
 
           <p className="text-xs text-[#3B4D43] font-medium leading-relaxed">
-            Sá»‘ hÃ³a minh báº¡ch 100% tá»«ng cháº·ng chÄƒn nuÃ´i, cháº¿ biáº¿n vÃ  lÆ°u kho trÃªn Sepolia Testnet.
+            Số hóa minh bạch 100% từng chặng chăn nuôi, chế biến và lưu kho trên Sepolia Testnet.
           </p>
 
           <div className="pt-2 border-t border-[#CCD8CF]/60 flex items-center justify-between text-xs text-[#5E7166]">
             <div className="flex items-center gap-1 font-bold">
               <MapPin className="w-3.5 h-3.5 text-[#C29B38]" />
-              <span>Thá»«a ThiÃªn Huáº¿</span>
+              <span>Thừa Thiên Huế</span>
             </div>
             <span className="font-extrabold text-[#264939]">Sepolia 100%</span>
           </div>
@@ -171,20 +167,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, allowedTabs, onTabC
             <span>VÍ ADMIN / OWNER</span>
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
           </div>
-
           <a
             href={`${ETHERSCAN_BASE_URL}/address/${OWNER_WALLET}`}
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm font-mono font-extrabold text-[#264939] hover:underline flex items-center justify-between"
           >
-<<<<<<< HEAD
-            <span className="truncate">
-              {OWNER_WALLET.slice(0, 10)}...{OWNER_WALLET.slice(-4)}
-            </span>
-=======
             <span className="truncate">{OWNER_WALLET.slice(0, 10)}...{OWNER_WALLET.slice(-4)}</span>
->>>>>>> a697c56ebb70d61b5be6a91dc6418662d7dcaed5
             <ExternalLink className="w-3.5 h-3.5 shrink-0 ml-1 text-[#C29B38]" />
           </a>
         </div>
@@ -198,12 +187,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, allowedTabs, onTabC
             <span className="bg-white/15 px-2 py-0.5 rounded-md text-[10px] font-mono font-bold text-emerald-200">v1.0.0</span>
           </div>
           <p className="text-xs text-emerald-100 font-bold leading-snug">
-            Truy xuáº¥t Nguá»“n gá»‘c Äáº·c sáº£n Cá»‘ ÄÃ´
+            Truy xuất Nguồn gốc Đặc sản Cố Đô
           </p>
         </div>
       </div>
     </aside>
   );
 };
-
-

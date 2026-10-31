@@ -1,4 +1,4 @@
-﻿export const TAB_IDS = ['overview', 'lookup', 'store', 'create-batch', 'inspector', 'checkpoint', 'retailer', 'admin'] as const;
+export const TAB_IDS = ['overview', 'lookup', 'store', 'create-batch', 'inspector', 'checkpoint', 'retailer', 'admin'] as const;
 export type TabId = typeof TAB_IDS[number];
 export type WorkspaceRole = 'GUEST' | 'CUSTOMER' | 'ADMIN' | 'PRODUCER' | 'INSPECTOR' | 'LOGISTICS' | 'RETAILER';
 export type ChainRole = 'ROLE_ADMIN' | 'ROLE_PRODUCER' | 'ROLE_INSPECTOR' | 'ROLE_LOGISTICS' | 'ROLE_RETAILER';
@@ -15,8 +15,8 @@ export interface WalletSession {
 export const SEPOLIA_CHAIN = '0xaa36a7';
 export const CHAIN_ROLES: ChainRole[] = ['ROLE_ADMIN', 'ROLE_PRODUCER', 'ROLE_INSPECTOR', 'ROLE_LOGISTICS', 'ROLE_RETAILER'];
 export const ROLE_LABELS: Record<WorkspaceRole, string> = {
-  GUEST: 'KhÃ¡ch chÆ°a káº¿t ná»‘i', CUSTOMER: 'KhÃ¡ch hÃ ng / Du khÃ¡ch', ADMIN: 'Quáº£n trá»‹ há»‡ thá»‘ng (Owner)',
-  PRODUCER: 'CÆ¡ sá»Ÿ sáº£n xuáº¥t', INSPECTOR: 'Kiá»ƒm Ä‘á»‹nh viÃªn OCOP', LOGISTICS: 'ÄÆ¡n vá»‹ váº­n chuyá»ƒn', RETAILER: 'Äáº¡i lÃ½ bÃ¡n láº»',
+  GUEST: 'Khách chưa kết nối', CUSTOMER: 'Khách hàng / Du khách', ADMIN: 'Quản trị hệ thống (Owner)',
+  PRODUCER: 'Cơ sở sản xuất', INSPECTOR: 'Kiểm định viên OCOP', LOGISTICS: 'Đơn vị vận chuyển', RETAILER: 'Đại lý bán lẻ',
 };
 export function emptyPermissions(): RolePermissions {
   return { owner: false, ROLE_ADMIN: false, ROLE_PRODUCER: false, ROLE_INSPECTOR: false, ROLE_LOGISTICS: false, ROLE_RETAILER: false };
@@ -75,4 +75,3 @@ export function checkpointWorkspace(role: string): WorkspaceRole | null {
   const key = role.replace(/^ROLE_/, '');
   return ['PRODUCER', 'LOGISTICS', 'RETAILER', 'INSPECTOR'].includes(key) ? key as WorkspaceRole : null;
 }
-

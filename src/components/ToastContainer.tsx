@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { ToastMessage } from '../types';
 import { CheckCircle2, AlertCircle, Info, AlertTriangle, X } from 'lucide-react';
 
@@ -53,4 +53,3 @@ export const ToastContainer: React.FC<ToastContainerProps> = ({ toasts, onClose 
     </div>
   );
 };
-

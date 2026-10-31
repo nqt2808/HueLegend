@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Batch } from '../types';
 import { QRCodeSVG } from 'qrcode.react';
 import { X, Printer, ShieldCheck, Award, GripHorizontal } from 'lucide-react';
@@ -37,7 +37,7 @@ export const QRStampModal: React.FC<QRStampModalProps> = ({ batch, onClose }) =>
         <div
           {...dragHeaderProps}
           className="flex items-center justify-between pb-4 border-b border-[#EDE9E0] select-none touch-none"
-          title="Náº¯m giá»¯ vÃ  kÃ©o Ä‘á»ƒ di chuyá»ƒn popup"
+          title="Nắm giữ và kéo để di chuyển popup"
         >
           <div className="flex items-center gap-2">
             <div className="p-1 rounded-lg bg-[#FAF9F5] border border-[#E6E1D7] text-[#8A9D92] hover:text-[#264939] transition-colors">
@@ -45,7 +45,7 @@ export const QRStampModal: React.FC<QRStampModalProps> = ({ batch, onClose }) =>
             </div>
             <Award className="w-5 h-5 text-[#C29B38] pointer-events-none" />
             <h3 className="font-serif font-extrabold text-lg text-[#264939] pointer-events-none">
-              Tem MÃ£ QR NiÃªm Phong Äáº·c Sáº£n
+              Tem Mã QR Niêm Phong Đặc Sản
             </h3>
           </div>
           <button
@@ -65,10 +65,10 @@ export const QRStampModal: React.FC<QRStampModalProps> = ({ batch, onClose }) =>
           {/* Top Royal Header */}
           <div className="space-y-1">
             <div className="text-[10px] font-sans font-extrabold tracking-widest text-[#C29B38] uppercase">
-              Uá»¶ BAN NHÃ‚N DÃ‚N Tá»ˆNH THá»ªA THIÃŠN HUáº¾
+              UỶ BAN NHÂN DÂN TỈNH THỪA THIÊN HUẾ
             </div>
             <div className="text-xs font-sans font-bold text-[#264939]">
-              TEM CHá»¨NG NHáº¬N TRUY XUáº¤T NGUá»’N Gá»C BLOCKCHAIN
+              TEM CHỨNG NHẬN TRUY XUẤT NGUỒN GỐC BLOCKCHAIN
             </div>
           </div>
 
@@ -94,7 +94,7 @@ export const QRStampModal: React.FC<QRStampModalProps> = ({ batch, onClose }) =>
 
           <div className="pt-2 border-t border-[#EDE9E0] flex items-center justify-center gap-1.5 text-xs font-sans font-bold text-[#8C6D1F]">
             <ShieldCheck className="w-4 h-4 text-[#C29B38]" />
-            <span>{batch.ocopStandard || 'XÃ¡c thá»±c OCOP Cá»‘ ÄÃ´ Huáº¿'}</span>
+            <span>{batch.ocopStandard || 'Xác thực OCOP Cố Đô Huế'}</span>
           </div>
         </div>
 
@@ -105,11 +105,10 @@ export const QRStampModal: React.FC<QRStampModalProps> = ({ batch, onClose }) =>
             className="flex-1 inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-[#264939] text-white font-bold text-xs hover:bg-[#1c372b] transition-all shadow-md"
           >
             <Printer className="w-4 h-4" />
-            <span>In Tem NiÃªm Phong</span>
+            <span>In Tem Niêm Phong</span>
           </button>
         </div>
       </div>
     </div>
   );
 };
-

@@ -1,4 +1,4 @@
-﻿import { ethers } from 'ethers';
+import { ethers } from 'ethers';
 import { Batch } from './types';
 
 // Ham chuan hoa dia chi vi EIP-55 bang ethers.getAddress tu chuoi lowercased
@@ -15,15 +15,8 @@ export const safeGetAddress = (address: string): string => {
 };
 
 // Cau hinh hop dong va mang Sepolia
-<<<<<<< HEAD
-export const CONTRACT_ADDRESS = safeGetAddress("0x2e4216e1BCA81d308b25adaD6ef5Ea92E2e42F8c");
-export const OWNER_WALLET = safeGetAddress(
-  "0x2e4216e1BCA81d308b25adaD6ef5Ea92E2e42F8c"
-);
-=======
 export const CONTRACT_ADDRESS = safeGetAddress("0xd689c22E4Fa4B8C80F374EF0F19D4Be6A5210f4C");
 export const OWNER_WALLET = safeGetAddress("0x2e4216e1BCA81d308b25adaD6ef5Ea92E2e42F8c");
->>>>>>> a697c56ebb70d61b5be6a91dc6418662d7dcaed5
 export const SEPOLIA_CHAIN_ID = "0xaa36a7"; // 11155111
 export const SEPOLIA_DECIMAL_ID = 11155111;
 export const ETHERSCAN_BASE_URL = "https://sepolia.etherscan.io";
@@ -92,4 +85,3 @@ export const PROJECT_CORE_ABI = [
 
 // Zero hardcoded mock products. Live data is read directly from Sepolia Smart Contract.
 export const DEFAULT_SAMPLE_BATCHES: Record<string, Batch> = {};
-

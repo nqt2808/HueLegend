@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { X, Wallet, ShieldCheck, ExternalLink, LogOut, Coins, Network, GripHorizontal } from 'lucide-react';
 import { ETHERSCAN_BASE_URL, CONTRACT_ADDRESS } from '../constants';
 import { useDraggable } from '../hooks/useDraggable';
@@ -36,24 +36,24 @@ export const WalletDetailsModal: React.FC<WalletDetailsModalProps> = ({
 
   // Xac dinh nhan va so du ETH tich luy theo vai tro vi
   let roleLabel = roleTitle;
-  let roleSubtext = 'Sá»‘ dÆ° há»£p Ä‘á»“ng (khÃ´ng pháº£i sá»‘ dÆ° vÃ­ cá»§a báº¡n)';
+  let roleSubtext = 'Số dư hợp đồng (không phải số dư ví của bạn)';
   let roleBalance = contractBalanceEth;
 
   if (userRole === 'PRODUCER' || userRole === 'SUPPLY_CHAIN') {
-    roleLabel = 'CÆ¡ Sá»Ÿ Sáº£n Xuáº¥t';
-    roleSubtext = 'KÃ½ quá»¹ sáº£n xuáº¥t & Ä‘áº£m báº£o cháº¥t lÆ°á»£ng OCOP';
+    roleLabel = 'Cơ Sở Sản Xuất';
+    roleSubtext = 'Ký quỹ sản xuất & đảm bảo chất lượng OCOP';
     roleBalance = producerStakeBalance;
   } else if (userRole === 'INSPECTOR') {
-    roleLabel = 'Kiá»ƒm Äá»‹nh ViÃªn OCOP';
-    roleSubtext = 'Sá»‘ dÆ° há»£p Ä‘á»“ng, khÃ´ng pháº£i phÃ­ cá»§a kiá»ƒm Ä‘á»‹nh viÃªn';
+    roleLabel = 'Kiểm Định Viên OCOP';
+    roleSubtext = 'Số dư hợp đồng, không phải phí của kiểm định viên';
     roleBalance = contractBalanceEth;
   } else if (userRole === 'RETAILER' || userRole === 'COMMERCE') {
-    roleLabel = 'Äáº¡i LÃ½ ThÆ°Æ¡ng Máº¡i';
-    roleSubtext = 'Sá»‘ dÆ° há»£p Ä‘á»“ng, khÃ´ng pháº£i doanh thu riÃªng';
+    roleLabel = 'Đại Lý Thương Mại';
+    roleSubtext = 'Số dư hợp đồng, không phải doanh thu riêng';
     roleBalance = contractBalanceEth;
   } else if (userRole === 'ADMIN') {
-    roleLabel = 'Quáº£n Trá»‹ ViÃªn (Admin)';
-    roleSubtext = 'Tá»•ng phÃ­ tÃ­ch lÅ©y Treasury Smart Contract';
+    roleLabel = 'Quản Trị Viên (Admin)';
+    roleSubtext = 'Tổng phí tích lũy Treasury Smart Contract';
     roleBalance = contractBalanceEth;
   }
 
@@ -73,7 +73,7 @@ export const WalletDetailsModal: React.FC<WalletDetailsModalProps> = ({
         <div
           {...dragHeaderProps}
           className="flex items-center justify-between pb-4 border-b border-[#EDE9E0] select-none touch-none"
-          title="Náº¯m giá»¯ vÃ  kÃ©o Ä‘á»ƒ di chuyá»ƒn popup"
+          title="Nắm giữ và kéo để di chuyển popup"
         >
           <div className="flex items-center gap-2">
             <div className="p-1 rounded-lg bg-[#FAF9F5] border border-[#E6E1D7] text-[#8A9D92] hover:text-[#264939] transition-colors">
@@ -81,14 +81,14 @@ export const WalletDetailsModal: React.FC<WalletDetailsModalProps> = ({
             </div>
             <Wallet className="w-5 h-5 text-[#264939] pointer-events-none" />
             <h3 className="font-serif font-extrabold text-lg text-[#264939] pointer-events-none">
-              ThÃ´ng Sá»‘ VÃ­ Káº¿t Ná»‘i
+              Thông Số Ví Kết Nối
             </h3>
           </div>
           <button
             onClick={onClose}
             onPointerDown={(e) => e.stopPropagation()}
             className="p-1.5 rounded-full bg-[#FAF9F5] border border-[#E6E1D7] text-gray-400 hover:text-gray-700 hover:bg-[#E0ECE4] transition-all"
-            title="ÄÃ³ng"
+            title="Đóng"
           >
             <X className="w-5 h-5" />
           </button>
@@ -98,7 +98,7 @@ export const WalletDetailsModal: React.FC<WalletDetailsModalProps> = ({
         <div className="bg-[#FAF9F5] p-4 rounded-2xl border border-[#E6E1D7] space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-bold text-[#8A9D92] uppercase tracking-wider">
-              TÃ€I KHOáº¢N VÃ ÄANG Káº¾T Ná»I
+              TÀI KHOẢN VÍ ĐANG KẾT NỐI
             </span>
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
           </div>
@@ -128,7 +128,7 @@ export const WalletDetailsModal: React.FC<WalletDetailsModalProps> = ({
           <div className="bg-[#FAF9F5] p-3.5 rounded-xl border border-[#E6E1D7] space-y-1">
             <div className="flex items-center gap-1.5 text-[#5E7166]">
               <Network className="w-3.5 h-3.5 text-[#264939]" />
-              <span className="font-bold text-[11px]">Máº NG LÆ¯á»šI</span>
+              <span className="font-bold text-[11px]">MẠNG LƯỚI</span>
             </div>
             <p className="font-bold text-[#1A2820]">Sepolia Testnet</p>
             <p className="text-[10px] text-gray-500 font-mono">Chain ID: 11155111</p>
@@ -137,10 +137,10 @@ export const WalletDetailsModal: React.FC<WalletDetailsModalProps> = ({
           <div className="bg-[#FAF9F5] p-3.5 rounded-xl border border-[#E6E1D7] space-y-1">
             <div className="flex items-center gap-1.5 text-[#5E7166]">
               <ShieldCheck className="w-3.5 h-3.5 text-[#C29B38]" />
-              <span className="font-bold text-[11px]">VAI TRÃ’ VÃ</span>
+              <span className="font-bold text-[11px]">VAI TRÒ VÍ</span>
             </div>
-            <p className="font-bold text-[#264939] truncate">{roleTitle || 'Táº¥t cáº£ vai trÃ²'}</p>
-            <p className="text-[10px] text-emerald-700 font-medium">ÄÃ£ xÃ¡c thá»±c</p>
+            <p className="font-bold text-[#264939] truncate">{roleTitle || 'Tất cả vai trò'}</p>
+            <p className="text-[10px] text-emerald-700 font-medium">Đã xác thực</p>
           </div>
 
           {/* Accumulated ETH Balance in Smart Contract (Categorized by Role) */}
@@ -149,7 +149,7 @@ export const WalletDetailsModal: React.FC<WalletDetailsModalProps> = ({
               <div className="flex items-center gap-2">
                 <Coins className="w-4 h-4 text-emerald-700 shrink-0" />
                 <span className="text-[11px] sm:text-xs font-black text-[#264939] uppercase tracking-wider">
-                  THÃ”NG TIN Sá» DÆ¯ Äá»ŒC Tá»ª Há»¢P Äá»’NG
+                  THÔNG TIN SỐ DƯ ĐỌC TỪ HỢP ĐỒNG
                 </span>
               </div>
               <span className="text-[10px] font-bold bg-white text-emerald-800 px-2.5 py-1 rounded-lg border border-emerald-200 shadow-2xs shrink-0">
@@ -170,7 +170,7 @@ export const WalletDetailsModal: React.FC<WalletDetailsModalProps> = ({
 
         <button type="button" onClick={onSwitchRole}
           className="w-full rounded-xl border border-[#CCD8CF] bg-[#E0ECE4] text-[#264939] px-4 py-2.5 text-sm font-bold">
-          Äá»•i Vai TrÃ² LÃ m Viá»‡c
+          Đổi Vai Trò Làm Việc
         </button>
         {/* Ngat ket noi */}
         <div className="pt-2 border-t border-[#EDE9E0]">
@@ -182,11 +182,10 @@ export const WalletDetailsModal: React.FC<WalletDetailsModalProps> = ({
             className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-red-50 text-red-700 font-bold text-xs hover:bg-red-100 transition-all border border-red-200"
           >
             <LogOut className="w-4 h-4" />
-            <span>Ngáº¯t Káº¿t Ná»‘i VÃ­ (Disconnect Wallet)</span>
+            <span>Ngắt Kết Nối Ví (Disconnect Wallet)</span>
           </button>
         </div>
       </div>
     </div>
   );
 };
-

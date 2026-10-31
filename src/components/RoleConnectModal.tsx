@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { X, ShieldCheck, ArrowRight, GripHorizontal, Wallet, Sparkles } from 'lucide-react';
 import { useDraggable } from '../hooks/useDraggable';
 
@@ -25,49 +25,49 @@ export const RoleConnectModal: React.FC<RoleConnectModalProps> = ({
   const roleOptions = [
     {
       id: 'ADMIN',
-      icon: 'ðŸ‘‘',
-      title: 'Quáº£n Trá»‹ Há»‡ Thá»‘ng',
-      description: 'Chá»§ sá»Ÿ há»¯u há»£p Ä‘á»“ng (Owner). XÃ¡c minh trá»±c tiáº¿p trÃªn Sepolia.',
+      icon: '👑',
+      title: 'Quản Trị Hệ Thống',
+      description: 'Chủ sở hữu hợp đồng (Owner). Xác minh trực tiếp trên Sepolia.',
       badge: 'OWNER',
       badgeColor: 'bg-amber-100 text-amber-900 border-amber-300'
     },
     {
       id: 'SUPPLY_CHAIN',
-      icon: 'ðŸ“¦',
-      title: 'CÆ¡ Sá»Ÿ Sáº£n Xuáº¥t',
-      description: 'Khai bÃ¡o nguá»“n gá»‘c & khá»Ÿi táº¡o lÃ´ hÃ ng Ä‘áº·c sáº£n OCOP',
+      icon: '📦',
+      title: 'Cơ Sở Sản Xuất',
+      description: 'Khai báo nguồn gốc & khởi tạo lô hàng đặc sản OCOP',
       badge: 'ROLE_PRODUCER',
       badgeColor: 'bg-emerald-100 text-emerald-800 border-emerald-300'
     },
     {
       id: 'INSPECTOR',
-      icon: 'ðŸ›¡ï¸',
-      title: 'Kiá»ƒm Äá»‹nh ViÃªn OCOP',
-      description: 'Tháº©m Ä‘á»‹nh cháº¥t lÆ°á»£ng & cáº¥p chá»©ng nháº­n OCOP 3-5 Sao',
+      icon: '🛡️',
+      title: 'Kiểm Định Viên OCOP',
+      description: 'Thẩm định chất lượng & cấp chứng nhận OCOP 3-5 Sao',
       badge: 'ROLE_INSPECTOR',
       badgeColor: 'bg-amber-100 text-[#8C6D1F] border-amber-300'
     },
     {
       id: 'LOGISTICS',
-      icon: 'ðŸšš',
-      title: 'ÄÆ¡n Vá»‹ Váº­n Chuyá»ƒn',
-      description: 'Ghi nháº­n nháº­t kÃ½ váº­n chuyá»ƒn kho láº¡nh & bÃ n giao',
+      icon: '🚚',
+      title: 'Đơn Vị Vận Chuyển',
+      description: 'Ghi nhận nhật ký vận chuyển kho lạnh & bàn giao',
       badge: 'ROLE_LOGISTICS',
       badgeColor: 'bg-blue-100 text-blue-800 border-blue-300'
     },
     {
       id: 'COMMERCE',
-      icon: 'ðŸª',
-      title: 'Äáº¡i LÃ½ BÃ¡n Láº»',
-      description: 'Nháº­p kho showroom & niÃªm yáº¿t sáº£n pháº©m OCOP',
+      icon: '🏪',
+      title: 'Đại Lý Bán Lẻ',
+      description: 'Nhập kho showroom & niêm yết sản phẩm OCOP',
       badge: 'ROLE_RETAILER',
       badgeColor: 'bg-purple-100 text-purple-800 border-purple-300'
     },
     {
       id: 'CUSTOMER',
-      icon: 'ðŸ”',
-      title: 'KhÃ¡ch HÃ ng / Du KhÃ¡ch',
-      description: 'QuÃ©t tem QR tra cá»©u nguá»“n gá»‘c & mua hÃ ng báº±ng ETH',
+      icon: '🔍',
+      title: 'Khách Hàng / Du Khách',
+      description: 'Quét tem QR tra cứu nguồn gốc & mua hàng bằng ETH',
       badge: 'CUSTOMER',
       badgeColor: 'bg-gray-100 text-gray-700 border-gray-300'
     }
@@ -89,7 +89,7 @@ export const RoleConnectModal: React.FC<RoleConnectModalProps> = ({
         <div
           {...dragHeaderProps}
           className="flex items-center justify-between pb-3.5 shrink-0 border-b border-[#EDE9E0] select-none touch-none"
-          title="Náº¯m giá»¯ thanh tiÃªu Ä‘á» Ä‘á»ƒ di chuyá»ƒn popup"
+          title="Nắm giữ thanh tiêu đề để di chuyển popup"
         >
           <div className="flex items-center gap-2.5">
             <div className="p-1.5 rounded-xl bg-[#FAF9F5] border border-[#E6E1D7] text-[#8A9D92] hover:text-[#264939] transition-colors">
@@ -105,7 +105,7 @@ export const RoleConnectModal: React.FC<RoleConnectModalProps> = ({
             />
             <span className="text-[#CCD8CF] font-light hidden sm:inline">|</span>
             <h3 className="font-serif font-extrabold text-base sm:text-lg text-[#264939] pointer-events-none whitespace-nowrap">
-              Káº¿t Ná»‘i VÃ­ MetaMask
+              Kết Nối Ví MetaMask
             </h3>
           </div>
 
@@ -113,7 +113,7 @@ export const RoleConnectModal: React.FC<RoleConnectModalProps> = ({
             onClick={onClose}
             onPointerDown={(e) => e.stopPropagation()}
             className="p-2 rounded-full bg-[#FAF9F5] border border-[#E6E1D7] text-gray-400 hover:text-gray-700 hover:bg-[#E0ECE4] transition-all min-h-[38px] min-w-[38px] flex items-center justify-center cursor-pointer"
-            title="ÄÃ³ng popup"
+            title="Đóng popup"
           >
             <X className="w-4 h-4" />
           </button>
@@ -122,7 +122,7 @@ export const RoleConnectModal: React.FC<RoleConnectModalProps> = ({
         {/* Subtitle Banner */}
         <div className="pt-3 pb-1 shrink-0 flex items-center justify-between gap-2">
           <p className="text-xs font-sans text-[#5E7166] font-medium">
-            Chá»n khu vá»±c lÃ m viá»‡c. Há»‡ thá»‘ng chá»‰ má»Ÿ chá»©c nÄƒng khi vÃ­ cÃ³ quyá»n trÃªn há»£p Ä‘á»“ng:
+            Chọn khu vực làm việc. Hệ thống chỉ mở chức năng khi ví có quyền trên hợp đồng:
           </p>
           <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-800 bg-[#E0ECE4] px-2.5 py-0.5 rounded-full border border-[#CCD8CF] shrink-0">
             <Sparkles className="w-3 h-3 text-[#C29B38]" />
@@ -169,7 +169,7 @@ export const RoleConnectModal: React.FC<RoleConnectModalProps> = ({
         <div className="pt-3 border-t border-[#EDE9E0] shrink-0 flex flex-wrap items-center justify-between gap-2 text-[11px] font-sans text-[#5E7166]">
           <div className="flex items-center gap-1.5">
             <ShieldCheck className="w-4 h-4 text-[#C29B38] shrink-0" />
-            <span className="leading-tight">Káº¿t ná»‘i vÃ­ vÃ  kiá»ƒm tra quyá»n; khÃ´ng yÃªu cáº§u kÃ½ Ä‘Äƒng nháº­p.</span>
+            <span className="leading-tight">Kết nối ví và kiểm tra quyền; không yêu cầu ký đăng nhập.</span>
           </div>
 
           <button
@@ -178,11 +178,10 @@ export const RoleConnectModal: React.FC<RoleConnectModalProps> = ({
             className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#264939] text-white rounded-xl font-bold text-xs hover:bg-[#1c372b] transition-all shadow-2xs cursor-pointer"
           >
             <Wallet className="w-3.5 h-3.5 text-[#C29B38]" />
-            <span>Káº¿t Ná»‘i KhÃ¡ch HÃ ng</span>
+            <span>Kết Nối Khách Hàng</span>
           </button>
         </div>
       </div>
     </div>
   );
 };
-

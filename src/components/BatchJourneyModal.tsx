@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Batch } from '../types';
 import {
   X,
@@ -61,7 +61,7 @@ export const BatchJourneyModal: React.FC<BatchJourneyModalProps> = ({ batch, onC
         <div
           {...dragHeaderProps}
           className="flex items-center justify-between pb-4 border-b border-[#EDE9E0] select-none touch-none"
-          title="Náº¯m giá»¯ vÃ  kÃ©o Ä‘á»ƒ di chuyá»ƒn popup"
+          title="Nắm giữ và kéo để di chuyển popup"
         >
           <div className="flex items-center gap-2">
             <div className="p-1 rounded-lg bg-[#FAF9F5] border border-[#E6E1D7] text-[#8A9D92] hover:text-[#264939] transition-colors">
@@ -69,14 +69,14 @@ export const BatchJourneyModal: React.FC<BatchJourneyModalProps> = ({ batch, onC
             </div>
             <Award className="w-5 h-5 text-[#C29B38] pointer-events-none" />
             <h3 className="font-serif font-extrabold text-lg sm:text-xl text-[#264939] pointer-events-none">
-              Nháº­t KÃ½ HÃ nh TrÃ¬nh Supply Chain On-Chain Chi Tiáº¿t
+              Nhật Ký Hành Trình Supply Chain On-Chain Chi Tiết
             </h3>
           </div>
           <button
             onClick={onClose}
             onPointerDown={(e) => e.stopPropagation()}
             className="p-1.5 rounded-xl bg-[#FAF9F5] hover:bg-[#E0ECE4] text-gray-500 hover:text-[#264939] transition-colors border border-[#EDE9E0]"
-            title="ÄÃ³ng popup"
+            title="Đóng popup"
           >
             <X className="w-5 h-5" />
           </button>
@@ -107,7 +107,7 @@ export const BatchJourneyModal: React.FC<BatchJourneyModalProps> = ({ batch, onC
                 ) : (
                   <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-900 border border-amber-200 px-2.5 py-0.5 rounded-full text-[11px] font-bold">
                     <Clock className="w-3.5 h-3.5 text-amber-600" />
-                    <span>Chá» Tháº©m Äá»‹nh</span>
+                    <span>Chờ Thẩm Định</span>
                   </span>
                 )}
               </div>
@@ -119,7 +119,7 @@ export const BatchJourneyModal: React.FC<BatchJourneyModalProps> = ({ batch, onC
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#5E7166]">
                 <span className="inline-flex items-center gap-1">
                   <MapPin className="w-3.5 h-3.5 text-[#C29B38]" />
-                  <span>{batch.origin || 'Thá»«a ThiÃªn Huáº¿'}</span>
+                  <span>{batch.origin || 'Thừa Thiên Huế'}</span>
                 </span>
 
                 <span className="inline-flex items-center gap-1 font-mono text-[11px] text-[#264939] bg-white px-2 py-0.5 rounded border border-[#EDE9E0]">
@@ -135,7 +135,7 @@ export const BatchJourneyModal: React.FC<BatchJourneyModalProps> = ({ batch, onC
                 {batch.isVerified && batch.certificationNo && (
                   <span className="inline-flex items-center gap-1 font-semibold text-[#264939]">
                     <Building2 className="w-3.5 h-3.5 text-[#264939]" />
-                    <span>Sá»‘: {batch.certificationNo}</span>
+                    <span>Số: {batch.certificationNo}</span>
                   </span>
                 )}
               </div>
@@ -149,7 +149,7 @@ export const BatchJourneyModal: React.FC<BatchJourneyModalProps> = ({ batch, onC
                 {Array.from({ length: Number(batch.starRating || '4') }).map((_, i) => (
                   <Star key={i} className="w-3.5 h-3.5 fill-[#C29B38] text-[#C29B38]" />
                 ))}
-                <span>Äáº¡t Chá»©ng Nháº­n OCOP {batch.starRating || '4'} Sao Tá»‰nh Thá»«a ThiÃªn Huáº¿</span>
+                <span>Đạt Chứng Nhận OCOP {batch.starRating || '4'} Sao Tỉnh Thừa Thiên Huế</span>
               </div>
               {batch.inspectorNote && (
                 <p className="text-[#1A2820] italic font-serif text-[11px]">
@@ -166,10 +166,10 @@ export const BatchJourneyModal: React.FC<BatchJourneyModalProps> = ({ batch, onC
           <div className="flex items-center justify-between pb-2 border-b border-[#EDE9E0]">
             <h4 className="font-serif font-extrabold text-base text-[#264939] flex items-center gap-2">
               <FileCheck className="w-4 h-4 text-[#C29B38]" />
-              <span>Chi Tiáº¿t Nháº­t KÃ½ 4 Cháº·ng Supply Chain On-Chain</span>
+              <span>Chi Tiết Nhật Ký 4 Chặng Supply Chain On-Chain</span>
             </h4>
             <span className="text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-[#E0ECE4] text-[#264939] border border-[#CCD8CF]">
-              {enrichedCheckpoints.filter(c => c.isCompleted).length}/{enrichedCheckpoints.length} Cháº·ng XÃ¡c Thá»±c
+              {enrichedCheckpoints.filter(c => c.isCompleted).length}/{enrichedCheckpoints.length} Chặng Xác Thực
             </span>
           </div>
 
@@ -179,7 +179,7 @@ export const BatchJourneyModal: React.FC<BatchJourneyModalProps> = ({ batch, onC
               const StageIconComponent = cp.stageIcon || CheckCircle2;
               const dateStr = cp.timestamp
                 ? new Date(cp.timestamp * 1000).toLocaleString('vi-VN')
-                : 'Vá»«a khá»Ÿi táº¡o';
+                : 'Vừa khởi tạo';
 
               return (
                 <div key={idx} className="relative group font-sans">
@@ -202,12 +202,12 @@ export const BatchJourneyModal: React.FC<BatchJourneyModalProps> = ({ batch, onC
                           {cp.isCompleted ? (
                             <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
                               <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                              <span>XÃ¡c Thá»±c On-Chain</span>
+                              <span>Xác Thực On-Chain</span>
                             </span>
                           ) : (
                             <span className="inline-flex items-center gap-1 text-[10px] font-bold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
                               <Clock className="w-3 h-3 text-gray-400" />
-                              <span>Äang Chá»</span>
+                              <span>Đang Chờ</span>
                             </span>
                           )}
                         </div>
@@ -225,11 +225,11 @@ export const BatchJourneyModal: React.FC<BatchJourneyModalProps> = ({ batch, onC
                     <div className="space-y-2 text-xs text-[#3B4D43]">
                       <div className="flex items-center gap-1.5 text-[#264939] font-bold">
                         <MapPin className="w-3.5 h-3.5 text-[#C29B38] shrink-0" />
-                        <span>Äá»‹a Äiá»ƒm: {cp.location}</span>
+                        <span>Địa Điểm: {cp.location}</span>
                       </div>
 
                       <div className="bg-white p-3 rounded-xl border border-[#EDE9E0] space-y-1">
-                        <span className="text-[10px] font-bold text-[#8A9D92] uppercase block">Thao TÃ¡c Thá»±c Hiá»‡n:</span>
+                        <span className="text-[10px] font-bold text-[#8A9D92] uppercase block">Thao Tác Thực Hiện:</span>
                         <p className="leading-relaxed text-[#1A2820]">
                           {cp.action}
                         </p>
@@ -238,14 +238,14 @@ export const BatchJourneyModal: React.FC<BatchJourneyModalProps> = ({ batch, onC
                       {cp.envNote && (
                         <div className="flex items-center gap-2 bg-emerald-50/70 p-2 rounded-xl border border-emerald-200 text-[11px] text-[#264939]">
                           <Thermometer className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                          <span><strong>ThÃ´ng Sá»‘ Cáº£m Biáº¿n:</strong> {cp.envNote}</span>
+                          <span><strong>Thông Số Cảm Biến:</strong> {cp.envNote}</span>
                         </div>
                       )}
 
                       {cp.conditionNote && (
                         <div className="text-[11px] text-[#264939] flex items-center gap-1.5 bg-[#E0ECE4]/60 p-2 rounded-lg border border-[#CCD8CF]">
                           <CheckCircle2 className="w-3.5 h-3.5 text-[#264939] shrink-0" />
-                          <span><strong>Ghi ChÃº NiÃªm Phong:</strong> {cp.conditionNote}</span>
+                          <span><strong>Ghi Chú Niêm Phong:</strong> {cp.conditionNote}</span>
                         </div>
                       )}
                     </div>
@@ -254,12 +254,12 @@ export const BatchJourneyModal: React.FC<BatchJourneyModalProps> = ({ batch, onC
                     <div className="pt-2 flex flex-wrap items-center justify-between gap-2 text-[11px] text-[#8A9D92] border-t border-[#EDE9E0]">
                       <div className="font-mono text-[#1A2820] flex items-center gap-1.5">
                         <UserCheck className="w-3.5 h-3.5 text-[#264939]" />
-                        <span>VÃ­ Ghi: {cp.recorder ? `${cp.recorder.slice(0, 8)}...${cp.recorder.slice(-4)}` : '0x...'}</span>
+                        <span>Ví Ghi: {cp.recorder ? `${cp.recorder.slice(0, 8)}...${cp.recorder.slice(-4)}` : '0x...'}</span>
                         {cp.recorder && (
                           <button
                             onClick={() => handleCopyText(cp.recorder)}
                             className="text-gray-400 hover:text-[#264939]"
-                            title="Sao chÃ©p vÃ­"
+                            title="Sao chép ví"
                           >
                             {copiedTx === cp.recorder ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
                           </button>
@@ -273,7 +273,7 @@ export const BatchJourneyModal: React.FC<BatchJourneyModalProps> = ({ batch, onC
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1 text-[#264939] font-bold hover:underline bg-[#E0ECE4] px-2.5 py-1 rounded-lg border border-[#CCD8CF]"
                         >
-                          <span>Xem Khá»‘i Sepolia</span>
+                          <span>Xem Khối Sepolia</span>
                           <ExternalLink className="w-3 h-3 text-[#C29B38]" />
                         </a>
                       )}
@@ -291,12 +291,11 @@ export const BatchJourneyModal: React.FC<BatchJourneyModalProps> = ({ batch, onC
             onClick={onClose}
             className="px-5 py-2.5 rounded-xl bg-[#264939] text-white text-xs font-bold hover:bg-[#1c372b] transition-all shadow-md"
           >
-            ÄÃ³ng Cá»­a Sá»•
+            Đóng Cửa Sổ
           </button>
         </div>
       </div>
     </div>
   );
 };
-
 

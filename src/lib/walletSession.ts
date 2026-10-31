@@ -1,4 +1,4 @@
-﻿import {
+import {
   CHAIN_ROLES, ChainRole, WalletSession, WorkspaceRole, RolePermissions,
   SEPOLIA_CHAIN, canPerform, emptyPermissions, guestSession, hasWorkspacePermission,
   isAddress, normalizeChainId, normalizeWorkspace, sameAddress,
@@ -19,7 +19,7 @@ export async function withDeadline<T>(promise: Promise<T>, ms = 15000): Promise<
   let timer: ReturnType<typeof setTimeout> | undefined;
   try {
     return await Promise.race([promise, new Promise<T>((_, reject) => {
-      timer = setTimeout(() => reject(new WalletAccessError('QuÃ¡ thá»i gian xÃ¡c minh quyá»n trÃªn Sepolia. Vui lÃ²ng thá»­ láº¡i.')), ms);
+      timer = setTimeout(() => reject(new WalletAccessError('Quá thời gian xác minh quyền trên Sepolia. Vui lòng thử lại.')), ms);
     })]);
   } finally { if (timer) clearTimeout(timer); }
 }
@@ -60,7 +60,7 @@ export class WalletSessionController {
       account = identity.account;
       if (!account) { this.disconnect(); return this.snapshot; }
       if (identity.chainId !== SEPOLIA_CHAIN) {
-        this.clear('wrong-network', account, 'VÃ­ Ä‘ang á»Ÿ máº¡ng khÃ¡c. Chuyá»ƒn sang Sepolia Ä‘á»ƒ má»Ÿ chá»©c nÄƒng theo vai trÃ².', identity.chainId);
+        this.clear('wrong-network', account, 'Ví đang ở mạng khác. Chuyển sang Sepolia để mở chức năng theo vai trò.', identity.chainId);
         return this.snapshot;
       }
       if (!background || !sameAddress(this.snapshot.account, account)) this.clear('checking', account, '', identity.chainId);
@@ -68,17 +68,17 @@ export class WalletSessionController {
       const after = await this.identities();
       if (token !== this.generation || !this.enabled) return this.snapshot;
       if (!sameAddress(account, after.account) || after.chainId !== SEPOLIA_CHAIN) {
-        this.clear('error', after.account, 'TÃ i khoáº£n hoáº·c máº¡ng Ä‘Ã£ thay Ä‘á»•i. Vui lÃ²ng káº¿t ná»‘i láº¡i.', after.chainId);
+        this.clear('error', after.account, 'Tài khoản hoặc mạng đã thay đổi. Vui lòng kết nối lại.', after.chainId);
         return this.snapshot;
       }
       const allowed = hasWorkspacePermission(permissions, this.preferred);
       this.publish({ account, chainId: SEPOLIA_CHAIN, status: 'ready', permissions,
         workspace: allowed ? this.preferred : 'CUSTOMER',
-        notice: allowed ? '' : 'VÃ­ chÆ°a cÃ³ quyá»n cho vai trÃ² Ä‘Ã£ chá»n. Chá»‰ má»Ÿ chá»©c nÄƒng khÃ¡ch hÃ ng; cáº§n Owner cáº¥p quyá»n trÃªn há»£p Ä‘á»“ng.',
+        notice: allowed ? '' : 'Ví chưa có quyền cho vai trò đã chọn. Chỉ mở chức năng khách hàng; cần Owner cấp quyền trên hợp đồng.',
       });
     } catch {
       if (token === this.generation && this.enabled) this.clear('error', account,
-        'KhÃ´ng xÃ¡c minh Ä‘Æ°á»£c quyá»n trÃªn há»£p Ä‘á»“ng Sepolia. Chá»©c nÄƒng nghiá»‡p vá»¥ Ä‘Ã£ khÃ³a; báº¥m Äá»“ng bá»™ Ä‘á»ƒ thá»­ láº¡i.', SEPOLIA_CHAIN);
+        'Không xác minh được quyền trên hợp đồng Sepolia. Chức năng nghiệp vụ đã khóa; bấm Đồng bộ để thử lại.', SEPOLIA_CHAIN);
     }
     return this.snapshot;
   }
@@ -111,7 +111,7 @@ export class WalletSessionController {
     } catch (err: any) {
       if (token === this.generation) {
         this.enabled = false;
-        this.clear('guest', null, Number(err?.code) === 4001 ? 'Báº¡n Ä‘Ã£ tá»« chá»‘i káº¿t ná»‘i hoáº·c chuyá»ƒn máº¡ng trong MetaMask.' : 'KhÃ´ng thá»ƒ káº¿t ná»‘i vÃ­. HÃ£y kiá»ƒm tra MetaMask rá»“i thá»­ láº¡i.');
+        this.clear('guest', null, Number(err?.code) === 4001 ? 'Bạn đã từ chối kết nối hoặc chuyển mạng trong MetaMask.' : 'Không thể kết nối ví. Hãy kiểm tra MetaMask rồi thử lại.');
       }
       return this.snapshot;
     } finally { this.connecting = false; }
@@ -156,24 +156,23 @@ export class WalletSessionController {
   async authorize(role: WorkspaceRole): Promise<string> {
     const before = this.snapshot;
     const token = this.generation;
-    if (!canPerform(before, role) || !before.account) throw new WalletAccessError('VÃ­ chÆ°a cÃ³ quyá»n thá»±c hiá»‡n thao tÃ¡c nÃ y.');
+    if (!canPerform(before, role) || !before.account) throw new WalletAccessError('Ví chưa có quyền thực hiện thao tác này.');
     try {
       const identities = await this.identities();
       if (token !== this.generation || !sameAddress(before.account, identities.account) || identities.chainId !== SEPOLIA_CHAIN) {
-        throw new WalletAccessError('VÃ­ hoáº·c máº¡ng Ä‘Ã£ thay Ä‘á»•i. HÃ£y káº¿t ná»‘i láº¡i trÆ°á»›c khi giao dá»‹ch.');
+        throw new WalletAccessError('Ví hoặc mạng đã thay đổi. Hãy kết nối lại trước khi giao dịch.');
       }
       const permissions = await withDeadline(this.reader.permissions(before.account));
       const after = await this.identities();
       if (token !== this.generation || !sameAddress(before.account, after.account) || after.chainId !== SEPOLIA_CHAIN) {
-        throw new WalletAccessError('PhiÃªn vÃ­ Ä‘Ã£ thay Ä‘á»•i. Giao dá»‹ch chÆ°a Ä‘Æ°á»£c gá»­i.');
+        throw new WalletAccessError('Phiên ví đã thay đổi. Giao dịch chưa được gửi.');
       }
-      if (!canPerform({ ...before, permissions }, role)) throw new WalletAccessError('Quyá»n trÃªn há»£p Ä‘á»“ng Ä‘Ã£ thay Ä‘á»•i hoáº·c Ä‘Ã£ bá»‹ thu há»“i.');
+      if (!canPerform({ ...before, permissions }, role)) throw new WalletAccessError('Quyền trên hợp đồng đã thay đổi hoặc đã bị thu hồi.');
       this.publish({ ...before, permissions });
       return before.account;
     } catch (err) {
-      if (token === this.generation) this.clear('error', before.account, 'KhÃ´ng xÃ¡c minh Ä‘Æ°á»£c quyá»n giao dá»‹ch. Vui lÃ²ng Ä‘á»“ng bá»™ láº¡i.', before.chainId);
+      if (token === this.generation) this.clear('error', before.account, 'Không xác minh được quyền giao dịch. Vui lòng đồng bộ lại.', before.chainId);
       throw err;
     }
   }
 }
-

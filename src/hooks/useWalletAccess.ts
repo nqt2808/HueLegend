@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ethers } from 'ethers';
 import { CONTRACT_ADDRESS, PROJECT_CORE_ABI, ROLE_HASHES } from '../constants';
 import { CHAIN_ROLES, WorkspaceRole, WalletSession, emptyPermissions, guestSession, sameAddress, SEPOLIA_CHAIN, normalizeChainId, canPerform } from '../lib/access';
@@ -15,7 +15,7 @@ export function useWalletAccess() {
   const unsubscribe = useRef<(() => void) | null>(null);
   const ensureController = useCallback(() => {
     const injected = injectedWallet();
-    if (!injected) throw new Error('Vui lÃ²ng má»Ÿ MetaMask hoáº·c cÃ i vÃ­ Ä‘á»ƒ káº¿t ná»‘i.');
+    if (!injected) throw new Error('Vui lòng mở MetaMask hoặc cài ví để kết nối.');
     const existing = controller.current;
     if (existing && existing.provider === injected) return existing;
     unsubscribe.current?.();
@@ -26,7 +26,7 @@ export function useWalletAccess() {
         try {
           const blockTag = await provider.getBlockNumber();
           const code = await provider.getCode(CONTRACT_ADDRESS, blockTag);
-          if (code === '0x') throw new Error('KhÃ´ng cÃ³ smart contract táº¡i Ä‘á»‹a chá»‰ cáº¥u hÃ¬nh.');
+          if (code === '0x') throw new Error('Không có smart contract tại địa chỉ cấu hình.');
           const contract = new ethers.Contract(CONTRACT_ADDRESS, PROJECT_CORE_ABI, provider);
           const [owner, ...values] = await Promise.all([
             contract.owner({ blockTag }),
@@ -60,7 +60,7 @@ export function useWalletAccess() {
   const refresh = useCallback(async () => controller.current?.refresh(true), []);
   const authorizedSigner = useCallback(async (role: WorkspaceRole) => {
     const active = controller.current;
-    if (!active) throw new Error('Vui lÃ²ng káº¿t ná»‘i vÃ­ trÆ°á»›c.');
+    if (!active) throw new Error('Vui lòng kết nối ví trước.');
     const account = await active.authorize(role);
     const provider = new ethers.BrowserProvider(active.provider as any);
     try {
@@ -68,11 +68,10 @@ export function useWalletAccess() {
       const chain = await active.provider.request({ method: 'eth_chainId' });
       if (!sameAddress(await signer.getAddress(), account) || normalizeChainId(chain) !== SEPOLIA_CHAIN ||
         !canPerform(active.getSnapshot(), role) || !sameAddress(active.getSnapshot().account, account)) {
-        throw new Error('TÃ i khoáº£n hoáº·c máº¡ng Ä‘Ã£ thay Ä‘á»•i. Giao dá»‹ch chÆ°a Ä‘Æ°á»£c gá»­i.');
+        throw new Error('Tài khoản hoặc mạng đã thay đổi. Giao dịch chưa được gửi.');
       }
       return signer;
     } catch (err) { provider.destroy(); throw err; }
   }, []);
   return { session, connect, disconnect, refresh, authorizedSigner };
 }
-

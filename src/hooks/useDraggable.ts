@@ -1,4 +1,4 @@
-﻿import { useState, useRef, useEffect, useCallback, CSSProperties } from 'react';
+import { useState, useRef, useEffect, useCallback, CSSProperties } from 'react';
 
 // Hook tro giup keo tha popup (draggable modal) dinh vi truc tiep tai vi tri con tro chuot/nut da bam
 export function useDraggable(
@@ -120,4 +120,3 @@ export function useDraggable(
     }
   };
 }
-
