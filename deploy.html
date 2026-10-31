@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HueLegend - Deploy ProjectCore</title>
+  <style>
+    :root { font-family: Inter, system-ui, sans-serif; color: #183c30; background: #f4f1e8; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; }
+    .card { width: min(760px, 100%); background: #fff; border: 1px solid #d9d0bd; border-radius: 24px; padding: 28px; box-shadow: 0 18px 50px rgba(25,55,44,.12); }
+    h1 { margin: 0 0 8px; font-size: 30px; }
+    p { line-height: 1.6; }
+    .muted { color: #65776f; }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:18px 0; }
+    .box { border:1px solid #ddd5c5; border-radius:16px; padding:14px; background:#faf8f3; }
+    .label { font-size:12px; text-transform:uppercase; letter-spacing:.08em; color:#7b8b84; }
+    .value { margin-top:6px; font-family:ui-monospace, SFMono-Regular, Menlo, monospace; word-break:break-all; }
+    button { width:100%; border:0; border-radius:14px; padding:14px 18px; font-size:16px; font-weight:700; cursor:pointer; }
+    #connect { background:#d7a82d; color:#fff; margin-bottom:10px; }
+    #deploy { background:#174f3a; color:#fff; }
+    button:disabled { opacity:.45; cursor:not-allowed; }
+    #status { margin-top:18px; padding:14px; border-radius:14px; background:#eef7f1; white-space:pre-wrap; font-family:ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .warn { color:#8a4e00; }
+    .ok { color:#0b7a4b; }
+    @media (max-width:650px){ .grid{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Deploy ProjectCore lên Sepolia</h1>
+    <p class="muted">Trang nội bộ HueLegend. Không nhập private key hoặc seed phrase. MetaMask sẽ ký giao dịch trực tiếp.</p>
+
+    <div class="grid">
+      <div class="box">
+        <div class="label">Ví Admin bắt buộc</div>
+        <div id="admin" class="value">Đang tải...</div>
+      </div>
+      <div class="box">
+        <div class="label">Ví đang kết nối</div>
+        <div id="account" class="value">Chưa kết nối</div>
+      </div>
+      <div class="box">
+        <div class="label">Mạng</div>
+        <div id="network" class="value">Chưa xác định</div>
+      </div>
+      <div class="box">
+        <div class="label">Artifact</div>
+        <div id="artifact" class="value">Đang tải...</div>
+      </div>
+    </div>
+
+    <button id="connect">1. Kết nối MetaMask</button>
+    <button id="deploy" disabled>2. Deploy ProjectCore</button>
+
+    <div id="status">Sẵn sàng kiểm tra môi trường.</div>
+  </main>
+  <script type="module" src="/deploy.js"></script>
+</body>
+</html>
