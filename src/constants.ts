@@ -16,6 +16,7 @@ export const safeGetAddress = (address: string): string => {
 
 // Cau hinh hop dong va mang Sepolia
 export const CONTRACT_ADDRESS = safeGetAddress("0xd689c22E4Fa4B8C80F374EF0F19D4Be6A5210f4C");
+export const OWNER_WALLET = safeGetAddress("0x2e4216e1BCA81d308b25adaD6ef5Ea92E2e42F8c");
 export const SEPOLIA_CHAIN_ID = "0xaa36a7"; // 11155111
 export const SEPOLIA_DECIMAL_ID = 11155111;
 export const ETHERSCAN_BASE_URL = "https://sepolia.etherscan.io";
