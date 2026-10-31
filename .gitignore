@@ -8,3 +8,6 @@ dist/
 .env.*
 !.env.example
 .sync_store.json
+
+# Local Solidity deploy artifact
+public/generated/project-core.json
