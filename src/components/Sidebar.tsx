@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import {
   LayoutDashboard,
   QrCode,
@@ -15,7 +15,7 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { TabId } from '../lib/access';
-import { CONTRACT_ADDRESS, ETHERSCAN_BASE_URL } from '../constants';
+import { CONTRACT_ADDRESS, ETHERSCAN_BASE_URL, OWNER_WALLET } from '../constants';
 
 interface SidebarProps {
   activeTab: string;
@@ -27,50 +27,50 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, allowedTabs, onTabC
   const navItems = [
     {
       id: 'overview',
-      label: 'Tổng Quan Hệ Thống',
-      sublabel: 'Bảng điều khiển & thống kê',
+      label: 'Tá»•ng Quan Há»‡ Thá»‘ng',
+      sublabel: 'Báº£ng Ä‘iá»u khiá»ƒn & thá»‘ng kÃª',
       icon: LayoutDashboard,
     },
     {
       id: 'lookup',
-      label: 'Tra Cứu Tem QR',
-      sublabel: 'Xác thực & quét mã camera',
+      label: 'Tra Cá»©u Tem QR',
+      sublabel: 'XÃ¡c thá»±c & quÃ©t mÃ£ camera',
       icon: QrCode,
     },
     {
       id: 'store',
-      label: 'Cửa Hàng Đặc Sản',
-      sublabel: 'Mua hàng bằng Sepolia ETH',
+      label: 'Cá»­a HÃ ng Äáº·c Sáº£n',
+      sublabel: 'Mua hÃ ng báº±ng Sepolia ETH',
       icon: Store,
     },
     {
       id: 'create-batch',
-      label: '1. Tạo Lô Hàng',
-      sublabel: 'Bước 1: Khai báo lô & trả phí thẩm định',
+      label: '1. Táº¡o LÃ´ HÃ ng',
+      sublabel: 'BÆ°á»›c 1: Khai bÃ¡o lÃ´ & tráº£ phÃ­ tháº©m Ä‘á»‹nh',
       icon: PlusCircle,
     },
     {
       id: 'inspector',
-      label: '2. Kiểm Định OCOP',
-      sublabel: 'Bước 2: Thẩm định & cấp chứng nhận',
+      label: '2. Kiá»ƒm Äá»‹nh OCOP',
+      sublabel: 'BÆ°á»›c 2: Tháº©m Ä‘á»‹nh & cáº¥p chá»©ng nháº­n',
       icon: ShieldCheck,
     },
     {
       id: 'checkpoint',
-      label: '3. Vận Chuyển',
-      sublabel: 'Bước 3: Nhật ký vận chuyển & kho',
+      label: '3. Váº­n Chuyá»ƒn',
+      sublabel: 'BÆ°á»›c 3: Nháº­t kÃ½ váº­n chuyá»ƒn & kho',
       icon: Truck,
     },
     {
       id: 'retailer',
-      label: '4. Quản Lý Niêm Yết',
-      sublabel: 'Bước 4: Nhập kho & niêm yết bán lẻ',
+      label: '4. Quáº£n LÃ½ NiÃªm Yáº¿t',
+      sublabel: 'BÆ°á»›c 4: Nháº­p kho & niÃªm yáº¿t bÃ¡n láº»',
       icon: Tag,
     },
     {
       id: 'admin',
-      label: 'Quản Trị Hệ Thống',
-      sublabel: 'Phân quyền RBAC & đổi phí',
+      label: 'Quáº£n Trá»‹ Há»‡ Thá»‘ng',
+      sublabel: 'PhÃ¢n quyá»n RBAC & Ä‘á»•i phÃ­',
       icon: Settings,
     },
   ];
@@ -106,10 +106,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, allowedTabs, onTabC
         {/* Navigation Section */}
         <div>
           <div className="text-xs font-black text-[#6B8073] uppercase tracking-widest px-2 mb-2.5">
-            CHỨC NĂNG HỆ THỐNG
+            CHá»¨C NÄ‚NG Há»† THá»NG
           </div>
 
-          <nav aria-label="Điều hướng chính" className="flex flex-col gap-2">
+          <nav aria-label="Äiá»u hÆ°á»›ng chÃ­nh" className="flex flex-col gap-2">
             {filteredNavItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -145,35 +145,38 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, allowedTabs, onTabC
         <div className="bg-gradient-to-br from-[#E0ECE4]/90 to-[#F2F6F3] p-4 rounded-2xl border border-[#CCD8CF] space-y-2.5">
           <div className="flex items-center gap-2 text-sm font-extrabold text-[#264939]">
             <Sparkles className="w-4 h-4 text-[#C29B38] shrink-0" />
-            <span className="font-serif text-sm">Tiêu Chuẩn OCOP Huế</span>
+            <span className="font-serif text-sm">TiÃªu Chuáº©n OCOP Huáº¿</span>
           </div>
 
           <p className="text-xs text-[#3B4D43] font-medium leading-relaxed">
-            Số hóa minh bạch 100% từng chặng chăn nuôi, chế biến và lưu kho trên Sepolia Testnet.
+            Sá»‘ hÃ³a minh báº¡ch 100% tá»«ng cháº·ng chÄƒn nuÃ´i, cháº¿ biáº¿n vÃ  lÆ°u kho trÃªn Sepolia Testnet.
           </p>
 
           <div className="pt-2 border-t border-[#CCD8CF]/60 flex items-center justify-between text-xs text-[#5E7166]">
             <div className="flex items-center gap-1 font-bold">
               <MapPin className="w-3.5 h-3.5 text-[#C29B38]" />
-              <span>Thừa Thiên Huế</span>
+              <span>Thá»«a ThiÃªn Huáº¿</span>
             </div>
             <span className="font-extrabold text-[#264939]">Sepolia 100%</span>
           </div>
         </div>
 
-        {/* Smart Contract Card */}
+        {/* Admin / Owner Wallet Card */}
         <div className="bg-white p-3.5 rounded-2xl border border-[#E6E1D7] space-y-1.5 shadow-2xs">
           <div className="text-xs font-extrabold text-[#6B8073] uppercase tracking-wider flex items-center justify-between">
-            <span>SMART CONTRACT</span>
+            <span>VÍ ADMIN / OWNER</span>
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
           </div>
+
           <a
-            href={`${ETHERSCAN_BASE_URL}/address/${CONTRACT_ADDRESS}`}
+            href={`${ETHERSCAN_BASE_URL}/address/${OWNER_WALLET}`}
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm font-mono font-extrabold text-[#264939] hover:underline flex items-center justify-between"
           >
-            <span className="truncate">{CONTRACT_ADDRESS.slice(0, 10)}...{CONTRACT_ADDRESS.slice(-4)}</span>
+            <span className="truncate">
+              {OWNER_WALLET.slice(0, 10)}...{OWNER_WALLET.slice(-4)}
+            </span>
             <ExternalLink className="w-3.5 h-3.5 shrink-0 ml-1 text-[#C29B38]" />
           </a>
         </div>
@@ -187,10 +190,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, allowedTabs, onTabC
             <span className="bg-white/15 px-2 py-0.5 rounded-md text-[10px] font-mono font-bold text-emerald-200">v1.0.0</span>
           </div>
           <p className="text-xs text-emerald-100 font-bold leading-snug">
-            Truy xuất Nguồn gốc Đặc sản Cố Đô
+            Truy xuáº¥t Nguá»“n gá»‘c Äáº·c sáº£n Cá»‘ ÄÃ´
           </p>
         </div>
       </div>
     </aside>
   );
 };
+
+
