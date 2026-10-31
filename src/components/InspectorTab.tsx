@@ -232,12 +232,12 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
               <div className="flex items-center gap-2.5">
                 <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
                 <div>
-                  <span className="font-bold text-[#1A2820] block">Phí Thẩm Định Gộp On-Chain:</span>
-                  <span className="text-[11px] text-[#5E7166]">Đã được Cơ sở sản xuất chi trả khi khởi tạo lô (0.002 ETH)</span>
+                  <span className="font-bold text-[#1A2820] block">Thẩm Định On-Chain:</span>
+                  <span className="text-[11px] text-[#5E7166]">ProjectCore không thu phí thẩm định riêng; chỉ phát sinh gas Sepolia.</span>
                 </div>
               </div>
               <span className="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full font-bold text-[11px] border border-emerald-200 shrink-0 text-center">
-                0.002 ETH Đã Thu
+                Chỉ Phí Gas
               </span>
             </div>
 
