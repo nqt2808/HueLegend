@@ -73,9 +73,6 @@ export const RetailerTab: React.FC<RetailerTabProps> = ({
     e.preventDefault();
     if (!selectedBatchCode) return;
 
-    const numericQty = parseFloat(stockQuantity.replace(/[^0-9.]/g, '')) || 0;
-    const calculatedListingFeeEth = (numericQty * 0.001 + 0.005).toFixed(6);
-
     setIsSubmitting(true);
     try {
       if (onAddCheckpoint) {
@@ -84,11 +81,10 @@ export const RetailerTab: React.FC<RetailerTabProps> = ({
           selectedBatchCode,
           'RETAILER',
           fullLocation,
-          `Đã Nhập Kho & Niêm Yết Giá Bán (${listingPriceEth} ETH) — [Phí On-Chain: ${calculatedListingFeeEth} ETH] — [Cửa Hàng: ${storeName} | Điểm Bán: ${storeLocation}] — [Danh mục: ${selectedCategory}]`,
+          `Đã Nhập Kho & Niêm Yết Giá Bán (${listingPriceEth} ETH) — [Cửa Hàng: ${storeName} | Điểm Bán: ${storeLocation}] — [Danh mục: ${selectedCategory}]`,
           'ipfs://QmHueRetailerListing2026',
           'Niêm Yết Bán Lẻ',
-          `Tên Cửa Hàng: ${storeName} — Điểm Bán: ${storeLocation} — Danh mục: ${selectedCategory} — Giá niêm yết: ${listingPriceEth} ETH — Số lượng nhập kho: ${stockQuantity} — Phí MetaMask Sepolia: ${calculatedListingFeeEth} ETH — Người bán (Retailer): ${currentAccount || 'Chưa xác định'}`,
-          calculatedListingFeeEth
+          `Tên Cửa Hàng: ${storeName} — Điểm Bán: ${storeLocation} — Danh mục: ${selectedCategory} — Giá niêm yết: ${listingPriceEth} ETH — Số lượng nhập kho: ${stockQuantity} — Người bán (Retailer): ${currentAccount || 'Chưa xác định'}`
         );
       }
 
@@ -166,7 +162,7 @@ export const RetailerTab: React.FC<RetailerTabProps> = ({
                 </span>
               </div>
               <p className="text-xs text-[#E0ECE4]/70 mt-0.5">
-                Quản lý doanh thu tích lũy On-Chain tự động từ các giao dịch thanh toán của khách hàng
+                ProjectCore hiện tại ghi nhận niêm yết on-chain; chưa có escrow/doanh thu bán lẻ on-chain
               </p>
             </div>
           </div>
@@ -179,7 +175,7 @@ export const RetailerTab: React.FC<RetailerTabProps> = ({
             className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-[#C29B38] text-[#1A2820] font-sans font-extrabold text-xs hover:bg-[#b08c31] active:scale-[0.98] transition-all shadow-sm shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <ArrowDownRight className="w-4 h-4 text-[#1A2820]" />
-            <span>{currentAccount ? 'Rút Doanh Thu Về Ví Đại Lý' : 'Kết Nối Ví Để Rút Doanh Thu'}</span>
+            <span>Chưa Hỗ Trợ Rút Doanh Thu On-Chain</span>
           </button>
         </div>
 
