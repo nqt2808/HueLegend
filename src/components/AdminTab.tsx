@@ -44,8 +44,6 @@ interface AdminTabProps {
   onSetBatchCreationFee: (newFeeEth: string) => Promise<void>;
   onAssignRole: (account: string, roleName: string) => Promise<void>;
   onRevokeRole: (account: string, roleName: string) => Promise<void>;
-  onWithdrawFees?: () => Promise<void>;
-  onTogglePauseSystem?: (shouldPause: boolean) => Promise<void>;
 }
 
 export const AdminTab: React.FC<AdminTabProps> = ({
@@ -62,8 +60,6 @@ export const AdminTab: React.FC<AdminTabProps> = ({
   onSetBatchCreationFee,
   onAssignRole,
   onRevokeRole,
-  onWithdrawFees,
-  onTogglePauseSystem,
 }) => {
   const [accountAddress, setAccountAddress] = useState('');
   const [roleSelect, setRoleSelect] = useState('ROLE_PRODUCER');
@@ -208,7 +204,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
             Trang Quản Trị Hệ Thống On-Chain
           </h2>
           <p className="text-xs text-emerald-100/90">
-            Phân quyền RBAC, quản lý mức phí khai báo, rút tiền Quỹ Treasury và giám sát trạng thái an toàn Smart Contract.
+            Phân quyền RBAC, quản lý mức phí khai báo và giám sát dữ liệu Smart Contract trên Sepolia.
           </p>
         </div>
 
@@ -219,7 +215,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
             </span>
             <span className={`text-xs font-bold inline-flex items-center gap-1.5 mt-0.5 ${isSystemPaused ? 'text-amber-300' : 'text-emerald-300'}`}>
               <span className={`w-2 h-2 rounded-full animate-pulse ${isSystemPaused ? 'bg-amber-400' : 'bg-emerald-400'}`} />
-              <span>{isSystemPaused ? 'TẠM DỪNG (Paused)' : 'HOẠT ĐỘNG (Active)'}</span>
+              <span>HOẠT ĐỘNG (Active)</span>
             </span>
           </div>
         </div>
@@ -546,41 +542,21 @@ export const AdminTab: React.FC<AdminTabProps> = ({
             </form>
           </div>
 
-          {/* Feature 3: Emergency Control (Pause / Unpause) */}
+          {/* ProjectCore hien tai khong trien khai Pausable / withdrawFees. */}
           <div className="bg-white p-6 rounded-3xl border border-[#E6E1D7] shadow-2xs space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-[#EDE9E0]">
-              <div className="flex items-center gap-2">
-                <ShieldAlert className="w-5 h-5 text-amber-600" />
-                <h3 className="font-serif font-extrabold text-base text-[#264939]">
-                  3. An Toàn Hệ Thống (Emergency)
-                </h3>
-              </div>
-              <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${isSystemPaused ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}`}>
-                {isSystemPaused ? 'Paused' : 'Active'}
-              </span>
+            <div className="flex items-center gap-2 pb-3 border-b border-[#EDE9E0]">
+              <ShieldAlert className="w-5 h-5 text-amber-600" />
+              <h3 className="font-serif font-extrabold text-base text-[#264939]">
+                3. Trạng Thái Hợp Đồng
+              </h3>
             </div>
-
             <p className="text-xs text-[#5E7166] leading-relaxed">
-              Tính năng Tạm dừng khẩn cấp (Emergency Circuit Breaker). Cho phép Admin dừng các thao tác ghi dữ liệu mới khi phát hiện sự cố bảo mật hoặc kiểm toán hệ thống.
+              ProjectCore đang triển khai không có hàm pause/unpause hoặc withdrawFees. Giao diện không gửi các giao dịch không tồn tại.
             </p>
-
-            <div className="pt-1 flex gap-3">
-              <button
-                onClick={() => onTogglePauseSystem && onTogglePauseSystem(true)}
-                disabled={isSubmitting || !isAdminRole || isSystemPaused}
-                className="flex-1 py-2.5 px-3 bg-amber-600 text-white rounded-xl font-bold text-xs hover:bg-amber-700 transition-all flex items-center justify-center gap-1.5 shadow-2xs disabled:opacity-40"
-              >
-                <PauseCircle className="w-4 h-4" />
-                <span>Tạm Dừng (pause)</span>
-              </button>
-
-              <button
-                onClick={() => onTogglePauseSystem && onTogglePauseSystem(false)}
-                disabled={isSubmitting || !isAdminRole || !isSystemPaused}
-                className="flex-1 py-2.5 px-3 bg-[#264939] text-white rounded-xl font-bold text-xs hover:bg-[#1c372b] transition-all flex items-center justify-center gap-1.5 shadow-2xs disabled:opacity-40"
-              >
-                <PlayCircle className="w-4 h-4" />
-                <span>Kích Hoạt (unpause)</span>
+            <div className="px-3 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold">
+              ACTIVE • Sepolia ProjectCore
+            </div>
+          </div>
               </button>
             </div>
           </div>
