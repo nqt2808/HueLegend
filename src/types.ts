@@ -1,4 +1,4 @@
-export type AppRole = 'ROLE_ADMIN' | 'ROLE_PRODUCER' | 'ROLE_LOGISTICS' | 'ROLE_RETAILER' | 'ROLE_INSPECTOR';
+﻿export type AppRole = 'ROLE_ADMIN' | 'ROLE_PRODUCER' | 'ROLE_LOGISTICS' | 'ROLE_RETAILER' | 'ROLE_INSPECTOR';
 
 export interface Checkpoint {
   stepName: string;
@@ -14,11 +14,11 @@ export interface Checkpoint {
 }
 
 export const SPECIALTY_CATEGORIES = [
-  'Bánh kẹo & Món ăn vặt (Đồ khô)',
-  'Trà & Thức uống',
-  'Mắm & Gia vị đặc trưng',
-  'Nông sản & Thảo dược',
-  'Đặc sản tươi & Món ăn tại chỗ (Món mặn)'
+  'BÃ¡nh káº¹o & MÃ³n Äƒn váº·t (Äá»“ khÃ´)',
+  'TrÃ  & Thá»©c uá»‘ng',
+  'Máº¯m & Gia vá»‹ Ä‘áº·c trÆ°ng',
+  'NÃ´ng sáº£n & Tháº£o dÆ°á»£c',
+  'Äáº·c sáº£n tÆ°Æ¡i & MÃ³n Äƒn táº¡i chá»— (MÃ³n máº·n)'
 ] as const;
 
 export type SpecialtyCategory = typeof SPECIALTY_CATEGORIES[number];
@@ -73,3 +73,4 @@ export interface GrantedWallet {
   grantedAt: string;
   status: string;
 }
+

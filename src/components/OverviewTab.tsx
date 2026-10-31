@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Batch } from '../types';
 import {
   Package,
@@ -51,10 +51,10 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
       if (
         chk.role === 'ROLE_RETAILER' ||
         chk.role === 'RETAILER' ||
-        chk.roleTitle?.toLowerCase().includes('đại lý') ||
-        chk.stepName?.toLowerCase().includes('bán lẻ') ||
-        chk.stepName?.toLowerCase().includes('đại lý') ||
-        chk.action?.toLowerCase().includes('niêm yết')
+        chk.roleTitle?.toLowerCase().includes('Ä‘áº¡i lÃ½') ||
+        chk.stepName?.toLowerCase().includes('bÃ¡n láº»') ||
+        chk.stepName?.toLowerCase().includes('Ä‘áº¡i lÃ½') ||
+        chk.action?.toLowerCase().includes('niÃªm yáº¿t')
       ) {
         if (chk.location) recordedAgentsSet.add(chk.location.trim().toLowerCase());
         else if (chk.recorder) recordedAgentsSet.add(chk.recorder.trim().toLowerCase());
@@ -80,7 +80,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
       <div className="relative bg-gradient-to-r from-[#264939] via-[#1c372b] to-[#12251c] text-white rounded-3xl p-5 sm:p-8 shadow-xl overflow-hidden border border-[#CCD8CF]/20">
         <img
           src="/assets/hue_landscape_banner.png"
-          alt="Huế Landscape"
+          alt="Huáº¿ Landscape"
           className="absolute right-0 top-0 bottom-0 w-1/2 object-cover opacity-20 pointer-events-none mix-blend-overlay"
           onError={(e) => {
             (e.target as HTMLImageElement).style.display = 'none';
@@ -90,15 +90,15 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
         <div className="relative z-10 max-w-2xl space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C29B38]/20 text-[#C29B38] text-[11px] sm:text-xs font-sans font-bold border border-[#C29B38]/30">
             <Sparkles className="w-3.5 h-3.5 shrink-0" />
-            <span className="tracking-wide">QUẢN TRỊ & TRUY XUẤT NGUỒN GỐC ĐẶC SẢN CỐ ĐÔ</span>
+            <span className="tracking-wide">QUáº¢N TRá»Š & TRUY XUáº¤T NGUá»’N Gá»C Äáº¶C Sáº¢N Cá» ÄÃ”</span>
           </div>
 
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-extrabold tracking-tight leading-tight text-white">
-            Hệ Thống Truy Xuất Nguồn Gốc Đặc Sản Huế
+            Há»‡ Thá»‘ng Truy Xuáº¥t Nguá»“n Gá»‘c Äáº·c Sáº£n Huáº¿
           </h1>
 
           <p className="text-emerald-100/90 text-sm font-sans leading-relaxed">
-            Số hóa minh bạch 100% từng chặng chăn nuôi, chế biến, vận chuyển kho lạnh và phân phối OCOP trên Ethereum Sepolia Testnet.
+            Sá»‘ hÃ³a minh báº¡ch 100% tá»«ng cháº·ng chÄƒn nuÃ´i, cháº¿ biáº¿n, váº­n chuyá»ƒn kho láº¡nh vÃ  phÃ¢n phá»‘i OCOP trÃªn Ethereum Sepolia Testnet.
           </p>
 
           <div className="pt-2 flex flex-wrap gap-3">
@@ -106,7 +106,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
               onClick={() => onNavigateTab(canCreateBatch ? 'create-batch' : 'store')}
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#C29B38] text-white font-sans font-bold text-xs hover:bg-[#8C6D1F] transition-all shadow-md"
             >
-              <span>{canCreateBatch ? '+ Tạo Lô Hàng Mới On-Chain' : 'Khám Phá Cửa Hàng'}</span>
+              <span>{canCreateBatch ? '+ Táº¡o LÃ´ HÃ ng Má»›i On-Chain' : 'KhÃ¡m PhÃ¡ Cá»­a HÃ ng'}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
             <button
@@ -114,7 +114,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 text-white font-sans font-bold text-xs hover:bg-white/20 transition-all border border-white/20"
             >
               <QrCode className="w-4 h-4" />
-              <span>{canUseLookupMenu ? 'Tra Cứu / Quét Mã QR' : isConnected ? 'Kiểm Tra Quyền Ví' : 'Kết Nối Ví MetaMask'}</span>
+              <span>{canUseLookupMenu ? 'Tra Cá»©u / QuÃ©t MÃ£ QR' : isConnected ? 'Kiá»ƒm Tra Quyá»n VÃ­' : 'Káº¿t Ná»‘i VÃ­ MetaMask'}</span>
             </button>
           </div>
         </div>
@@ -127,9 +127,9 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
             <Package className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-xs font-sans font-bold text-[#8A9D92] uppercase tracking-wider">TỔNG LÔ HÀNG ON-CHAIN</div>
+            <div className="text-xs font-sans font-bold text-[#8A9D92] uppercase tracking-wider">Tá»”NG LÃ” HÃ€NG ON-CHAIN</div>
             <div className="text-2xl font-serif font-extrabold text-[#264939] mt-0.5">{totalBatches}</div>
-            <div className="text-[11px] font-sans text-[#5E7166]">Lô đặc sản từ Sepolia</div>
+            <div className="text-[11px] font-sans text-[#5E7166]">LÃ´ Ä‘áº·c sáº£n tá»« Sepolia</div>
           </div>
         </div>
 
@@ -138,11 +138,11 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
             <ShieldCheck className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-xs font-sans font-bold text-[#8A9D92] uppercase tracking-wider">XÁC NHẬN ĐẠT OCOP</div>
+            <div className="text-xs font-sans font-bold text-[#8A9D92] uppercase tracking-wider">XÃC NHáº¬N Äáº T OCOP</div>
             <div className="text-2xl font-serif font-extrabold text-[#C29B38] mt-0.5">
               {verifiedCount} <span className="text-xs font-sans font-normal text-gray-500">({verifiedRatio}%)</span>
             </div>
-            <div className="text-[11px] font-sans text-[#5E7166]">Đã kiểm định chất lượng</div>
+            <div className="text-[11px] font-sans text-[#5E7166]">ÄÃ£ kiá»ƒm Ä‘á»‹nh cháº¥t lÆ°á»£ng</div>
           </div>
         </div>
 
@@ -151,9 +151,9 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
             <Store className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-xs font-sans font-bold text-[#8A9D92] uppercase tracking-wider">SỐ ĐẠI LÝ GHI NHẬN</div>
+            <div className="text-xs font-sans font-bold text-[#8A9D92] uppercase tracking-wider">Sá» Äáº I LÃ GHI NHáº¬N</div>
             <div className="text-2xl font-serif font-extrabold text-[#1A2820] mt-0.5">{totalRecordedAgents}</div>
-            <div className="text-[11px] font-sans text-[#5E7166]">Đại lý phân phối OCOP</div>
+            <div className="text-[11px] font-sans text-[#5E7166]">Äáº¡i lÃ½ phÃ¢n phá»‘i OCOP</div>
           </div>
         </div>
       </div>
@@ -166,14 +166,14 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Tìm theo Mã lô, Tên đặc sản, hoặc Địa danh..."
+            placeholder="TÃ¬m theo MÃ£ lÃ´, TÃªn Ä‘áº·c sáº£n, hoáº·c Äá»‹a danh..."
             className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#E6E1D7] text-xs font-sans focus:outline-none focus:border-[#264939] bg-[#FAF9F5]"
           />
         </div>
 
         <div className="flex items-center gap-2">
           <Filter className="w-4 h-4 text-[#5E7166]" />
-          <span className="text-xs font-sans font-bold text-[#5E7166]">Trạng thái:</span>
+          <span className="text-xs font-sans font-bold text-[#5E7166]">Tráº¡ng thÃ¡i:</span>
           <div className="inline-flex p-1 bg-[#FAF9F5] border border-[#E6E1D7] rounded-xl font-sans">
             <button
               onClick={() => setFilterVerified('ALL')}
@@ -183,7 +183,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
                   : 'text-[#5E7166] hover:text-[#264939]'
               }`}
             >
-              Tất cả ({totalBatches})
+              Táº¥t cáº£ ({totalBatches})
             </button>
             <button
               onClick={() => setFilterVerified('VERIFIED')}
@@ -193,7 +193,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
                   : 'text-[#5E7166] hover:text-[#264939]'
               }`}
             >
-              Đã OCOP ({verifiedCount})
+              ÄÃ£ OCOP ({verifiedCount})
             </button>
             <button
               onClick={() => setFilterVerified('PENDING')}
@@ -203,7 +203,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
                   : 'text-[#5E7166] hover:text-[#264939]'
               }`}
             >
-              Chờ Kiểm Định ({totalBatches - verifiedCount})
+              Chá» Kiá»ƒm Äá»‹nh ({totalBatches - verifiedCount})
             </button>
           </div>
         </div>
@@ -235,12 +235,12 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
                   {batch.isVerified ? (
                     <span className="shrink-0 flex items-center gap-1 text-[11px] font-sans font-extrabold bg-amber-50 text-[#8C6D1F] border border-amber-200 px-2.5 py-1 rounded-full shadow-2xs">
                       <ShieldCheck className="w-3.5 h-3.5 text-[#C29B38]" />
-                      <span>ĐẠT OCOP</span>
+                      <span>Äáº T OCOP</span>
                     </span>
                   ) : (
                     <span className="shrink-0 flex items-center gap-1 text-[11px] font-sans font-bold bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">
                       <Clock className="w-3.5 h-3.5 text-gray-400" />
-                      <span>Chờ Duyệt</span>
+                      <span>Chá» Duyá»‡t</span>
                     </span>
                   )}
                 </div>
@@ -254,23 +254,23 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
 
                   <div className="flex items-center gap-2">
                     <Building2 className="w-3.5 h-3.5 text-[#5E7166] shrink-0" />
-                    <span className="font-medium">Tiêu chuẩn: {batch.ocopStandard || 'Đang cập nhật'}</span>
+                    <span className="font-medium">TiÃªu chuáº©n: {batch.ocopStandard || 'Äang cáº­p nháº­t'}</span>
                   </div>
 
                   <div className="flex items-center gap-2">
                     <Calendar className="w-3.5 h-3.5 text-[#5E7166] shrink-0" />
-                    <span>Khởi tạo: {createdDate}</span>
+                    <span>Khá»Ÿi táº¡o: {createdDate}</span>
                   </div>
                 </div>
 
                 {/* Progress Checkpoint Pill */}
                 <div className="bg-[#FAF9F5] p-3 rounded-xl border border-[#EDE9E0] text-xs font-sans">
                   <div className="flex items-center justify-between text-[#5E7166] font-semibold mb-1">
-                    <span>Số chặng ghi nhận:</span>
-                    <span className="font-bold text-[#264939]">{checkpointCount} chặng</span>
+                    <span>Sá»‘ cháº·ng ghi nháº­n:</span>
+                    <span className="font-bold text-[#264939]">{checkpointCount} cháº·ng</span>
                   </div>
                   <div className="text-[11px] text-[#8A9D92] truncate">
-                    Giai đoạn hiện tại: <span className="font-bold text-[#1A2820]">{batch.currentStage || 'Xưởng sản xuất'}</span>
+                    Giai Ä‘oáº¡n hiá»‡n táº¡i: <span className="font-bold text-[#1A2820]">{batch.currentStage || 'XÆ°á»Ÿng sáº£n xuáº¥t'}</span>
                   </div>
                 </div>
               </div>
@@ -289,7 +289,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
                   onClick={() => onNavigateTab('lookup', batch.batchCode)}
                   className="flex items-center gap-1 text-xs font-bold text-white bg-[#264939] px-3.5 py-1.5 rounded-xl hover:bg-[#1c372b] transition-all shadow-2xs"
                 >
-                  <span>Xem Chi Tiết</span>
+                  <span>Xem Chi Tiáº¿t</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -303,20 +303,21 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
         <div className="bg-white p-12 rounded-2xl border border-dashed border-[#E6E1D7] text-center space-y-4">
           <Package className="w-12 h-12 text-gray-300 mx-auto" />
           <h3 className="text-xl font-serif font-extrabold text-[#1A2820]">
-            Chưa có sản phẩm nào trên Blockchain
+            ChÆ°a cÃ³ sáº£n pháº©m nÃ o trÃªn Blockchain
           </h3>
           <p className="text-xs font-sans text-[#5E7166] max-w-md mx-auto leading-relaxed">
-            {canCreateBatch ? 'Bạn có thể đăng ký lô hàng bằng ví đã được cấp quyền sản xuất trên Sepolia.' : 'Chưa có lô hàng để hiển thị. Khách có thể xem cửa hàng; các chức năng nghiệp vụ chỉ mở sau khi ví được xác minh quyền.'}
+            {canCreateBatch ? 'Báº¡n cÃ³ thá»ƒ Ä‘Äƒng kÃ½ lÃ´ hÃ ng báº±ng vÃ­ Ä‘Ã£ Ä‘Æ°á»£c cáº¥p quyá»n sáº£n xuáº¥t trÃªn Sepolia.' : 'ChÆ°a cÃ³ lÃ´ hÃ ng Ä‘á»ƒ hiá»ƒn thá»‹. KhÃ¡ch cÃ³ thá»ƒ xem cá»­a hÃ ng; cÃ¡c chá»©c nÄƒng nghiá»‡p vá»¥ chá»‰ má»Ÿ sau khi vÃ­ Ä‘Æ°á»£c xÃ¡c minh quyá»n.'}
           </p>
           <button
             onClick={() => onNavigateTab(canCreateBatch ? 'create-batch' : 'store')}
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#264939] text-white font-sans font-bold text-xs hover:bg-[#1c372b] transition-all shadow-md"
           >
             <PlusCircle className="w-4 h-4" />
-            <span>{canCreateBatch ? 'Tạo Lô Hàng Đầu Tiên On-Chain' : 'Mở Cửa Hàng Đặc Sản'}</span>
+            <span>{canCreateBatch ? 'Táº¡o LÃ´ HÃ ng Äáº§u TiÃªn On-Chain' : 'Má»Ÿ Cá»­a HÃ ng Äáº·c Sáº£n'}</span>
           </button>
         </div>
       )}
     </div>
   );
 };
+

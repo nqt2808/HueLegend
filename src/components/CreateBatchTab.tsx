@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { PlusCircle, Wallet, AlertTriangle, Upload, Image as ImageIcon, Sparkles, Calendar, Clock, Lock } from 'lucide-react';
 
 interface CreateBatchTabProps {
@@ -48,13 +48,13 @@ export const CreateBatchTab: React.FC<CreateBatchTabProps> = ({
     setExpiryDate(baseDate.toISOString().split('T')[0]);
   };
 
-  // Danh sach anh dac san Cố Đô Huế mẫu
+  // Danh sach anh dac san Cá»‘ ÄÃ´ Huáº¿ máº«u
   const sampleSpecialtyImages = [
-    { name: 'Mè Xửng Huế', url: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=600' },
-    { name: 'Trà Cung Đình', url: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&q=80&w=600' },
-    { name: 'Dầu Tràm Huế', url: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&q=80&w=600' },
-    { name: 'Nón Lá Bài Thơ', url: 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&q=80&w=600' },
-    { name: 'Tôm Chua Cố Đô', url: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&q=80&w=600' },
+    { name: 'MÃ¨ Xá»­ng Huáº¿', url: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=600' },
+    { name: 'TrÃ  Cung ÄÃ¬nh', url: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&q=80&w=600' },
+    { name: 'Dáº§u TrÃ m Huáº¿', url: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&q=80&w=600' },
+    { name: 'NÃ³n LÃ¡ BÃ i ThÆ¡', url: 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&q=80&w=600' },
+    { name: 'TÃ´m Chua Cá»‘ ÄÃ´', url: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&q=80&w=600' },
   ];
 
   // Xu ly tai anh tu may tinh
@@ -77,8 +77,8 @@ export const CreateBatchTab: React.FC<CreateBatchTabProps> = ({
     const noAccents = name
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
-      .replace(/đ/g, 'd')
-      .replace(/Đ/g, 'D');
+      .replace(/Ä‘/g, 'd')
+      .replace(/Ä/g, 'D');
 
     const words = noAccents
       .toUpperCase()
@@ -142,16 +142,16 @@ export const CreateBatchTab: React.FC<CreateBatchTabProps> = ({
       <div className="bg-[#FAF9F5] p-3.5 rounded-2xl border border-[#E6E1D7] flex flex-wrap items-center justify-between gap-2 text-xs font-sans">
         <span className="font-bold text-[#264939] uppercase tracking-wider text-[11px] flex items-center gap-1.5">
           <PlusCircle className="w-4 h-4 text-[#C29B38]" />
-          Quy Trình Chuỗi Cung Ứng On-Chain:
+          Quy TrÃ¬nh Chuá»—i Cung á»¨ng On-Chain:
         </span>
         <div className="flex items-center gap-1.5 sm:gap-3 text-[11px] font-bold">
-          <span className="px-2.5 py-1 rounded-lg bg-[#264939] text-white shadow-2xs">1. Khai Báo Lô</span>
-          <span className="text-[#8A9D92]">→</span>
-          <span className="text-[#5E7166]">2. Thẩm Định OCOP</span>
-          <span className="text-[#8A9D92]">→</span>
-          <span className="text-[#5E7166]">3. Vận Chuyển</span>
-          <span className="text-[#8A9D92]">→</span>
-          <span className="text-[#5E7166]">4. Quản Lý Niêm Yết</span>
+          <span className="px-2.5 py-1 rounded-lg bg-[#264939] text-white shadow-2xs">1. Khai BÃ¡o LÃ´</span>
+          <span className="text-[#8A9D92]">â†’</span>
+          <span className="text-[#5E7166]">2. Tháº©m Äá»‹nh OCOP</span>
+          <span className="text-[#8A9D92]">â†’</span>
+          <span className="text-[#5E7166]">3. Váº­n Chuyá»ƒn</span>
+          <span className="text-[#8A9D92]">â†’</span>
+          <span className="text-[#5E7166]">4. Quáº£n LÃ½ NiÃªm Yáº¿t</span>
         </div>
       </div>
 
@@ -160,8 +160,8 @@ export const CreateBatchTab: React.FC<CreateBatchTabProps> = ({
         <div className="bg-amber-50 border-2 border-amber-300 p-4 rounded-2xl flex items-center gap-3 text-xs text-amber-950 shadow-2xs font-sans">
           <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0" />
           <div>
-            <span className="font-bold block text-sm font-serif text-amber-950">Vui lòng kết nối ví MetaMask trước khi tạo lô hàng</span>
-            <span className="text-amber-900 font-medium">Địa chỉ ví sản xuất sẽ tự động trích xuất trực tiếp từ tài khoản MetaMask đang hoạt động.</span>
+            <span className="font-bold block text-sm font-serif text-amber-950">Vui lÃ²ng káº¿t ná»‘i vÃ­ MetaMask trÆ°á»›c khi táº¡o lÃ´ hÃ ng</span>
+            <span className="text-amber-900 font-medium">Äá»‹a chá»‰ vÃ­ sáº£n xuáº¥t sáº½ tá»± Ä‘á»™ng trÃ­ch xuáº¥t trá»±c tiáº¿p tá»« tÃ i khoáº£n MetaMask Ä‘ang hoáº¡t Ä‘á»™ng.</span>
           </div>
         </div>
       )}
@@ -170,37 +170,37 @@ export const CreateBatchTab: React.FC<CreateBatchTabProps> = ({
         <div className="flex items-center justify-between pb-3 border-b border-[#EDE9E0]">
           <div>
             <h2 className="text-lg font-serif font-extrabold text-[#264939]">
-              Khai Báo Lô Hàng On-Chain
+              Khai BÃ¡o LÃ´ HÃ ng On-Chain
             </h2>
           </div>
           <span className="px-3 py-1 bg-[#E0ECE4] text-[#264939] rounded-full text-xs font-bold border border-[#CCD8CF]">
-            Phí Tạo Lô: {batchCreationFeeEth || '0.001'} ETH
+            PhÃ­ Táº¡o LÃ´: {batchCreationFeeEth || '0.001'} ETH
           </span>
         </div>
 
         {/* Fee breakdown notice for Producer */}
         <div className="bg-[#FAF9F5] p-3.5 rounded-xl border border-[#E6E1D7] text-xs space-y-1">
           <div className="flex items-center justify-between font-bold text-[#264939]">
-            <span>💰 Phí On-Chain khởi tạo lô hàng:</span>
+            <span>ðŸ’° PhÃ­ On-Chain khá»Ÿi táº¡o lÃ´ hÃ ng:</span>
             <span className="font-mono font-extrabold">{batchCreationFeeEth || '0.001'} ETH</span>
           </div>
           <div className="text-[11px] text-[#5E7166] flex flex-wrap gap-x-4 gap-y-1 pt-1 border-t border-[#EDE9E0]">
-            <span>• Phí createBatch theo Smart Contract: <strong className="text-[#1A2820] font-mono">{batchCreationFeeEth || '0.001'} ETH</strong></span>
-            <span>• Thẩm định, vận chuyển và niêm yết: <strong className="text-[#264939]">chỉ trả gas Sepolia cho từng giao dịch</strong></span>
+            <span>â€¢ PhÃ­ createBatch theo Smart Contract: <strong className="text-[#1A2820] font-mono">{batchCreationFeeEth || '0.001'} ETH</strong></span>
+            <span>â€¢ Tháº©m Ä‘á»‹nh, váº­n chuyá»ƒn vÃ  niÃªm yáº¿t: <strong className="text-[#264939]">chá»‰ tráº£ gas Sepolia cho tá»«ng giao dá»‹ch</strong></span>
           </div>
         </div>
 
         <form onSubmit={handleSubmitBatch} className="space-y-4">
           <div>
             <label className="block text-xs font-bold text-[#1A2820] mb-1">
-              Tên Đặc Sản *
+              TÃªn Äáº·c Sáº£n *
             </label>
             <input
               type="text"
               required
               value={productName}
               onChange={(e) => handleProductNameChange(e.target.value)}
-              placeholder="Ví dụ: Mè Xửng Dừa Hoàng Gia Huế..."
+              placeholder="VÃ­ dá»¥: MÃ¨ Xá»­ng Dá»«a HoÃ ng Gia Huáº¿..."
               className="w-full px-3.5 py-2 rounded-xl border border-[#E6E1D7] text-xs font-bold focus:outline-none focus:border-[#264939]"
             />
           </div>
@@ -208,10 +208,10 @@ export const CreateBatchTab: React.FC<CreateBatchTabProps> = ({
           <div>
             <div className="flex items-center justify-between mb-1">
               <label className="block text-xs font-bold text-[#1A2820]">
-                Mã Lô Hàng On-Chain *
+                MÃ£ LÃ´ HÃ ng On-Chain *
               </label>
               <span className="text-[10px] font-bold text-[#264939] bg-[#E0ECE4] px-2 py-0.5 rounded-full border border-[#CCD8CF]">
-                ⚡ Tự động tạo từ Tên Đặc Sản
+                âš¡ Tá»± Ä‘á»™ng táº¡o tá»« TÃªn Äáº·c Sáº£n
               </span>
             </div>
             <input
@@ -219,51 +219,51 @@ export const CreateBatchTab: React.FC<CreateBatchTabProps> = ({
               readOnly
               required
               value={batchCode}
-              placeholder="Mã lô hàng sẽ tự động xuất hiện sau khi nhập Tên Đặc Sản..."
+              placeholder="MÃ£ lÃ´ hÃ ng sáº½ tá»± Ä‘á»™ng xuáº¥t hiá»‡n sau khi nháº­p TÃªn Äáº·c Sáº£n..."
               className="w-full px-3.5 py-2 rounded-xl border border-[#E6E1D7] text-xs font-mono font-bold focus:outline-none bg-[#FAF9F5] text-[#264939] cursor-not-allowed"
             />
           </div>
 
           <div>
             <label className="block text-xs font-bold text-[#1A2820] mb-1">
-              Địa Danh / Nguồn Gốc *
+              Äá»‹a Danh / Nguá»“n Gá»‘c *
             </label>
             <input
               type="text"
               required
               value={origin}
               onChange={(e) => setOrigin(e.target.value)}
-              placeholder="Ví dụ: Phường Hương Long, TP Huế, Thừa Thiên Huế..."
+              placeholder="VÃ­ dá»¥: PhÆ°á»ng HÆ°Æ¡ng Long, TP Huáº¿, Thá»«a ThiÃªn Huáº¿..."
               className="w-full px-3.5 py-2 rounded-xl border border-[#E6E1D7] text-xs focus:outline-none focus:border-[#264939]"
             />
           </div>
 
           <div>
             <label className="block text-xs font-bold text-[#1A2820] mb-1">
-              Sản Lượng (Quy Mô / Số Lượng Khởi Tạo) *
+              Sáº£n LÆ°á»£ng (Quy MÃ´ / Sá»‘ LÆ°á»£ng Khá»Ÿi Táº¡o) *
             </label>
             <input
               type="text"
               required
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
-              placeholder="Ví dụ: 500 Hộp, 1.000 Gói, 200 Chai..."
+              placeholder="VÃ­ dá»¥: 500 Há»™p, 1.000 GÃ³i, 200 Chai..."
               className="w-full px-3.5 py-2 rounded-xl border border-[#E6E1D7] text-xs font-bold focus:outline-none focus:border-[#264939]"
             />
             <p className="text-[10px] text-[#8A9D92] mt-1">
-              * Số lượng này sẽ tự động hiển thị ở mục <strong>Quy Mô / Sản Lượng</strong> khi tra cứu và làm mặc định cho <strong>Số Lượng Nhập Kho</strong> khi niêm yết bán lẻ.
+              * Sá»‘ lÆ°á»£ng nÃ y sáº½ tá»± Ä‘á»™ng hiá»ƒn thá»‹ á»Ÿ má»¥c <strong>Quy MÃ´ / Sáº£n LÆ°á»£ng</strong> khi tra cá»©u vÃ  lÃ m máº·c Ä‘á»‹nh cho <strong>Sá»‘ LÆ°á»£ng Nháº­p Kho</strong> khi niÃªm yáº¿t bÃ¡n láº».
             </p>
           </div>
 
-          {/* Mục Thời Gian: Ngày Sản Xuất & Hạn Sử Dụng */}
+          {/* Má»¥c Thá»i Gian: NgÃ y Sáº£n Xuáº¥t & Háº¡n Sá»­ Dá»¥ng */}
           <div className="bg-[#FAF9F5] p-4 rounded-2xl border border-[#E6E1D7] space-y-3">
             <div className="flex items-center justify-between border-b border-[#EDE9E0] pb-2">
               <span className="text-xs font-serif font-extrabold text-[#264939] flex items-center gap-1.5">
                 <Calendar className="w-4 h-4 text-[#C29B38]" />
-                <span>Khung Thời Gian Lô Hàng (Ngày Sản Xuất & Hạn Sử Dụng) *</span>
+                <span>Khung Thá»i Gian LÃ´ HÃ ng (NgÃ y Sáº£n Xuáº¥t & Háº¡n Sá»­ Dá»¥ng) *</span>
               </span>
               <span className="text-[10px] font-mono font-bold text-[#8A9D92] bg-white px-2 py-0.5 rounded border border-[#E6E1D7]">
-                Mã Hóa Blockchain
+                MÃ£ HÃ³a Blockchain
               </span>
             </div>
 
@@ -273,10 +273,10 @@ export const CreateBatchTab: React.FC<CreateBatchTabProps> = ({
                 <div className="flex items-center justify-between mb-1">
                   <label className="block text-[11px] font-bold text-[#1A2820] flex items-center gap-1">
                     <Calendar className="w-3.5 h-3.5 text-[#264939]" />
-                    <span>Ngày Sản Xuất (NSX) *</span>
+                    <span>NgÃ y Sáº£n Xuáº¥t (NSX) *</span>
                   </label>
                   <span className="text-[9px] font-bold text-[#264939] bg-[#E0ECE4] px-1.5 py-0.5 rounded border border-[#CCD8CF] flex items-center gap-1">
-                    <Lock className="w-2.5 h-2.5 text-[#264939]" /> Khoá ngày hiện tại
+                    <Lock className="w-2.5 h-2.5 text-[#264939]" /> KhoÃ¡ ngÃ y hiá»‡n táº¡i
                   </span>
                 </div>
                 <input
@@ -294,32 +294,32 @@ export const CreateBatchTab: React.FC<CreateBatchTabProps> = ({
                 <div className="flex items-center justify-between mb-1">
                   <label className="block text-[11px] font-bold text-[#1A2820] flex items-center gap-1">
                     <Clock className="w-3.5 h-3.5 text-[#C29B38]" />
-                    <span>Hạn Sử Dụng (HSD) *</span>
+                    <span>Háº¡n Sá»­ Dá»¥ng (HSD) *</span>
                   </label>
                   <div className="flex gap-1">
                     <button
                       type="button"
                       onClick={() => setExpiryInMonths(3)}
                       className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-50 text-[#8C6D1F] border border-amber-200 hover:bg-amber-100 transition-colors"
-                      title="Cộng 3 tháng"
+                      title="Cá»™ng 3 thÃ¡ng"
                     >
-                      +3 Tháng
+                      +3 ThÃ¡ng
                     </button>
                     <button
                       type="button"
                       onClick={() => setExpiryInMonths(6)}
                       className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-50 text-[#8C6D1F] border border-amber-200 hover:bg-amber-100 transition-colors"
-                      title="Cộng 6 tháng"
+                      title="Cá»™ng 6 thÃ¡ng"
                     >
-                      +6 Tháng
+                      +6 ThÃ¡ng
                     </button>
                     <button
                       type="button"
                       onClick={() => setExpiryInMonths(12)}
                       className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-50 text-[#8C6D1F] border border-amber-200 hover:bg-amber-100 transition-colors"
-                      title="Cộng 12 tháng"
+                      title="Cá»™ng 12 thÃ¡ng"
                     >
-                      +1 Năm
+                      +1 NÄƒm
                     </button>
                   </div>
                 </div>
@@ -337,7 +337,7 @@ export const CreateBatchTab: React.FC<CreateBatchTabProps> = ({
           {/* Specialty Product Image Upload Section */}
           <div className="space-y-2">
             <label className="block text-xs font-bold text-[#1A2820]">
-              Hình Ảnh Đặc Sản *
+              HÃ¬nh áº¢nh Äáº·c Sáº£n *
             </label>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -346,16 +346,16 @@ export const CreateBatchTab: React.FC<CreateBatchTabProps> = ({
                 {imageUrl ? (
                   <img
                     src={imageUrl}
-                    alt="Preview Đặc Sản"
+                    alt="Preview Äáº·c Sáº£n"
                     className="h-24 w-full object-contain rounded-xl bg-white border border-[#EDE9E0] p-1"
                   />
                 ) : (
                   <div className="h-24 w-full flex flex-col items-center justify-center text-gray-400 bg-white rounded-xl border border-dashed border-[#CCD8CF]">
                     <ImageIcon className="w-6 h-6 text-gray-300" />
-                    <span className="text-[10px] mt-1">Chưa có ảnh</span>
+                    <span className="text-[10px] mt-1">ChÆ°a cÃ³ áº£nh</span>
                   </div>
                 )}
-                <span className="text-[10px] font-bold text-[#264939] mt-2">Xem Trước Ảnh Lô Hàng</span>
+                <span className="text-[10px] font-bold text-[#264939] mt-2">Xem TrÆ°á»›c áº¢nh LÃ´ HÃ ng</span>
               </div>
 
               {/* Upload Input & Presets */}
@@ -363,7 +363,7 @@ export const CreateBatchTab: React.FC<CreateBatchTabProps> = ({
                 <div className="flex items-center gap-2">
                   <label className="flex-1 inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl bg-[#E0ECE4] text-[#264939] text-xs font-bold border border-[#CCD8CF] cursor-pointer hover:bg-[#d0e2d5] transition-all">
                     <Upload className="w-4 h-4 text-[#264939]" />
-                    <span>Tải Ảnh Từ Máy Tính</span>
+                    <span>Táº£i áº¢nh Tá»« MÃ¡y TÃ­nh</span>
                     <input
                       type="file"
                       accept="image/*"
@@ -378,7 +378,7 @@ export const CreateBatchTab: React.FC<CreateBatchTabProps> = ({
                     type="text"
                     value={imageUrl}
                     onChange={(e) => setImageUrl(e.target.value)}
-                    placeholder="Hoặc dán đường dẫn ảnh URL (https://...)..."
+                    placeholder="Hoáº·c dÃ¡n Ä‘Æ°á»ng dáº«n áº£nh URL (https://...)..."
                     className="w-full px-3 py-1.5 rounded-xl border border-[#E6E1D7] text-[11px] font-mono focus:outline-none focus:border-[#264939] bg-[#FAF9F5]"
                   />
                 </div>
@@ -386,7 +386,7 @@ export const CreateBatchTab: React.FC<CreateBatchTabProps> = ({
                 {/* Preset Selector */}
                 <div>
                   <span className="text-[10px] font-bold text-[#8A9D92] block mb-1">
-                    Hoặc chọn ảnh đặc sản mẫu:
+                    Hoáº·c chá»n áº£nh Ä‘áº·c sáº£n máº«u:
                   </span>
                   <div className="flex flex-wrap gap-1.5">
                     {sampleSpecialtyImages.map((sample) => (
@@ -416,7 +416,7 @@ export const CreateBatchTab: React.FC<CreateBatchTabProps> = ({
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#264939] text-white font-bold text-xs hover:bg-[#1c372b] transition-all shadow-2xs disabled:opacity-50"
             >
               <PlusCircle className="w-4 h-4" />
-              <span>Khởi Tạo Lô Hàng</span>
+              <span>Khá»Ÿi Táº¡o LÃ´ HÃ ng</span>
             </button>
           </div>
         </form>
@@ -424,3 +424,4 @@ export const CreateBatchTab: React.FC<CreateBatchTabProps> = ({
     </div>
   );
 };
+

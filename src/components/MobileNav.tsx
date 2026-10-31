@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import {
   LayoutDashboard,
   QrCode,
@@ -38,50 +38,50 @@ export const MobileNav: React.FC<MobileNavProps> = ({
   const navItems = [
     {
       id: 'overview',
-      label: 'Tổng Quan Hệ Thống',
-      sublabel: 'Bảng điều khiển & thống kê',
+      label: 'Tá»•ng Quan Há»‡ Thá»‘ng',
+      sublabel: 'Báº£ng Ä‘iá»u khiá»ƒn & thá»‘ng kÃª',
       icon: LayoutDashboard,
     },
     {
       id: 'lookup',
-      label: 'Tra Cứu Tem QR',
-      sublabel: 'Xác thực & quét mã camera',
+      label: 'Tra Cá»©u Tem QR',
+      sublabel: 'XÃ¡c thá»±c & quÃ©t mÃ£ camera',
       icon: QrCode,
     },
     {
       id: 'store',
-      label: 'Cửa Hàng Đặc Sản',
-      sublabel: 'Mua bán sản phẩm OCOP',
+      label: 'Cá»­a HÃ ng Äáº·c Sáº£n',
+      sublabel: 'Mua bÃ¡n sáº£n pháº©m OCOP',
       icon: Store,
     },
     {
       id: 'create-batch',
-      label: '1. Tạo Lô Hàng',
-      sublabel: 'Bước 1: Khai báo lô & đóng phí',
+      label: '1. Táº¡o LÃ´ HÃ ng',
+      sublabel: 'BÆ°á»›c 1: Khai bÃ¡o lÃ´ & Ä‘Ã³ng phÃ­',
       icon: PlusCircle,
     },
     {
       id: 'inspector',
-      label: '2. Kiểm Định OCOP',
-      sublabel: 'Bước 2: Thẩm định & cấp chứng nhận',
+      label: '2. Kiá»ƒm Äá»‹nh OCOP',
+      sublabel: 'BÆ°á»›c 2: Tháº©m Ä‘á»‹nh & cáº¥p chá»©ng nháº­n',
       icon: ShieldCheck,
     },
     {
       id: 'checkpoint',
-      label: '3. Vận Chuyển',
-      sublabel: 'Bước 3: Nhật ký vận chuyển & kho',
+      label: '3. Váº­n Chuyá»ƒn',
+      sublabel: 'BÆ°á»›c 3: Nháº­t kÃ½ váº­n chuyá»ƒn & kho',
       icon: Truck,
     },
     {
       id: 'retailer',
-      label: '4. Quản Lý Niêm Yết',
-      sublabel: 'Bước 4: Nhập kho & niêm yết',
+      label: '4. Quáº£n LÃ½ NiÃªm Yáº¿t',
+      sublabel: 'BÆ°á»›c 4: Nháº­p kho & niÃªm yáº¿t',
       icon: Tag,
     },
     {
       id: 'admin',
-      label: 'Quản Trị Hệ Thống',
-      sublabel: 'Phân quyền RBAC & đổi phí',
+      label: 'Quáº£n Trá»‹ Há»‡ Thá»‘ng',
+      sublabel: 'PhÃ¢n quyá»n RBAC & Ä‘á»•i phÃ­',
       icon: Settings,
     },
   ];
@@ -90,8 +90,8 @@ export const MobileNav: React.FC<MobileNavProps> = ({
   // Top 4 tab truy cap nhanh cho thanh bottom navigation mobile
   const quickTabs = filteredNavItems.slice(0, 4).map((item) => ({
     ...item,
-    label: ({ overview: 'Tổng Quan', store: 'Cửa Hàng', lookup: 'Tra Cứu', 'create-batch': 'Tạo Lô',
-      inspector: 'Kiểm Định', checkpoint: 'Vận Chuyển', retailer: 'Niêm Yết', admin: 'Quản Trị' } as Record<string, string>)[item.id],
+    label: ({ overview: 'Tá»•ng Quan', store: 'Cá»­a HÃ ng', lookup: 'Tra Cá»©u', 'create-batch': 'Táº¡o LÃ´',
+      inspector: 'Kiá»ƒm Äá»‹nh', checkpoint: 'Váº­n Chuyá»ƒn', retailer: 'NiÃªm Yáº¿t', admin: 'Quáº£n Trá»‹' } as Record<string, string>)[item.id],
   }));
 
   const handleSelectTab = (tabId: string) => {
@@ -177,7 +177,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({
               {/* Navigation Category List */}
               <div>
                 <div className="text-[11px] font-black text-[#6B8073] uppercase tracking-widest px-1 mb-3">
-                  DANH MỤC CHỨC NĂNG CỐ ĐÔ
+                  DANH Má»¤C CHá»¨C NÄ‚NG Cá» ÄÃ”
                 </div>
 
                 <div className="space-y-2">
@@ -213,15 +213,15 @@ export const MobileNav: React.FC<MobileNavProps> = ({
               <div className="bg-gradient-to-br from-[#E0ECE4] to-[#F2F6F3] p-3.5 rounded-2xl border border-[#CCD8CF] space-y-2">
                 <div className="flex items-center gap-2 text-xs font-extrabold text-[#264939]">
                   <Sparkles className="w-4 h-4 text-[#C29B38] shrink-0" />
-                  <span className="font-serif">Tiêu Chuẩn OCOP Huế</span>
+                  <span className="font-serif">TiÃªu Chuáº©n OCOP Huáº¿</span>
                 </div>
                 <p className="text-[11px] text-[#3B4D43] font-medium leading-relaxed">
-                  Minh bạch 100% từng chặng sản xuất, kiểm định & vận chuyển trên Sepolia.
+                  Minh báº¡ch 100% tá»«ng cháº·ng sáº£n xuáº¥t, kiá»ƒm Ä‘á»‹nh & váº­n chuyá»ƒn trÃªn Sepolia.
                 </p>
                 <div className="pt-1.5 border-t border-[#CCD8CF]/60 flex items-center justify-between text-[11px] text-[#5E7166]">
                   <div className="flex items-center gap-1 font-bold">
                     <MapPin className="w-3 h-3 text-[#C29B38]" />
-                    <span>Thừa Thiên Huế</span>
+                    <span>Thá»«a ThiÃªn Huáº¿</span>
                   </div>
                   <span className="font-extrabold text-[#264939]">Sepolia 100%</span>
                 </div>
@@ -246,7 +246,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({
                 </a>
               </div>
               <div className="text-center text-[10px] text-[#708579] font-medium">
-                ECO2432 HueLegend © 2026 Speciality Traceability
+                ECO2432 HueLegend Â© 2026 Speciality Traceability
               </div>
             </div>
           </div>
@@ -255,4 +255,5 @@ export const MobileNav: React.FC<MobileNavProps> = ({
     </>
   );
 };
+
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import {
   Store,
   QrCode,
@@ -71,12 +71,12 @@ export const StoreTab: React.FC<StoreTabProps> = ({
   onAddCheckpoint,
   onOpenJourneyModal
 }) => {
-  const categories = ['Tất Cả', ...SPECIALTY_CATEGORIES];
+  const categories = ['Táº¥t Cáº£', ...SPECIALTY_CATEGORIES];
 
   // Danh sach san pham duoc lay hoan toan tu du lieu lo hang da QUA XAC NHAN NIEM YET
   const [catalog, setCatalog] = useState<ProductItem[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>('Tất Cả');
-  const [selectedStar, setSelectedStar] = useState<string>('Tất Cả');
+  const [selectedCategory, setSelectedCategory] = useState<string>('Táº¥t Cáº£');
+  const [selectedStar, setSelectedStar] = useState<string>('Táº¥t Cáº£');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   // Trang thai gio hang
@@ -109,12 +109,12 @@ export const StoreTab: React.FC<StoreTabProps> = ({
     // 2. Chi lay cac lo hang DA QUA XAC NHAN NIEM YET
     const listedBatches = Object.values(batches).filter((b) => {
       if (b.isListed) return true;
-      if (b.currentStage?.toLowerCase().includes('niêm yết') || b.currentStage?.toLowerCase().includes('inretail')) return true;
+      if (b.currentStage?.toLowerCase().includes('niÃªm yáº¿t') || b.currentStage?.toLowerCase().includes('inretail')) return true;
       return b.checkpoints?.some(
         (cp) =>
           cp.role === '0x992329381cbb4c1a2f1a603952f4a0c8b668d2c41c7b80a6c6e755543d8c1c5a' || // ROLE_RETAILER
-          cp.stepName?.toLowerCase().includes('niêm yết') ||
-          cp.action?.toLowerCase().includes('niêm yết') ||
+          cp.stepName?.toLowerCase().includes('niÃªm yáº¿t') ||
+          cp.action?.toLowerCase().includes('niÃªm yáº¿t') ||
           cp.action?.toLowerCase().includes('inretail')
       );
     });
@@ -132,10 +132,10 @@ export const StoreTab: React.FC<StoreTabProps> = ({
         starRating: b.starRating || '4',
         origin: b.storeName ? `${b.storeName} (${b.origin})` : b.origin,
         image: b.imageUrl || '/assets/aistudio/image_28ddda16.png',
-        description: `Lô đặc sản ${b.productName} đã qua xác nhận niêm yết bán lẻ & niêm phong nhật ký Blockchain.`,
-        unit: 'Lô / Sản Phẩm',
+        description: `LÃ´ Ä‘áº·c sáº£n ${b.productName} Ä‘Ã£ qua xÃ¡c nháº­n niÃªm yáº¿t bÃ¡n láº» & niÃªm phong nháº­t kÃ½ Blockchain.`,
+        unit: 'LÃ´ / Sáº£n Pháº©m',
         inStock: true,
-        ocopStandard: b.ocopStandard || 'Sản phẩm OCOP Huế On-Chain'
+        ocopStandard: b.ocopStandard || 'Sáº£n pháº©m OCOP Huáº¿ On-Chain'
       };
     });
 
@@ -188,8 +188,8 @@ export const StoreTab: React.FC<StoreTabProps> = ({
 
   // Filter Catalog
   const filteredProducts = catalog.filter((prod) => {
-    const matchesCat = selectedCategory === 'Tất Cả' || prod.category === selectedCategory;
-    const matchesStar = selectedStar === 'Tất Cả' || `${prod.starRating} SAO` === selectedStar;
+    const matchesCat = selectedCategory === 'Táº¥t Cáº£' || prod.category === selectedCategory;
+    const matchesStar = selectedStar === 'Táº¥t Cáº£' || `${prod.starRating} SAO` === selectedStar;
     const matchesSearch =
       searchQuery === '' ||
       prod.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -202,19 +202,19 @@ export const StoreTab: React.FC<StoreTabProps> = ({
   const handleCompleteOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!customerName || !customerPhone || !customerAddress) {
-      alert('Vui lòng nhập đầy đủ thông tin Họ tên, Số điện thoại và Địa chỉ giao hàng.');
+      alert('Vui lÃ²ng nháº­p Ä‘áº§y Ä‘á»§ thÃ´ng tin Há» tÃªn, Sá»‘ Ä‘iá»‡n thoáº¡i vÃ  Äá»‹a chá»‰ giao hÃ ng.');
       return;
     }
 
     // ProjectCore hien tai khong co ham dat don/escrow; khong tao TxHash gia.
-    alert('Chức năng thanh toán chưa có hợp đồng đơn hàng trong bản nguồn này. Chưa có giao dịch hoặc đơn hàng nào được xác nhận. Bạn vẫn có thể xem sản phẩm và giỏ hàng.');
+    alert('Chá»©c nÄƒng thanh toÃ¡n chÆ°a cÃ³ há»£p Ä‘á»“ng Ä‘Æ¡n hÃ ng trong báº£n nguá»“n nÃ y. ChÆ°a cÃ³ giao dá»‹ch hoáº·c Ä‘Æ¡n hÃ ng nÃ o Ä‘Æ°á»£c xÃ¡c nháº­n. Báº¡n váº«n cÃ³ thá»ƒ xem sáº£n pháº©m vÃ  giá» hÃ ng.');
 
   };
 
   return (
     <div className="space-y-6 font-sans">
       <div role="status" className="rounded-xl border border-amber-200 bg-amber-50 text-amber-900 p-3 text-sm">
-        Gian hàng hiện cho phép xem sản phẩm và giỏ hàng. Thanh toán blockchain chưa được tích hợp; chưa gửi ETH hoặc xác nhận đơn hàng thật.
+        Gian hÃ ng hiá»‡n cho phÃ©p xem sáº£n pháº©m vÃ  giá» hÃ ng. Thanh toÃ¡n blockchain chÆ°a Ä‘Æ°á»£c tÃ­ch há»£p; chÆ°a gá»­i ETH hoáº·c xÃ¡c nháº­n Ä‘Æ¡n hÃ ng tháº­t.
       </div>
       {/* Store Banner */}
       <div className="bg-gradient-to-r from-[#264939] via-[#1c372b] to-[#264939] text-white p-6 sm:p-8 rounded-3xl shadow-lg relative overflow-hidden">
@@ -224,15 +224,15 @@ export const StoreTab: React.FC<StoreTabProps> = ({
           <div className="space-y-2 max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-emerald-200 border border-white/20 text-xs font-semibold backdrop-blur-xs">
               <Store className="w-4 h-4 text-[#C29B38]" />
-              <span>CỬA HÀNG ĐẶC SẢN CỐ ĐÔ HUẾ - BLOCKCHAIN CERTIFIED</span>
+              <span>Cá»¬A HÃ€NG Äáº¶C Sáº¢N Cá» ÄÃ” HUáº¾ - BLOCKCHAIN CERTIFIED</span>
             </div>
 
             <h2 className="font-serif font-extrabold text-2xl sm:text-3xl lg:text-4xl tracking-tight text-amber-100 leading-snug">
-              Thưởng Thức Đặc Sản Chuẩn OCOP Cố Đô
+              ThÆ°á»Ÿng Thá»©c Äáº·c Sáº£n Chuáº©n OCOP Cá»‘ ÄÃ´
             </h2>
 
             <p className="text-xs sm:text-sm text-emerald-100/90 leading-relaxed font-sans">
-              Điểm bán niêm phong sản phẩm OCOP Thừa Thiên Huế. Khách hàng mua sắm trực tuyến với chứng nhận nguồn gốc Blockchain minh bạch 100%.
+              Äiá»ƒm bÃ¡n niÃªm phong sáº£n pháº©m OCOP Thá»«a ThiÃªn Huáº¿. KhÃ¡ch hÃ ng mua sáº¯m trá»±c tuyáº¿n vá»›i chá»©ng nháº­n nguá»“n gá»‘c Blockchain minh báº¡ch 100%.
             </p>
           </div>
 
@@ -249,9 +249,9 @@ export const StoreTab: React.FC<StoreTabProps> = ({
                 </span>
               )}
             </div>
-            <span>Giỏ Hàng ({totalItemsCount})</span>
+            <span>Giá» HÃ ng ({totalItemsCount})</span>
             <span className="bg-black/20 px-2 py-0.5 rounded-lg font-mono text-xs">
-              {totalVnd.toLocaleString('vi-VN')} đ
+              {totalVnd.toLocaleString('vi-VN')} Ä‘
             </span>
           </button>
         </div>
@@ -267,7 +267,7 @@ export const StoreTab: React.FC<StoreTabProps> = ({
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Tìm tên đặc sản, mã lô hàng hoặc nguồn gốc..."
+              placeholder="TÃ¬m tÃªn Ä‘áº·c sáº£n, mÃ£ lÃ´ hÃ ng hoáº·c nguá»“n gá»‘c..."
               className="w-full pl-11 pr-4 py-2.5 rounded-2xl border border-[#E6E1D7] text-xs sm:text-sm font-sans focus:outline-none focus:border-[#264939] bg-[#FAF9F5] shadow-xs"
             />
             {searchQuery && (
@@ -282,8 +282,8 @@ export const StoreTab: React.FC<StoreTabProps> = ({
 
           {/* Star Filter */}
           <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0">
-            <span className="text-xs font-bold text-[#8A9D92] uppercase shrink-0">Đánh giá OCOP:</span>
-            {['Tất Cả', '5 SAO', '4 SAO'].map((star) => (
+            <span className="text-xs font-bold text-[#8A9D92] uppercase shrink-0">ÄÃ¡nh giÃ¡ OCOP:</span>
+            {['Táº¥t Cáº£', '5 SAO', '4 SAO'].map((star) => (
               <button
                 key={star}
                 onClick={() => setSelectedStar(star)}
@@ -326,13 +326,13 @@ export const StoreTab: React.FC<StoreTabProps> = ({
           <div className="space-y-1.5">
             <h3 className="font-serif font-extrabold text-lg sm:text-xl text-[#264939]">
               {catalog.length === 0
-                ? 'Chưa Có Sản Phẩm Nào Được Xác Nhận Niêm Yết'
-                : 'Không Tìm Thấy Sản Phẩm Phù Hợp'}
+                ? 'ChÆ°a CÃ³ Sáº£n Pháº©m NÃ o ÄÆ°á»£c XÃ¡c Nháº­n NiÃªm Yáº¿t'
+                : 'KhÃ´ng TÃ¬m Tháº¥y Sáº£n Pháº©m PhÃ¹ Há»£p'}
             </h3>
             <p className="text-xs text-[#5E7166] leading-relaxed max-w-md mx-auto">
               {catalog.length === 0
-                ? 'Sản phẩm sau khi được tạo lô hàng và kiểm định OCOP cần trải qua bước Xác Nhận Niêm Yết Bán Lẻ (bởi Đại lý / Retailer) trước khi chính thức xuất hiện trên Cửa Hàng Đặc Sản.'
-                : 'Thử thay đổi từ khoá tìm kiếm hoặc chọn danh mục đặc sản khác.'}
+                ? 'Sáº£n pháº©m sau khi Ä‘Æ°á»£c táº¡o lÃ´ hÃ ng vÃ  kiá»ƒm Ä‘á»‹nh OCOP cáº§n tráº£i qua bÆ°á»›c XÃ¡c Nháº­n NiÃªm Yáº¿t BÃ¡n Láº» (bá»Ÿi Äáº¡i lÃ½ / Retailer) trÆ°á»›c khi chÃ­nh thá»©c xuáº¥t hiá»‡n trÃªn Cá»­a HÃ ng Äáº·c Sáº£n.'
+                : 'Thá»­ thay Ä‘á»•i tá»« khoÃ¡ tÃ¬m kiáº¿m hoáº·c chá»n danh má»¥c Ä‘áº·c sáº£n khÃ¡c.'}
             </p>
           </div>
 
@@ -342,7 +342,7 @@ export const StoreTab: React.FC<StoreTabProps> = ({
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#264939] text-white font-sans font-bold text-xs hover:bg-[#1c372b] transition-all shadow-2xs mt-2"
             >
               <Store className="w-4 h-4 text-[#C29B38]" />
-              <span>Chuyển Đến Trang Niêm Yết Bán Lẻ (Retailer)</span>
+              <span>Chuyá»ƒn Äáº¿n Trang NiÃªm Yáº¿t BÃ¡n Láº» (Retailer)</span>
             </button>
           )}
         </div>
@@ -374,7 +374,7 @@ export const StoreTab: React.FC<StoreTabProps> = ({
                 <button
                   onClick={() => onNavigateToLookup(prod.batchCode)}
                   className="absolute bottom-3 right-3 flex items-center gap-1 bg-[#264939]/90 hover:bg-[#264939] text-white font-mono font-bold text-[10px] px-2.5 py-1 rounded-lg backdrop-blur-xs transition-all shadow-xs"
-                  title="Xem nhật ký minh bạch Blockchain"
+                  title="Xem nháº­t kÃ½ minh báº¡ch Blockchain"
                 >
                   <ShieldCheck className="w-3 h-3 text-emerald-300" />
                   <span>{prod.batchCode}</span>
@@ -403,7 +403,7 @@ export const StoreTab: React.FC<StoreTabProps> = ({
 
                 {/* Origin Info */}
                 <div className="text-[11px] text-[#5E7166] bg-[#FAF9F5] p-2.5 rounded-xl border border-[#EDE9E0] flex items-center justify-between">
-                  <span className="truncate">Nguồn gốc: <b>{prod.origin}</b></span>
+                  <span className="truncate">Nguá»“n gá»‘c: <b>{prod.origin}</b></span>
                   <button
                     onClick={() => onNavigateToLookup(prod.batchCode)}
                     className="text-[#264939] font-bold hover:underline shrink-0 flex items-center gap-0.5 ml-1"
@@ -417,7 +417,7 @@ export const StoreTab: React.FC<StoreTabProps> = ({
                 <div className="pt-2 border-t border-[#EDE9E0] flex items-center justify-between gap-2">
                   <div>
                     <div className="font-serif font-extrabold text-base sm:text-lg text-[#264939]">
-                      {prod.priceVnd.toLocaleString('vi-VN')} đ
+                      {prod.priceVnd.toLocaleString('vi-VN')} Ä‘
                     </div>
                     <div className="text-[10px] font-mono text-[#8C6D1F]">
                       ~{prod.priceEth} ETH (Sepolia)
@@ -428,7 +428,7 @@ export const StoreTab: React.FC<StoreTabProps> = ({
                     <button
                       onClick={() => setSelectedProductDetails(prod)}
                       className="p-2 rounded-xl bg-[#FAF9F5] border border-[#E6E1D7] text-[#5E7166] hover:text-[#264939] hover:bg-[#E0ECE4]/60 transition-all"
-                      title="Xem chi tiết"
+                      title="Xem chi tiáº¿t"
                     >
                       <Sparkles className="w-4 h-4 text-[#C29B38]" />
                     </button>
@@ -497,22 +497,22 @@ export const StoreTab: React.FC<StoreTabProps> = ({
 
                 <div className="bg-[#E0ECE4]/40 p-3 rounded-xl space-y-1.5 border border-[#CCD8CF]/60">
                   <div className="flex justify-between">
-                    <span>Cơ sở sản xuất:</span>
+                    <span>CÆ¡ sá»Ÿ sáº£n xuáº¥t:</span>
                     <strong className="text-[#1A2820]">{selectedProductDetails.origin}</strong>
                   </div>
                   <div className="flex justify-between">
-                    <span>Quy cách đóng gói:</span>
+                    <span>Quy cÃ¡ch Ä‘Ã³ng gÃ³i:</span>
                     <strong className="text-[#1A2820]">{selectedProductDetails.unit}</strong>
                   </div>
                   <div className="flex justify-between">
-                    <span>Tiêu chuẩn OCOP:</span>
+                    <span>TiÃªu chuáº©n OCOP:</span>
                     <strong className="text-[#264939]">{selectedProductDetails.ocopStandard}</strong>
                   </div>
                 </div>
 
                 <div className="pt-2">
                   <div className="font-serif font-extrabold text-xl text-[#264939]">
-                    {selectedProductDetails.priceVnd.toLocaleString('vi-VN')} VNĐ
+                    {selectedProductDetails.priceVnd.toLocaleString('vi-VN')} VNÄ
                   </div>
                   <div className="text-xs font-mono text-[#8C6D1F]">
                     (~{selectedProductDetails.priceEth} ETH Sepolia)
@@ -531,7 +531,7 @@ export const StoreTab: React.FC<StoreTabProps> = ({
                 className="w-full sm:w-auto px-4 py-2.5 bg-[#E0ECE4] text-[#264939] font-bold text-xs rounded-xl hover:bg-[#d0e2d5] transition-all border border-[#CCD8CF] flex items-center justify-center gap-2"
               >
                 <ShieldCheck className="w-4 h-4 text-[#264939]" />
-                <span>Kiểm Tra Nhật Ký Tem QR On-Chain</span>
+                <span>Kiá»ƒm Tra Nháº­t KÃ½ Tem QR On-Chain</span>
               </button>
 
               <button
@@ -542,7 +542,7 @@ export const StoreTab: React.FC<StoreTabProps> = ({
                 className="w-full sm:w-auto px-6 py-2.5 bg-[#264939] text-white font-bold text-xs rounded-xl hover:bg-[#1c372b] transition-all flex items-center justify-center gap-2 shadow-xs"
               >
                 <ShoppingCart className="w-4 h-4" />
-                <span>Thêm Vào Giỏ Hàng</span>
+                <span>ThÃªm VÃ o Giá» HÃ ng</span>
               </button>
             </div>
           </div>
@@ -557,7 +557,7 @@ export const StoreTab: React.FC<StoreTabProps> = ({
               <div className="flex items-center gap-2">
                 <ShoppingCart className="w-5 h-5 text-[#264939]" />
                 <h3 className="font-serif font-extrabold text-lg text-[#264939]">
-                  Giỏ Hàng Đặc Sản ({totalItemsCount})
+                  Giá» HÃ ng Äáº·c Sáº£n ({totalItemsCount})
                 </h3>
               </div>
               <button
@@ -571,8 +571,8 @@ export const StoreTab: React.FC<StoreTabProps> = ({
             {cart.length === 0 ? (
               <div className="flex-1 flex flex-col items-center justify-center text-center space-y-3 p-6 text-gray-400">
                 <ShoppingBag className="w-12 h-12 text-gray-300" />
-                <p className="font-bold text-[#264939]">Giỏ Hàng Của Bạn Đang Trống</p>
-                <p className="text-xs">Vui lòng chọn đặc sản OCOP Huế yêu thích để tiến hành đặt hàng.</p>
+                <p className="font-bold text-[#264939]">Giá» HÃ ng Cá»§a Báº¡n Äang Trá»‘ng</p>
+                <p className="text-xs">Vui lÃ²ng chá»n Ä‘áº·c sáº£n OCOP Huáº¿ yÃªu thÃ­ch Ä‘á»ƒ tiáº¿n hÃ nh Ä‘áº·t hÃ ng.</p>
               </div>
             ) : (
               <>
@@ -593,7 +593,7 @@ export const StoreTab: React.FC<StoreTabProps> = ({
                           {item.product.name}
                         </h4>
                         <div className="text-[11px] font-bold text-[#264939] mt-0.5">
-                          {item.product.priceVnd.toLocaleString('vi-VN')} đ
+                          {item.product.priceVnd.toLocaleString('vi-VN')} Ä‘
                         </div>
                         <span className="text-[9px] font-mono text-[#8C6D1F]">
                           ~{item.product.priceEth} ETH
@@ -624,18 +624,18 @@ export const StoreTab: React.FC<StoreTabProps> = ({
                 <div className="pt-4 border-t border-[#EDE9E0] space-y-3">
                   <div className="space-y-1.5 text-xs text-[#5E7166]">
                     <div className="flex justify-between">
-                      <span>Tổng tiền hàng (VNĐ):</span>
+                      <span>Tá»•ng tiá»n hÃ ng (VNÄ):</span>
                       <strong className="text-base font-serif text-[#264939]">
-                        {totalVnd.toLocaleString('vi-VN')} VNĐ
+                        {totalVnd.toLocaleString('vi-VN')} VNÄ
                       </strong>
                     </div>
                     <div className="flex justify-between font-mono">
-                      <span>Quy đổi ETH Sepolia:</span>
+                      <span>Quy Ä‘á»•i ETH Sepolia:</span>
                       <strong className="text-amber-800">~{totalEth.toFixed(4)} ETH</strong>
                     </div>
                     <div className="flex justify-between text-[11px]">
-                      <span>Phí giao hàng:</span>
-                      <span className="text-emerald-700 font-bold">Miễn phí giao tại Huế</span>
+                      <span>PhÃ­ giao hÃ ng:</span>
+                      <span className="text-emerald-700 font-bold">Miá»…n phÃ­ giao táº¡i Huáº¿</span>
                     </div>
                   </div>
 
@@ -646,7 +646,7 @@ export const StoreTab: React.FC<StoreTabProps> = ({
                     }}
                     className="w-full py-3.5 bg-[#264939] text-white font-sans font-bold text-xs rounded-2xl hover:bg-[#1c372b] transition-all flex items-center justify-center gap-2 shadow-md"
                   >
-                    <span>Tiến Hành Đặt Hàng</span>
+                    <span>Tiáº¿n HÃ nh Äáº·t HÃ ng</span>
                     <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -670,7 +670,7 @@ export const StoreTab: React.FC<StoreTabProps> = ({
               <div className="flex items-center gap-2">
                 <Truck className="w-5 h-5 text-[#264939]" />
                 <h3 className="font-serif font-extrabold text-lg text-[#264939]">
-                  Xác Nhận Đơn Hàng Đặc Sản
+                  XÃ¡c Nháº­n ÄÆ¡n HÃ ng Äáº·c Sáº£n
                 </h3>
               </div>
               <button
@@ -685,11 +685,11 @@ export const StoreTab: React.FC<StoreTabProps> = ({
               {/* Order Summary Box */}
               <div className="bg-[#FAF9F5] p-3.5 rounded-2xl border border-[#E6E1D7] space-y-2">
                 <div className="font-bold text-[#264939] flex justify-between">
-                  <span>TỔNG ĐƠN HÀNG ({totalItemsCount} sản phẩm):</span>
-                  <span className="font-serif text-sm">{totalVnd.toLocaleString('vi-VN')} đ</span>
+                  <span>Tá»”NG ÄÆ N HÃ€NG ({totalItemsCount} sáº£n pháº©m):</span>
+                  <span className="font-serif text-sm">{totalVnd.toLocaleString('vi-VN')} Ä‘</span>
                 </div>
                 <div className="text-[10px] text-gray-500 font-mono flex justify-between">
-                  <span>Tương đương ETH:</span>
+                  <span>TÆ°Æ¡ng Ä‘Æ°Æ¡ng ETH:</span>
                   <span>~{totalEth.toFixed(4)} ETH Sepolia</span>
                 </div>
               </div>
@@ -697,19 +697,19 @@ export const StoreTab: React.FC<StoreTabProps> = ({
               {/* Customer Info Form */}
               <div className="space-y-3">
                 <h4 className="font-serif font-extrabold text-xs text-[#1A2820] uppercase tracking-wider">
-                  Thông Tin Giao Hàng
+                  ThÃ´ng Tin Giao HÃ ng
                 </h4>
 
                 <div>
                   <label className="block text-[11px] font-bold text-[#5E7166] mb-1">
-                    Họ và Tên người nhận: <span className="text-red-500">*</span>
+                    Há» vÃ  TÃªn ngÆ°á»i nháº­n: <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
                     required
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
-                    placeholder="Ví dụ: Nguyễn Văn An"
+                    placeholder="VÃ­ dá»¥: Nguyá»…n VÄƒn An"
                     className="w-full px-3.5 py-2.5 rounded-xl border border-[#E6E1D7] focus:outline-none focus:border-[#264939] bg-[#FAF9F5]"
                   />
                 </div>
@@ -717,7 +717,7 @@ export const StoreTab: React.FC<StoreTabProps> = ({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="block text-[11px] font-bold text-[#5E7166] mb-1">
-                      Số điện thoại: <span className="text-red-500">*</span>
+                      Sá»‘ Ä‘iá»‡n thoáº¡i: <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="tel"
@@ -731,30 +731,30 @@ export const StoreTab: React.FC<StoreTabProps> = ({
 
                   <div>
                     <label className="block text-[11px] font-bold text-[#5E7166] mb-1">
-                      Phương thức thanh toán:
+                      PhÆ°Æ¡ng thá»©c thanh toÃ¡n:
                     </label>
                     <select
                       value={paymentMethod}
                       onChange={(e: any) => setPaymentMethod(e.target.value)}
                       className="w-full px-3 py-2.5 rounded-xl border border-[#E6E1D7] focus:outline-none focus:border-[#264939] bg-[#FAF9F5] font-bold text-[#264939]"
                     >
-                      <option value="COD">Thanh toán khi nhận hàng (COD)</option>
-                      <option value="WEB3">Thanh toán Ví Web3 ETH (Sepolia)</option>
-                      <option value="BANK">Chuyển khoản Ngân hàng QR</option>
+                      <option value="COD">Thanh toÃ¡n khi nháº­n hÃ ng (COD)</option>
+                      <option value="WEB3">Thanh toÃ¡n VÃ­ Web3 ETH (Sepolia)</option>
+                      <option value="BANK">Chuyá»ƒn khoáº£n NgÃ¢n hÃ ng QR</option>
                     </select>
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-[11px] font-bold text-[#5E7166] mb-1">
-                    Địa chỉ giao hàng chi tiết: <span className="text-red-500">*</span>
+                    Äá»‹a chá»‰ giao hÃ ng chi tiáº¿t: <span className="text-red-500">*</span>
                   </label>
                   <textarea
                     required
                     rows={2}
                     value={customerAddress}
                     onChange={(e) => setCustomerAddress(e.target.value)}
-                    placeholder="Số nhà, đường, phường/xã, quận/huyện, TP. Huế hoặc tỉnh thành..."
+                    placeholder="Sá»‘ nhÃ , Ä‘Æ°á»ng, phÆ°á»ng/xÃ£, quáº­n/huyá»‡n, TP. Huáº¿ hoáº·c tá»‰nh thÃ nh..."
                     className="w-full px-3.5 py-2 rounded-xl border border-[#E6E1D7] focus:outline-none focus:border-[#264939] bg-[#FAF9F5]"
                   />
                 </div>
@@ -765,10 +765,10 @@ export const StoreTab: React.FC<StoreTabProps> = ({
                 <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-[11px] text-amber-900 space-y-1 font-mono">
                   <div className="font-bold flex items-center gap-1">
                     <CreditCard className="w-3.5 h-3.5 text-amber-700" />
-                    <span>Thanh Toán Trực Tiếp Qua Ví Web3:</span>
+                    <span>Thanh ToÃ¡n Trá»±c Tiáº¿p Qua VÃ­ Web3:</span>
                   </div>
                   <p className="font-sans text-[10px]">
-                    Địa chỉ ví kết nối: {currentAccount ? `${currentAccount.slice(0, 6)}...${currentAccount.slice(-4)}` : 'Chưa kết nối ví'}
+                    Äá»‹a chá»‰ vÃ­ káº¿t ná»‘i: {currentAccount ? `${currentAccount.slice(0, 6)}...${currentAccount.slice(-4)}` : 'ChÆ°a káº¿t ná»‘i vÃ­'}
                   </p>
                 </div>
               )}
@@ -778,7 +778,7 @@ export const StoreTab: React.FC<StoreTabProps> = ({
                 className="w-full py-3.5 bg-[#264939] text-white font-sans font-bold text-xs rounded-2xl hover:bg-[#1c372b] transition-all flex items-center justify-center gap-2 shadow-md pt-3"
               >
                 <Send className="w-4 h-4" />
-                <span>Xác Nhận Đặt Hàng Ngay</span>
+                <span>XÃ¡c Nháº­n Äáº·t HÃ ng Ngay</span>
               </button>
             </form>
           </div>
@@ -801,33 +801,33 @@ export const StoreTab: React.FC<StoreTabProps> = ({
 
             <div>
               <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300">
-                MÃ ĐƠN HÀNG: {confirmedOrder.orderId}
+                MÃƒ ÄÆ N HÃ€NG: {confirmedOrder.orderId}
               </span>
               <h3 className="font-serif font-extrabold text-xl text-[#264939] mt-2">
-                Đặt Hàng Thành Công!
+                Äáº·t HÃ ng ThÃ nh CÃ´ng!
               </h3>
               <p className="text-xs text-[#5E7166] mt-1">
-                Cảm ơn bạn đã ủng hộ đặc sản OCOP Cố Đô Huế. Đơn hàng đang được chuẩn bị đóng gói niêm phong tem QR.
+                Cáº£m Æ¡n báº¡n Ä‘Ã£ á»§ng há»™ Ä‘áº·c sáº£n OCOP Cá»‘ ÄÃ´ Huáº¿. ÄÆ¡n hÃ ng Ä‘ang Ä‘Æ°á»£c chuáº©n bá»‹ Ä‘Ã³ng gÃ³i niÃªm phong tem QR.
               </p>
             </div>
 
             <div className="bg-[#FAF9F5] p-3.5 rounded-2xl border border-[#E6E1D7] text-left text-xs space-y-1.5">
               <div className="flex justify-between">
-                <span>Người nhận:</span>
+                <span>NgÆ°á»i nháº­n:</span>
                 <strong className="text-[#1A2820]">{confirmedOrder.customerName}</strong>
               </div>
               <div className="flex justify-between">
-                <span>Số điện thoại:</span>
+                <span>Sá»‘ Ä‘iá»‡n thoáº¡i:</span>
                 <strong className="text-[#1A2820]">{confirmedOrder.customerPhone}</strong>
               </div>
               <div className="flex justify-between">
-                <span>Hình thức:</span>
+                <span>HÃ¬nh thá»©c:</span>
                 <strong className="text-[#264939]">{confirmedOrder.paymentMethod}</strong>
               </div>
               <div className="flex justify-between border-t border-[#EDE9E0] pt-1.5">
-                <span>Tổng giá trị:</span>
+                <span>Tá»•ng giÃ¡ trá»‹:</span>
                 <strong className="font-serif text-sm text-[#264939]">
-                  {confirmedOrder.totalVnd.toLocaleString('vi-VN')} đ
+                  {confirmedOrder.totalVnd.toLocaleString('vi-VN')} Ä‘
                 </strong>
               </div>
             </div>
@@ -846,7 +846,7 @@ export const StoreTab: React.FC<StoreTabProps> = ({
                   className="w-full py-3 bg-[#C29B38] text-white font-extrabold text-xs rounded-xl hover:bg-[#8C6D1F] transition-all flex items-center justify-center gap-2 shadow-sm"
                 >
                   <ShieldCheck className="w-4 h-4 text-white" />
-                  <span>Xem Nhật Ký Hành Trình On-Chain Vừa Cập Nhật</span>
+                  <span>Xem Nháº­t KÃ½ HÃ nh TrÃ¬nh On-Chain Vá»«a Cáº­p Nháº­t</span>
                 </button>
               )}
 
@@ -854,7 +854,7 @@ export const StoreTab: React.FC<StoreTabProps> = ({
                 onClick={() => setConfirmedOrder(null)}
                 className="w-full py-3 bg-[#264939] text-white font-bold text-xs rounded-xl hover:bg-[#1c372b] transition-all"
               >
-                Đóng & Tiếp Tục Mua Sắm
+                ÄÃ³ng & Tiáº¿p Tá»¥c Mua Sáº¯m
               </button>
             </div>
           </div>
@@ -863,3 +863,4 @@ export const StoreTab: React.FC<StoreTabProps> = ({
     </div>
   );
 };
+

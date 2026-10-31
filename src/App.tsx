@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+﻿import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { ethers } from 'ethers';
 import { Batch, ToastMessage, GrantedWallet } from './types';
 import {
@@ -91,15 +91,15 @@ export const App: React.FC = () => {
 
   // Map OpenZeppelin role hash to title
   const getRoleTitle = (roleHash: string): string => {
-    if (roleHash === ROLE_HASHES.ROLE_PRODUCER) return 'Cơ Sở Sản Xuất';
-    if (roleHash === ROLE_HASHES.ROLE_LOGISTICS) return 'Đơn Vị Vận Chuyển';
-    if (roleHash === ROLE_HASHES.ROLE_RETAILER) return 'Đại Lý Phân Phối';
-    if (roleHash === ROLE_HASHES.ROLE_INSPECTOR) return 'Kiểm Định Viên OCOP';
-    if (roleHash === ROLE_HASHES.ROLE_ADMIN) return 'Quản Trị Viên';
-    return 'Đơn Vị Tham Gia';
+    if (roleHash === ROLE_HASHES.ROLE_PRODUCER) return 'CÆ¡ Sá»Ÿ Sáº£n Xuáº¥t';
+    if (roleHash === ROLE_HASHES.ROLE_LOGISTICS) return 'ÄÆ¡n Vá»‹ Váº­n Chuyá»ƒn';
+    if (roleHash === ROLE_HASHES.ROLE_RETAILER) return 'Äáº¡i LÃ½ PhÃ¢n Phá»‘i';
+    if (roleHash === ROLE_HASHES.ROLE_INSPECTOR) return 'Kiá»ƒm Äá»‹nh ViÃªn OCOP';
+    if (roleHash === ROLE_HASHES.ROLE_ADMIN) return 'Quáº£n Trá»‹ ViÃªn';
+    return 'ÄÆ¡n Vá»‹ Tham Gia';
   };
 
-  // Truy vấn dữ liệu trực tiếp từ Smart Contract Sepolia thông qua Ethers.js RPC Provider (Không sử dụng LocalStorage)
+  // Truy váº¥n dá»¯ liá»‡u trá»±c tiáº¿p tá»« Smart Contract Sepolia thÃ´ng qua Ethers.js RPC Provider (KhÃ´ng sá»­ dá»¥ng LocalStorage)
   const fetchContractData = useCallback(async (accountAddr?: string) => {
     if (typeof window === 'undefined') return;
 
@@ -108,12 +108,12 @@ export const App: React.FC = () => {
     try {
       const normalizedContractAddr = safeGetAddress(CONTRACT_ADDRESS);
 
-      // Khởi tạo Ethers.js Provider: Ưu tiên BrowserProvider nếu kết nối ví, hoặc JsonRpcProvider Sepolia RPC
+      // Khá»Ÿi táº¡o Ethers.js Provider: Æ¯u tiÃªn BrowserProvider náº¿u káº¿t ná»‘i vÃ­, hoáº·c JsonRpcProvider Sepolia RPC
       const provider = new ethers.JsonRpcProvider('https://ethereum-sepolia-rpc.publicnode.com');
 
       const contract = new ethers.Contract(normalizedContractAddr, PROJECT_CORE_ABI, provider);
 
-      // 1. Truy vấn số dư ETH của Smart Contract từ Sepolia Testnet
+      // 1. Truy váº¥n sá»‘ dÆ° ETH cá»§a Smart Contract tá»« Sepolia Testnet
       try {
         const balanceWei = await provider.getBalance(normalizedContractAddr);
         setContractBalanceEth(ethers.formatEther(balanceWei));
@@ -121,7 +121,7 @@ export const App: React.FC = () => {
         console.warn('Khong the lay so du ETH cua contract:', err);
       }
 
-      // 2. Truy vấn phí khởi tạo lô hàng từ Smart Contract
+      // 2. Truy váº¥n phÃ­ khá»Ÿi táº¡o lÃ´ hÃ ng tá»« Smart Contract
       try {
         const feeWei = await contract.batchCreationFee();
         setBatchCreationFeeEth(ethers.formatEther(feeWei));
@@ -140,7 +140,7 @@ export const App: React.FC = () => {
         } catch { /* Khong suy doan quyen khi RPC loi. */ }
       }
 
-      // 4. Truy vấn toàn bộ danh sách lô hàng trực tiếp từ Smart Contract qua Ethers.js
+      // 4. Truy váº¥n toÃ n bá»™ danh sÃ¡ch lÃ´ hÃ ng trá»±c tiáº¿p tá»« Smart Contract qua Ethers.js
       let total = 0n;
       try {
         total = await contract.getTotalBatches();
@@ -157,13 +157,13 @@ export const App: React.FC = () => {
             const batchData = await contract.getBatch(batchCode);
             const isVerifiedOnChain = Boolean(batchData.isVerified);
 
-            // Truy vấn mảng nhật ký chặng (checkpoints) trực tiếp từ Smart Contract
+            // Truy váº¥n máº£ng nháº­t kÃ½ cháº·ng (checkpoints) trá»±c tiáº¿p tá»« Smart Contract
             const checkpointsData = await contract.getCheckpoints(batchCode);
 
             const checkpoints = checkpointsData.map((cp: any, idx: number) => {
               const actionText = String(cp.action || '');
               return {
-                stepName: `Chặng ${idx + 1}: ${actionText.slice(0, 35)}${actionText.length > 35 ? '...' : ''}`,
+                stepName: `Cháº·ng ${idx + 1}: ${actionText.slice(0, 35)}${actionText.length > 35 ? '...' : ''}`,
                 role: cp.role,
                 roleTitle: getRoleTitle(cp.role),
                 location: cp.location,
@@ -171,12 +171,12 @@ export const App: React.FC = () => {
                 timestamp: Number(cp.timestamp),
                 recorder: cp.recorder,
                 metadataURI: cp.metadataURI,
-                txHash: 'Xác thực On-Chain Sepolia Block',
-                conditionNote: 'Dữ liệu được truy vấn trực tiếp từ Smart Contract qua Ethers.js RPC Provider.'
+                txHash: 'XÃ¡c thá»±c On-Chain Sepolia Block',
+                conditionNote: 'Dá»¯ liá»‡u Ä‘Æ°á»£c truy váº¥n trá»±c tiáº¿p tá»« Smart Contract qua Ethers.js RPC Provider.'
               };
             });
 
-            // Tách xếp hạng sao kiểm định OCOP từ nhật ký chặng
+            // TÃ¡ch xáº¿p háº¡ng sao kiá»ƒm Ä‘á»‹nh OCOP tá»« nháº­t kÃ½ cháº·ng
             let starRating = '4';
             let inspectorNote = '';
             const inspectorCp = checkpoints.find((cp: any) => cp.role === ROLE_HASHES.ROLE_INSPECTOR || (cp.action && cp.action.toLowerCase().includes('ocop')));
@@ -186,19 +186,19 @@ export const App: React.FC = () => {
               inspectorNote = inspectorCp.action;
             }
 
-            // Kiểm tra trạng thái niêm yết bán lẻ on-chain
+            // Kiá»ƒm tra tráº¡ng thÃ¡i niÃªm yáº¿t bÃ¡n láº» on-chain
             const isListedOnChain = checkpoints.some(
               (cp: any) =>
                 cp.role === ROLE_HASHES.ROLE_RETAILER ||
-                (cp.action && cp.action.toLowerCase().includes('niêm yết')) ||
+                (cp.action && cp.action.toLowerCase().includes('niÃªm yáº¿t')) ||
                 (cp.action && cp.action.toLowerCase().includes('inretail'))
             );
 
-            // Trích xuất số lượng nhập kho/sản lượng từ nhật ký sản xuất ban đầu
+            // TrÃ­ch xuáº¥t sá»‘ lÆ°á»£ng nháº­p kho/sáº£n lÆ°á»£ng tá»« nháº­t kÃ½ sáº£n xuáº¥t ban Ä‘áº§u
             let onChainQuantity = '';
             if (checkpoints.length > 0) {
               const cp1Action = checkpoints[0].action;
-              const qtyMatch = cp1Action.match(/Sản lượng:\s*([^—\n]+)/i);
+              const qtyMatch = cp1Action.match(/Sáº£n lÆ°á»£ng:\s*([^â€”\n]+)/i);
               if (qtyMatch && qtyMatch[1]) {
                 onChainQuantity = qtyMatch[1].trim();
               }
@@ -216,31 +216,31 @@ export const App: React.FC = () => {
               isListed: isListedOnChain,
               exists: batchData.exists,
               ocopStandard: isVerifiedOnChain
-                ? `Đạt Chuẩn OCOP ${starRating} Sao Tỉnh Thừa Thiên Huế`
-                : 'Chưa Thẩm Định OCOP',
+                ? `Äáº¡t Chuáº©n OCOP ${starRating} Sao Tá»‰nh Thá»«a ThiÃªn Huáº¿`
+                : 'ChÆ°a Tháº©m Äá»‹nh OCOP',
               certificationNo: `OCOP-HUE-2026-${batchCode.slice(-3)}`,
               quantity: onChainQuantity,
               currentStage:
                 checkpoints.length > 0
                   ? checkpoints[checkpoints.length - 1].action
                   : isVerifiedOnChain
-                  ? 'Đã đạt chuẩn OCOP (Chờ Vận Chuyển)'
-                  : 'Xưởng sản xuất (Chờ Thẩm Định OCOP)',
+                  ? 'ÄÃ£ Ä‘áº¡t chuáº©n OCOP (Chá» Váº­n Chuyá»ƒn)'
+                  : 'XÆ°á»Ÿng sáº£n xuáº¥t (Chá» Tháº©m Äá»‹nh OCOP)',
               certificateURI: batchData.certificateURI || `ipfs://huelegend/cert/${batchCode}`,
-              txHash: 'Xác nhận từ Smart Contract',
+              txHash: 'XÃ¡c nháº­n tá»« Smart Contract',
               inspectionFeePaid: '0 ETH',
               checkpoints
             };
           } catch (e) {
-            console.error(`Lỗi truy vấn lô hàng chỉ số ${i} từ Smart Contract:`, e);
+            console.error(`Lá»—i truy váº¥n lÃ´ hÃ ng chá»‰ sá»‘ ${i} tá»« Smart Contract:`, e);
           }
         }
       }
 
-      // Cập nhật State trực tiếp từ kết quả truy vấn Ethers.js
+      // Cáº­p nháº­t State trá»±c tiáº¿p tá»« káº¿t quáº£ truy váº¥n Ethers.js
       if (requestId === dataRequestRef.current) setBatches(fetchedBatches);
     } catch (err: any) {
-      console.warn('Lỗi kết nối RPC Provider Smart Contract:', err);
+      console.warn('Lá»—i káº¿t ná»‘i RPC Provider Smart Contract:', err);
     } finally {
       if (requestId === dataRequestRef.current) setIsLoadingContract(false);
     }
@@ -276,7 +276,7 @@ export const App: React.FC = () => {
                   const checkpoints = checkpointsData.map((cp: any, idx: number) => {
                     const actionText = String(cp.action || '');
                     return {
-                      stepName: `Chặng ${idx + 1}: ${actionText.slice(0, 35)}${actionText.length > 35 ? '...' : ''}`,
+                      stepName: `Cháº·ng ${idx + 1}: ${actionText.slice(0, 35)}${actionText.length > 35 ? '...' : ''}`,
                       role: cp.role,
                       roleTitle: getRoleTitle(cp.role),
                       location: cp.location,
@@ -284,8 +284,8 @@ export const App: React.FC = () => {
                       timestamp: Number(cp.timestamp),
                       recorder: cp.recorder,
                       metadataURI: cp.metadataURI,
-                      txHash: 'Xác thực On-Chain Sepolia Block',
-                      conditionNote: 'Dữ liệu được truy vấn trực tiếp từ Smart Contract qua Ethers.js RPC Provider.'
+                      txHash: 'XÃ¡c thá»±c On-Chain Sepolia Block',
+                      conditionNote: 'Dá»¯ liá»‡u Ä‘Æ°á»£c truy váº¥n trá»±c tiáº¿p tá»« Smart Contract qua Ethers.js RPC Provider.'
                     };
                   });
 
@@ -301,14 +301,14 @@ export const App: React.FC = () => {
                   const isListedOnChain = checkpoints.some(
                     (cp: any) =>
                       cp.role === ROLE_HASHES.ROLE_RETAILER ||
-                      (cp.action && cp.action.toLowerCase().includes('niêm yết')) ||
+                      (cp.action && cp.action.toLowerCase().includes('niÃªm yáº¿t')) ||
                       (cp.action && cp.action.toLowerCase().includes('inretail'))
                   );
 
                   let onChainQuantity = '';
                   if (checkpoints.length > 0) {
                     const cp1Action = checkpoints[0].action;
-                    const qtyMatch = cp1Action.match(/Sản lượng:\s*([^—\n]+)/i);
+                    const qtyMatch = cp1Action.match(/Sáº£n lÆ°á»£ng:\s*([^â€”\n]+)/i);
                     if (qtyMatch && qtyMatch[1]) {
                       onChainQuantity = qtyMatch[1].trim();
                     }
@@ -326,18 +326,18 @@ export const App: React.FC = () => {
                     isListed: isListedOnChain,
                     exists: batchData.exists,
                     ocopStandard: isVerifiedOnChain
-                      ? `Đạt Chuẩn OCOP ${starRating} Sao Tỉnh Thừa Thiên Huế`
-                      : 'Chưa Thẩm Định OCOP',
+                      ? `Äáº¡t Chuáº©n OCOP ${starRating} Sao Tá»‰nh Thá»«a ThiÃªn Huáº¿`
+                      : 'ChÆ°a Tháº©m Äá»‹nh OCOP',
                     certificationNo: `OCOP-HUE-2026-${cleanCode.slice(-3)}`,
                     quantity: onChainQuantity,
                     currentStage:
                       checkpoints.length > 0
                         ? checkpoints[checkpoints.length - 1].action
                         : isVerifiedOnChain
-                        ? 'Đã đạt chuẩn OCOP (Chờ Vận Chuyển)'
-                        : 'Xưởng sản xuất (Chờ Thẩm Định OCOP)',
+                        ? 'ÄÃ£ Ä‘áº¡t chuáº©n OCOP (Chá» Váº­n Chuyá»ƒn)'
+                        : 'XÆ°á»Ÿng sáº£n xuáº¥t (Chá» Tháº©m Äá»‹nh OCOP)',
                     certificateURI: batchData.certificateURI || `ipfs://huelegend/cert/${cleanCode}`,
-                    txHash: 'Xác nhận từ Smart Contract',
+                    txHash: 'XÃ¡c nháº­n tá»« Smart Contract',
                     inspectionFeePaid: '0.002 ETH',
                     checkpoints
                   };
@@ -389,18 +389,18 @@ export const App: React.FC = () => {
       if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
         setMobileMetaMaskDeepLink(`https://metamask.app.link/dapp/${window.location.host}${window.location.pathname}${window.location.search}${window.location.hash}`);
         setIsMobileMetaMaskModalOpen(true);
-      } else addToast('Cần MetaMask', 'Vui lòng cài MetaMask để kết nối ví.', 'warning');
+      } else addToast('Cáº§n MetaMask', 'Vui lÃ²ng cÃ i MetaMask Ä‘á»ƒ káº¿t ná»‘i vÃ­.', 'warning');
       return;
     }
-    const toast = addToast('Đang Kết Nối Ví', 'Chọn tài khoản trên MetaMask. Hệ thống sẽ kiểm tra quyền trên Sepolia.', 'loading', 0);
+    const toast = addToast('Äang Káº¿t Ná»‘i VÃ­', 'Chá»n tÃ i khoáº£n trÃªn MetaMask. Há»‡ thá»‘ng sáº½ kiá»ƒm tra quyá»n trÃªn Sepolia.', 'loading', 0);
     try {
       const verified = await wallet.connect(targetRole);
       if (verified.status === 'ready') {
-        addToast(verified.notice ? 'Chưa Có Quyền Đã Chọn' : 'Kết Nối Thành Công',
-          verified.notice || `Khu vực hiện tại: ${ROLE_LABELS[verified.workspace]}.`, verified.notice ? 'warning' : 'success');
+        addToast(verified.notice ? 'ChÆ°a CÃ³ Quyá»n ÄÃ£ Chá»n' : 'Káº¿t Ná»‘i ThÃ nh CÃ´ng',
+          verified.notice || `Khu vá»±c hiá»‡n táº¡i: ${ROLE_LABELS[verified.workspace]}.`, verified.notice ? 'warning' : 'success');
         if (verified.account) void fetchContractData(verified.account);
-      } else if (verified.notice) addToast('Chưa Thể Mở Chức Năng', verified.notice, 'warning');
-    } catch (err: any) { addToast('Lỗi Kết Nối', err?.message || 'Không thể kết nối MetaMask.', 'error'); }
+      } else if (verified.notice) addToast('ChÆ°a Thá»ƒ Má»Ÿ Chá»©c NÄƒng', verified.notice, 'warning');
+    } catch (err: any) { addToast('Lá»—i Káº¿t Ná»‘i', err?.message || 'KhÃ´ng thá»ƒ káº¿t ná»‘i MetaMask.', 'error'); }
     finally { removeToast(toast); }
   };
 
@@ -428,7 +428,7 @@ export const App: React.FC = () => {
     setSelectedLookupBatch('');
     setQrStampBatch(null);
     setJourneyBatch(null);
-    addToast('Đã Ngắt Kết Nối', 'Chỉ hiển thị Tổng quan hệ thống và Cửa hàng đặc sản.', 'info');
+    addToast('ÄÃ£ Ngáº¯t Káº¿t Ná»‘i', 'Chá»‰ hiá»ƒn thá»‹ Tá»•ng quan há»‡ thá»‘ng vÃ  Cá»­a hÃ ng Ä‘áº·c sáº£n.', 'info');
   };
 
   const handleRoleSelectAndConnect = async (roleKey: string) => {
@@ -440,7 +440,7 @@ export const App: React.FC = () => {
   // Moi duong vao tab deu kiem tra quyen, ke ca nut tat tren trang chu.
   const handleNavigateTab = (tab: string, batchCodeSelect?: string) => {
     if (!canVisitTab(tab, access)) {
-      addToast('Chức Năng Chưa Được Mở', 'Kết nối đúng ví và chọn vai trò đã được cấp quyền trên hợp đồng.', 'warning');
+      addToast('Chá»©c NÄƒng ChÆ°a ÄÆ°á»£c Má»Ÿ', 'Káº¿t ná»‘i Ä‘Ãºng vÃ­ vÃ  chá»n vai trÃ² Ä‘Ã£ Ä‘Æ°á»£c cáº¥p quyá»n trÃªn há»£p Ä‘á»“ng.', 'warning');
       if (!currentAccount) setIsRoleModalOpen(true);
       return;
     }
@@ -463,7 +463,7 @@ export const App: React.FC = () => {
   ) => {
     // Bat buoc phai ket noi vi MetaMask truoc khi khoi tao
     if (!currentAccount) {
-      addToast('Chưa Kết Nối Ví', 'Vui lòng chọn vai trò & kết nối ví MetaMask trước khi khởi tạo lô hàng.', 'warning');
+      addToast('ChÆ°a Káº¿t Ná»‘i VÃ­', 'Vui lÃ²ng chá»n vai trÃ² & káº¿t ná»‘i vÃ­ MetaMask trÆ°á»›c khi khá»Ÿi táº¡o lÃ´ hÃ ng.', 'warning');
       setIsRoleModalOpen(true);
       return;
     }
@@ -482,7 +482,7 @@ export const App: React.FC = () => {
       ? new Date(expiryDate).toLocaleDateString('vi-VN')
       : new Date(Date.now() + 180 * 24 * 3600 * 1000).toLocaleDateString('vi-VN');
 
-    const loadingToastId = addToast('Yêu Cầu MetaMask', 'Vui lòng xác nhận giao dịch createBatch() trên MetaMask...', 'loading', 0);
+    const loadingToastId = addToast('YÃªu Cáº§u MetaMask', 'Vui lÃ²ng xÃ¡c nháº­n giao dá»‹ch createBatch() trÃªn MetaMask...', 'loading', 0);
 
     try {
       const signer = await wallet.authorizedSigner('PRODUCER');
@@ -511,7 +511,7 @@ export const App: React.FC = () => {
       );
 
       removeToast(loadingToastId);
-      const waitToastId = addToast('Đang Chờ Khối Sepolia', `Giao dịch ${tx.hash.slice(0, 10)}... đang chờ xác nhận trên Blockchain...`, 'loading', 0);
+      const waitToastId = addToast('Äang Chá» Khá»‘i Sepolia', `Giao dá»‹ch ${tx.hash.slice(0, 10)}... Ä‘ang chá» xÃ¡c nháº­n trÃªn Blockchain...`, 'loading', 0);
 
       await tx.wait();
       removeToast(waitToastId);
@@ -527,25 +527,25 @@ export const App: React.FC = () => {
         producer: cleanUserAddress,
         isVerified: false,
         exists: true,
-        ocopStandard: 'Chưa Thẩm Định OCOP',
+        ocopStandard: 'ChÆ°a Tháº©m Äá»‹nh OCOP',
         certificationNo: `OCOP-HUE-2026-${cleanBatchCode.slice(-3)}`,
         quantity: cleanQuantity,
-        currentStage: 'Xưởng sản xuất (Chờ Thẩm Định OCOP)',
+        currentStage: 'XÆ°á»Ÿng sáº£n xuáº¥t (Chá» Tháº©m Äá»‹nh OCOP)',
         certificateURI: `ipfs://huelegend/cert/${cleanBatchCode}`,
         txHash: tx.hash,
         inspectionFeePaid: '0.002 ETH',
         checkpoints: [
           {
-            stepName: 'Chặng 1: Khai báo sản xuất ban đầu',
+            stepName: 'Cháº·ng 1: Khai bÃ¡o sáº£n xuáº¥t ban Ä‘áº§u',
             role: ROLE_HASHES.ROLE_PRODUCER,
-            roleTitle: 'Cơ Sở Sản Xuất',
+            roleTitle: 'CÆ¡ Sá»Ÿ Sáº£n Xuáº¥t',
             location: cleanOrigin,
-            action: `Khởi tạo lô hàng on-chain. NSX: ${cleanProdDate} - HSD: ${cleanExpDate}`,
+            action: `Khá»Ÿi táº¡o lÃ´ hÃ ng on-chain. NSX: ${cleanProdDate} - HSD: ${cleanExpDate}`,
             timestamp: Math.floor(Date.now() / 1000),
             recorder: cleanUserAddress,
             metadataURI: cleanMetadataURI,
             txHash: tx.hash,
-            conditionNote: 'Khởi tạo lô hàng thành công trên Sepolia Testnet.'
+            conditionNote: 'Khá»Ÿi táº¡o lÃ´ hÃ ng thÃ nh cÃ´ng trÃªn Sepolia Testnet.'
           }
         ]
       };
@@ -554,16 +554,16 @@ export const App: React.FC = () => {
       setSelectedLookupBatch(cleanBatchCode);
       setJourneyBatch(newBatchObj);
       notifyDataSync();
-      addToast('Khởi Tạo On-Chain Thành Công!', `Lô hàng ${cleanBatchCode} đã được khởi tạo và lưu vĩnh viễn trên Smart Contract (Tx: ${tx.hash.slice(0, 8)}...).`, 'success');
+      addToast('Khá»Ÿi Táº¡o On-Chain ThÃ nh CÃ´ng!', `LÃ´ hÃ ng ${cleanBatchCode} Ä‘Ã£ Ä‘Æ°á»£c khá»Ÿi táº¡o vÃ  lÆ°u vÄ©nh viá»…n trÃªn Smart Contract (Tx: ${tx.hash.slice(0, 8)}...).`, 'success');
       handleNavigateTab('lookup', cleanBatchCode);
 
-      // Đồng bộ lại dữ liệu trực tiếp từ Smart Contract qua Ethers.js RPC Provider
+      // Äá»“ng bá»™ láº¡i dá»¯ liá»‡u trá»±c tiáº¿p tá»« Smart Contract qua Ethers.js RPC Provider
       setTimeout(() => {
         fetchContractData(cleanUserAddress);
       }, 1000);
     } catch (err: any) {
       removeToast(loadingToastId);
-      addToast('Giao Dịch Thất Bại', err?.reason || err?.message || 'Không thể khởi tạo lô hàng trên Sepolia.', 'error');
+      addToast('Giao Dá»‹ch Tháº¥t Báº¡i', err?.reason || err?.message || 'KhÃ´ng thá»ƒ khá»Ÿi táº¡o lÃ´ hÃ ng trÃªn Sepolia.', 'error');
     }
   };
 
@@ -580,7 +580,7 @@ export const App: React.FC = () => {
   ) => {
     // Bat buoc phai ket noi vi MetaMask truoc khi ghi chang
     if (!currentAccount) {
-      addToast('Chưa Kết Nối Ví', 'Vui lòng chọn vai trò & kết nối ví MetaMask trước khi ghi chặng.', 'warning');
+      addToast('ChÆ°a Káº¿t Ná»‘i VÃ­', 'Vui lÃ²ng chá»n vai trÃ² & káº¿t ná»‘i vÃ­ MetaMask trÆ°á»›c khi ghi cháº·ng.', 'warning');
       setIsRoleModalOpen(true);
       return;
     }
@@ -588,33 +588,33 @@ export const App: React.FC = () => {
     const valueWei = valueEth && Number(valueEth) > 0 ? ethers.parseEther(Number(valueEth).toFixed(6)) : undefined;
 
     const loadingToastId = addToast(
-      'Yêu Cầu MetaMask',
-      'Vui lòng xác nhận giao dịch addCheckpoint() trên MetaMask...',
+      'YÃªu Cáº§u MetaMask',
+      'Vui lÃ²ng xÃ¡c nháº­n giao dá»‹ch addCheckpoint() trÃªn MetaMask...',
       'loading',
       0
     );
 
     try {
       const actionRole = checkpointWorkspace(role);
-      if (!actionRole) throw new Error('Vai trò ghi chặng không hợp lệ.');
+      if (!actionRole) throw new Error('Vai trÃ² ghi cháº·ng khÃ´ng há»£p lá»‡.');
       const signer = await wallet.authorizedSigner(actionRole);
       const rawUserAddr = await signer.getAddress();
       const cleanUserAddress = safeGetAddress(rawUserAddr);
       const contract = new ethers.Contract(safeGetAddress(CONTRACT_ADDRESS), PROJECT_CORE_ABI, signer);
 
       const roleHash = ROLE_HASHES[`ROLE_${actionRole}` as keyof typeof ROLE_HASHES];
-      const fullActionText = conditionNote ? `${action} (Ghi chú: ${conditionNote})` : action;
+      const fullActionText = conditionNote ? `${action} (Ghi chÃº: ${conditionNote})` : action;
 
       const tx = await contract.addCheckpoint(batchCode, roleHash, location, fullActionText, metadataURI);
 
       removeToast(loadingToastId);
-      const waitToastId = addToast('Đang Chờ Khối Sepolia', `Giao dịch ${tx.hash.slice(0, 10)}... đang chờ xác nhận...`, 'loading', 0);
+      const waitToastId = addToast('Äang Chá» Khá»‘i Sepolia', `Giao dá»‹ch ${tx.hash.slice(0, 10)}... Ä‘ang chá» xÃ¡c nháº­n...`, 'loading', 0);
 
       await tx.wait();
       removeToast(waitToastId);
 
       const newCheckpoint = {
-        stepName: stepName || `Chặng mới: ${action}`,
+        stepName: stepName || `Cháº·ng má»›i: ${action}`,
         role: roleHash,
         roleTitle: getRoleTitle(roleHash),
         location,
@@ -623,14 +623,14 @@ export const App: React.FC = () => {
         recorder: cleanUserAddress,
         metadataURI,
         txHash: tx.hash,
-        conditionNote: conditionNote || 'Ghi chặng mới thành công.'
+        conditionNote: conditionNote || 'Ghi cháº·ng má»›i thÃ nh cÃ´ng.'
       };
 
       const isListingAction =
         role === 'RETAILER' ||
         role === ROLE_HASHES.ROLE_RETAILER ||
-        (stepName && stepName.toLowerCase().includes('niêm yết')) ||
-        (action && action.toLowerCase().includes('niêm yết'));
+        (stepName && stepName.toLowerCase().includes('niÃªm yáº¿t')) ||
+        (action && action.toLowerCase().includes('niÃªm yáº¿t'));
 
       setBatches((prev) => {
         const target = prev[batchCode];
@@ -656,15 +656,15 @@ export const App: React.FC = () => {
       notifyDataSync();
 
       if (isListingAction) {
-        addToast('Xác Nhận Niêm Yết Thành Công!', `Lô hàng ${batchCode} đã niêm yết bán lẻ thành công (Tx: ${tx.hash.slice(0, 8)}...).`, 'success');
+        addToast('XÃ¡c Nháº­n NiÃªm Yáº¿t ThÃ nh CÃ´ng!', `LÃ´ hÃ ng ${batchCode} Ä‘Ã£ niÃªm yáº¿t bÃ¡n láº» thÃ nh cÃ´ng (Tx: ${tx.hash.slice(0, 8)}...).`, 'success');
       } else {
-        addToast('Ghi Chặng Thành Công!', `Chặng mới của lô ${batchCode} đã được lưu vĩnh viễn on-chain.`, 'success');
+        addToast('Ghi Cháº·ng ThÃ nh CÃ´ng!', `Cháº·ng má»›i cá»§a lÃ´ ${batchCode} Ä‘Ã£ Ä‘Æ°á»£c lÆ°u vÄ©nh viá»…n on-chain.`, 'success');
       }
       await fetchContractData();
       handleNavigateTab('lookup', batchCode);
     } catch (err: any) {
       removeToast(loadingToastId);
-      addToast('Giao Dịch Thất Bại', err?.reason || err?.message || 'Lỗi ghi chặng lên Blockchain.', 'error');
+      addToast('Giao Dá»‹ch Tháº¥t Báº¡i', err?.reason || err?.message || 'Lá»—i ghi cháº·ng lÃªn Blockchain.', 'error');
       throw err;
     }
   };
@@ -678,12 +678,12 @@ export const App: React.FC = () => {
   ) => {
     // Bat buoc phai ket noi vi MetaMask truoc khi tham dinh
     if (!currentAccount) {
-      addToast('Chưa Kết Nối Ví', 'Vui lòng kết nối ví MetaMask với quyền ROLE_INSPECTOR.', 'warning');
+      addToast('ChÆ°a Káº¿t Ná»‘i VÃ­', 'Vui lÃ²ng káº¿t ná»‘i vÃ­ MetaMask vá»›i quyá»n ROLE_INSPECTOR.', 'warning');
       setIsRoleModalOpen(true);
       return;
     }
 
-    const loadingToastId = addToast('Yêu Cầu MetaMask', 'Vui lòng xác nhận giao dịch verifyBatch() trên MetaMask...', 'loading', 0);
+    const loadingToastId = addToast('YÃªu Cáº§u MetaMask', 'Vui lÃ²ng xÃ¡c nháº­n giao dá»‹ch verifyBatch() trÃªn MetaMask...', 'loading', 0);
 
     try {
       const signer = await wallet.authorizedSigner('INSPECTOR');
@@ -691,11 +691,11 @@ export const App: React.FC = () => {
       const cleanUserAddress = safeGetAddress(rawUserAddr);
       const contract = new ethers.Contract(safeGetAddress(CONTRACT_ADDRESS), PROJECT_CORE_ABI, signer);
 
-      const fullNoteWithStars = `[Xếp hạng: OCOP ${starRating} Sao] ${inspectorNote}`;
+      const fullNoteWithStars = `[Xáº¿p háº¡ng: OCOP ${starRating} Sao] ${inspectorNote}`;
       const tx = await contract.verifyBatch(batchCode, fullNoteWithStars, certificateURI);
 
       removeToast(loadingToastId);
-      const waitToastId = addToast('Đang Chờ Khối Sepolia', `Giao dịch ${tx.hash.slice(0, 10)}... đang thẩm định OCOP...`, 'loading', 0);
+      const waitToastId = addToast('Äang Chá» Khá»‘i Sepolia', `Giao dá»‹ch ${tx.hash.slice(0, 10)}... Ä‘ang tháº©m Ä‘á»‹nh OCOP...`, 'loading', 0);
 
       await tx.wait();
       removeToast(waitToastId);
@@ -708,22 +708,22 @@ export const App: React.FC = () => {
 
         // Tao checkpoint dac thu cho Chang 2 Kiem dinh OCOP
         const inspectorCheckpoint = {
-          stepName: 'Chặng 2: Thẩm Định & Cấp Chứng Nhận OCOP Thừa Thiên Huế',
+          stepName: 'Cháº·ng 2: Tháº©m Äá»‹nh & Cáº¥p Chá»©ng Nháº­n OCOP Thá»«a ThiÃªn Huáº¿',
           role: ROLE_HASHES.ROLE_INSPECTOR,
-          roleTitle: 'Kiểm Định Viên OCOP',
-          location: 'Sở Nông Nghiệp & PTNT Tỉnh Thừa Thiên Huế',
-          action: `Hội đồng thẩm định OCOP Tỉnh Thừa Thiên Huế đã duyệt và cấp chứng nhận hạng ${starRating} Sao. Ghi chú: ${inspectorNote || 'Đạt tiêu chuẩn an toàn thực phẩm và chất lượng đặc sản Thừa Thiên Huế.'}`,
+          roleTitle: 'Kiá»ƒm Äá»‹nh ViÃªn OCOP',
+          location: 'Sá»Ÿ NÃ´ng Nghiá»‡p & PTNT Tá»‰nh Thá»«a ThiÃªn Huáº¿',
+          action: `Há»™i Ä‘á»“ng tháº©m Ä‘á»‹nh OCOP Tá»‰nh Thá»«a ThiÃªn Huáº¿ Ä‘Ã£ duyá»‡t vÃ  cáº¥p chá»©ng nháº­n háº¡ng ${starRating} Sao. Ghi chÃº: ${inspectorNote || 'Äáº¡t tiÃªu chuáº©n an toÃ n thá»±c pháº©m vÃ  cháº¥t lÆ°á»£ng Ä‘áº·c sáº£n Thá»«a ThiÃªn Huáº¿.'}`,
           timestamp: Math.floor(Date.now() / 1000),
           recorder: cleanUserAddress,
           metadataURI: certificateURI || `ipfs://huelegend/cert/${batchCode}`,
           txHash: tx.hash,
-          conditionNote: `Cấp mã số OCOP: ${target.certificationNo || 'OCOP-HUE-2026'}. Đã xác thực phí 0.002 ETH.`
+          conditionNote: `Cáº¥p mÃ£ sá»‘ OCOP: ${target.certificationNo || 'OCOP-HUE-2026'}. ÄÃ£ xÃ¡c thá»±c phÃ­ 0.002 ETH.`
         };
 
         const existingCps = target.checkpoints || [];
-        const hasCp2 = existingCps.some((cp) => cp.role === ROLE_HASHES.ROLE_INSPECTOR || (cp.stepName && (cp.stepName.toLowerCase().includes('chặng 2') || cp.stepName.toLowerCase().includes('ocop'))));
+        const hasCp2 = existingCps.some((cp) => cp.role === ROLE_HASHES.ROLE_INSPECTOR || (cp.stepName && (cp.stepName.toLowerCase().includes('cháº·ng 2') || cp.stepName.toLowerCase().includes('ocop'))));
         const updatedCheckpoints = hasCp2
-          ? existingCps.map((cp) => (cp.role === ROLE_HASHES.ROLE_INSPECTOR || (cp.stepName && cp.stepName.toLowerCase().includes('chặng 2')) ? inspectorCheckpoint : cp))
+          ? existingCps.map((cp) => (cp.role === ROLE_HASHES.ROLE_INSPECTOR || (cp.stepName && cp.stepName.toLowerCase().includes('cháº·ng 2')) ? inspectorCheckpoint : cp))
           : [...existingCps, inspectorCheckpoint];
 
         const updatedBatch: Batch = {
@@ -733,8 +733,8 @@ export const App: React.FC = () => {
           inspectorNote,
           verifyTxHash: tx.hash,
           certificateURI: certificateURI || target.certificateURI,
-          ocopStandard: `Đạt Chuẩn OCOP ${starRating} Sao Tỉnh Thừa Thiên Huế`,
-          currentStage: 'Đã đạt chuẩn OCOP (Chờ Vận Chuyển)',
+          ocopStandard: `Äáº¡t Chuáº©n OCOP ${starRating} Sao Tá»‰nh Thá»«a ThiÃªn Huáº¿`,
+          currentStage: 'ÄÃ£ Ä‘áº¡t chuáº©n OCOP (Chá» Váº­n Chuyá»ƒn)',
           checkpoints: updatedCheckpoints
         };
 
@@ -746,22 +746,22 @@ export const App: React.FC = () => {
       // Cap nhat ngay lap tuc cho popup hanh trinh va cloud sync
       setJourneyBatch((prev) => {
         const inspectorCheckpoint = {
-          stepName: 'Chặng 2: Thẩm Định & Cấp Chứng Nhận OCOP Thừa Thiên Huế',
+          stepName: 'Cháº·ng 2: Tháº©m Äá»‹nh & Cáº¥p Chá»©ng Nháº­n OCOP Thá»«a ThiÃªn Huáº¿',
           role: ROLE_HASHES.ROLE_INSPECTOR,
-          roleTitle: 'Kiểm Định Viên OCOP',
-          location: 'Sở Nông Nghiệp & PTNT Tỉnh Thừa Thiên Huế',
-          action: `Hội đồng thẩm định OCOP Tỉnh Thừa Thiên Huế đã duyệt và cấp chứng nhận hạng ${starRating} Sao. Ghi chú: ${inspectorNote || 'Đạt tiêu chuẩn an toàn thực phẩm và chất lượng đặc sản Thừa Thiên Huế.'}`,
+          roleTitle: 'Kiá»ƒm Äá»‹nh ViÃªn OCOP',
+          location: 'Sá»Ÿ NÃ´ng Nghiá»‡p & PTNT Tá»‰nh Thá»«a ThiÃªn Huáº¿',
+          action: `Há»™i Ä‘á»“ng tháº©m Ä‘á»‹nh OCOP Tá»‰nh Thá»«a ThiÃªn Huáº¿ Ä‘Ã£ duyá»‡t vÃ  cáº¥p chá»©ng nháº­n háº¡ng ${starRating} Sao. Ghi chÃº: ${inspectorNote || 'Äáº¡t tiÃªu chuáº©n an toÃ n thá»±c pháº©m vÃ  cháº¥t lÆ°á»£ng Ä‘áº·c sáº£n Thá»«a ThiÃªn Huáº¿.'}`,
           timestamp: Math.floor(Date.now() / 1000),
           recorder: cleanUserAddress,
           metadataURI: certificateURI || `ipfs://huelegend/cert/${batchCode}`,
           txHash: tx.hash,
-          conditionNote: `Cấp mã số OCOP: OCOP-HUE-2026. Đã xác thực phí 0.002 ETH.`
+          conditionNote: `Cáº¥p mÃ£ sá»‘ OCOP: OCOP-HUE-2026. ÄÃ£ xÃ¡c thá»±c phÃ­ 0.002 ETH.`
         };
         if (!prev) return null;
         const existingCps = prev.checkpoints || [];
-        const hasCp2 = existingCps.some((cp) => cp.role === ROLE_HASHES.ROLE_INSPECTOR || (cp.stepName && (cp.stepName.toLowerCase().includes('chặng 2') || cp.stepName.toLowerCase().includes('ocop'))));
+        const hasCp2 = existingCps.some((cp) => cp.role === ROLE_HASHES.ROLE_INSPECTOR || (cp.stepName && (cp.stepName.toLowerCase().includes('cháº·ng 2') || cp.stepName.toLowerCase().includes('ocop'))));
         const updatedCheckpoints = hasCp2
-          ? existingCps.map((cp) => (cp.role === ROLE_HASHES.ROLE_INSPECTOR || (cp.stepName && cp.stepName.toLowerCase().includes('chặng 2')) ? inspectorCheckpoint : cp))
+          ? existingCps.map((cp) => (cp.role === ROLE_HASHES.ROLE_INSPECTOR || (cp.stepName && cp.stepName.toLowerCase().includes('cháº·ng 2')) ? inspectorCheckpoint : cp))
           : [...existingCps, inspectorCheckpoint];
 
         return {
@@ -771,31 +771,31 @@ export const App: React.FC = () => {
           inspectorNote,
           verifyTxHash: tx.hash,
           certificateURI: certificateURI || prev.certificateURI,
-          ocopStandard: `Đạt Chuẩn OCOP ${starRating} Sao Tỉnh Thừa Thiên Huế`,
-          currentStage: 'Đã đạt chuẩn OCOP (Chờ Vận Chuyển)',
+          ocopStandard: `Äáº¡t Chuáº©n OCOP ${starRating} Sao Tá»‰nh Thá»«a ThiÃªn Huáº¿`,
+          currentStage: 'ÄÃ£ Ä‘áº¡t chuáº©n OCOP (Chá» Váº­n Chuyá»ƒn)',
           checkpoints: updatedCheckpoints
         };
       });
 
       notifyDataSync();
-      addToast('Chứng Nhận OCOP Thành Công!', `Lô ${batchCode} đã đạt chứng nhận OCOP ${starRating} Sao và ghi nhận Chặng 2.`, 'success');
+      addToast('Chá»©ng Nháº­n OCOP ThÃ nh CÃ´ng!', `LÃ´ ${batchCode} Ä‘Ã£ Ä‘áº¡t chá»©ng nháº­n OCOP ${starRating} Sao vÃ  ghi nháº­n Cháº·ng 2.`, 'success');
       await fetchContractData();
       handleNavigateTab('lookup', batchCode);
     } catch (err: any) {
       removeToast(loadingToastId);
-      addToast('Giao Dịch Thất Bại', err?.reason || err?.message || 'Cần vai trò ROLE_INSPECTOR để thực hiện.', 'error');
+      addToast('Giao Dá»‹ch Tháº¥t Báº¡i', err?.reason || err?.message || 'Cáº§n vai trÃ² ROLE_INSPECTOR Ä‘á»ƒ thá»±c hiá»‡n.', 'error');
     }
   };
 
   // 4. Revoke Verification On-Chain
   const handleRevokeVerification = async (batchCode: string, reason: string) => {
     if (!currentAccount) {
-      addToast('Chưa Kết Nối Ví', 'Vui lòng kết nối ví MetaMask.', 'warning');
+      addToast('ChÆ°a Káº¿t Ná»‘i VÃ­', 'Vui lÃ²ng káº¿t ná»‘i vÃ­ MetaMask.', 'warning');
       setIsRoleModalOpen(true);
       return;
     }
 
-    const loadingToastId = addToast('Yêu Cầu MetaMask', 'Vui lòng xác nhận revokeBatchVerification() trên MetaMask...', 'loading', 0);
+    const loadingToastId = addToast('YÃªu Cáº§u MetaMask', 'Vui lÃ²ng xÃ¡c nháº­n revokeBatchVerification() trÃªn MetaMask...', 'loading', 0);
 
     try {
       const signer = await wallet.authorizedSigner('INSPECTOR');
@@ -804,28 +804,28 @@ export const App: React.FC = () => {
       const tx = await contract.revokeBatchVerification(batchCode, reason);
 
       removeToast(loadingToastId);
-      const waitToastId = addToast('Đang Chờ Khối Sepolia', `Giao dịch ${tx.hash.slice(0, 10)}... đang thu hồi...`, 'loading', 0);
+      const waitToastId = addToast('Äang Chá» Khá»‘i Sepolia', `Giao dá»‹ch ${tx.hash.slice(0, 10)}... Ä‘ang thu há»“i...`, 'loading', 0);
 
       await tx.wait();
       removeToast(waitToastId);
 
-      addToast('Đã Thu Hồi Chứng Nhận', `Lô ${batchCode} đã bị thu hồi chứng nhận OCOP on-chain.`, 'warning');
+      addToast('ÄÃ£ Thu Há»“i Chá»©ng Nháº­n', `LÃ´ ${batchCode} Ä‘Ã£ bá»‹ thu há»“i chá»©ng nháº­n OCOP on-chain.`, 'warning');
       await fetchContractData();
     } catch (err: any) {
       removeToast(loadingToastId);
-      addToast('Lỗi Thu Hồi On-Chain', err?.reason || err?.message || 'Không thể thu hồi chứng nhận.', 'error');
+      addToast('Lá»—i Thu Há»“i On-Chain', err?.reason || err?.message || 'KhÃ´ng thá»ƒ thu há»“i chá»©ng nháº­n.', 'error');
     }
   };
 
   // 5. Deposit Stake On-Chain
   const handleDepositStake = async (amountEth: string) => {
     if (!currentAccount) {
-      addToast('Chưa Kết Nối Ví', 'Vui lòng kết nối ví MetaMask.', 'warning');
+      addToast('ChÆ°a Káº¿t Ná»‘i VÃ­', 'Vui lÃ²ng káº¿t ná»‘i vÃ­ MetaMask.', 'warning');
       setIsRoleModalOpen(true);
       return;
     }
 
-    const loadingToastId = addToast('Yêu Cầu MetaMask', 'Vui lòng xác nhận depositStake() trên MetaMask...', 'loading', 0);
+    const loadingToastId = addToast('YÃªu Cáº§u MetaMask', 'Vui lÃ²ng xÃ¡c nháº­n depositStake() trÃªn MetaMask...', 'loading', 0);
 
     try {
       const signer = await wallet.authorizedSigner('PRODUCER');
@@ -835,28 +835,28 @@ export const App: React.FC = () => {
       const tx = await contract.depositStake({ value: valueWei });
 
       removeToast(loadingToastId);
-      const waitToastId = addToast('Đang Chờ Khối Sepolia', `Giao dịch ${tx.hash.slice(0, 10)}... đang ký quỹ...`, 'loading', 0);
+      const waitToastId = addToast('Äang Chá» Khá»‘i Sepolia', `Giao dá»‹ch ${tx.hash.slice(0, 10)}... Ä‘ang kÃ½ quá»¹...`, 'loading', 0);
 
       await tx.wait();
       removeToast(waitToastId);
 
-      addToast('Đặt Cọc Ký Quỹ Thành Công!', `Đã đặt cọc ${amountEth} ETH bảo đảm chất lượng.`, 'success');
+      addToast('Äáº·t Cá»c KÃ½ Quá»¹ ThÃ nh CÃ´ng!', `ÄÃ£ Ä‘áº·t cá»c ${amountEth} ETH báº£o Ä‘áº£m cháº¥t lÆ°á»£ng.`, 'success');
       await fetchContractData();
     } catch (err: any) {
       removeToast(loadingToastId);
-      addToast('Lỗi Đặt Cọc', err?.reason || err?.message || 'Đặt cọc ký quỹ thất bại.', 'error');
+      addToast('Lá»—i Äáº·t Cá»c', err?.reason || err?.message || 'Äáº·t cá»c kÃ½ quá»¹ tháº¥t báº¡i.', 'error');
     }
   };
 
   // 6. Withdraw Stake On-Chain
   const handleWithdrawStake = async () => {
     if (!currentAccount) {
-      addToast('Chưa Kết Nối Ví', 'Vui lòng kết nối ví MetaMask.', 'warning');
+      addToast('ChÆ°a Káº¿t Ná»‘i VÃ­', 'Vui lÃ²ng káº¿t ná»‘i vÃ­ MetaMask.', 'warning');
       setIsRoleModalOpen(true);
       return;
     }
 
-    const loadingToastId = addToast('Yêu Cầu MetaMask', 'Vui lòng xác nhận withdrawStake() trên MetaMask...', 'loading', 0);
+    const loadingToastId = addToast('YÃªu Cáº§u MetaMask', 'Vui lÃ²ng xÃ¡c nháº­n withdrawStake() trÃªn MetaMask...', 'loading', 0);
 
     try {
       const signer = await wallet.authorizedSigner('PRODUCER');
@@ -865,51 +865,51 @@ export const App: React.FC = () => {
       const tx = await contract.withdrawStake();
 
       removeToast(loadingToastId);
-      const waitToastId = addToast('Đang Chờ Khối Sepolia', `Giao dịch ${tx.hash.slice(0, 10)}... đang rút tiền...`, 'loading', 0);
+      const waitToastId = addToast('Äang Chá» Khá»‘i Sepolia', `Giao dá»‹ch ${tx.hash.slice(0, 10)}... Ä‘ang rÃºt tiá»n...`, 'loading', 0);
 
       await tx.wait();
       removeToast(waitToastId);
 
-      addToast('Rút Ký Quỹ Thành Công!', 'Số tiền ký quỹ đã được chuyển về ví của bạn.', 'success');
+      addToast('RÃºt KÃ½ Quá»¹ ThÃ nh CÃ´ng!', 'Sá»‘ tiá»n kÃ½ quá»¹ Ä‘Ã£ Ä‘Æ°á»£c chuyá»ƒn vá» vÃ­ cá»§a báº¡n.', 'success');
       await fetchContractData();
     } catch (err: any) {
       removeToast(loadingToastId);
-      addToast('Lỗi Rút Ký Quỹ', err?.reason || err?.message || 'Tiền ký quỹ còn đang trong thời gian khóa.', 'error');
+      addToast('Lá»—i RÃºt KÃ½ Quá»¹', err?.reason || err?.message || 'Tiá»n kÃ½ quá»¹ cÃ²n Ä‘ang trong thá»i gian khÃ³a.', 'error');
     }
   };
 
   // 6b. Rut Doanh Thu Dai Ly Tu Smart Contract Ve Vi Dai Ly
   const handleWithdrawRetailerRevenue = async () => {
-    addToast('Chưa Hỗ Trợ On-Chain', 'ProjectCore hiện tại chưa có cơ chế doanh thu bán lẻ/rút doanh thu. Không có giao dịch nào được gửi.', 'info');
+    addToast('ChÆ°a Há»— Trá»£ On-Chain', 'ProjectCore hiá»‡n táº¡i chÆ°a cÃ³ cÆ¡ cháº¿ doanh thu bÃ¡n láº»/rÃºt doanh thu. KhÃ´ng cÃ³ giao dá»‹ch nÃ o Ä‘Æ°á»£c gá»­i.', 'info');
   };
 
   // Cap/thu hoi quyen theo dung ABI cua contracts/project/ProjectCore.sol.
   const updateRoleOnChain = async (account: string, roleName: string, grant: boolean) => {
     const normalizedAccount = safeGetAddress(account);
     if (!ethers.isAddress(normalizedAccount) || normalizedAccount === ethers.ZeroAddress) {
-      addToast('Địa Chỉ Không Hợp Lệ', 'Nhập địa chỉ ví hợp lệ, không dùng địa chỉ 0.', 'error');
+      addToast('Äá»‹a Chá»‰ KhÃ´ng Há»£p Lá»‡', 'Nháº­p Ä‘á»‹a chá»‰ vÃ­ há»£p lá»‡, khÃ´ng dÃ¹ng Ä‘á»‹a chá»‰ 0.', 'error');
       return;
     }
     const roleHash = ROLE_HASHES[roleName as keyof typeof ROLE_HASHES];
-    if (!roleHash) { addToast('Vai Trò Không Hợp Lệ', 'Chọn vai trò được hỗ trợ.', 'error'); return; }
-    const toast = addToast(grant ? 'Cấp Quyền' : 'Thu Hồi Quyền', 'Chỉ cập nhật sau khi giao dịch được xác nhận trên Sepolia.', 'loading', 0);
+    if (!roleHash) { addToast('Vai TrÃ² KhÃ´ng Há»£p Lá»‡', 'Chá»n vai trÃ² Ä‘Æ°á»£c há»— trá»£.', 'error'); return; }
+    const toast = addToast(grant ? 'Cáº¥p Quyá»n' : 'Thu Há»“i Quyá»n', 'Chá»‰ cáº­p nháº­t sau khi giao dá»‹ch Ä‘Æ°á»£c xÃ¡c nháº­n trÃªn Sepolia.', 'loading', 0);
     try {
       const signer = await wallet.authorizedSigner('ADMIN');
       const contract = new ethers.Contract(CONTRACT_ADDRESS, PROJECT_CORE_ABI, signer);
       const tx = grant ? await contract.grantRole(normalizedAccount, roleHash) : await contract.revokeRole(normalizedAccount, roleHash);
       const receipt = await tx.wait();
-      if (!receipt || receipt.status !== 1) throw new Error('Giao dịch chưa được xác nhận thành công.');
+      if (!receipt || receipt.status !== 1) throw new Error('Giao dá»‹ch chÆ°a Ä‘Æ°á»£c xÃ¡c nháº­n thÃ nh cÃ´ng.');
       const effective = await contract.hasRole(normalizedAccount, roleHash);
-      if (effective !== grant) throw new Error('Quyền thực tế chưa khớp. Owner luôn có quyền kế thừa trong hợp đồng này.');
+      if (effective !== grant) throw new Error('Quyá»n thá»±c táº¿ chÆ°a khá»›p. Owner luÃ´n cÃ³ quyá»n káº¿ thá»«a trong há»£p Ä‘á»“ng nÃ y.');
       setGrantedWallets((prev) => {
         const retained = prev.filter((w) => !(w.address.toLowerCase() === normalizedAccount.toLowerCase() && w.role === roleName));
         return grant ? [{ address: normalizedAccount, role: roleName, roleTitle: getRoleTitle(roleHash),
           grantedAt: new Date().toISOString(), status: 'Active' }, ...retained] : retained;
       });
-      addToast(grant ? 'Đã Cấp Quyền Trên Sepolia' : 'Đã Thu Hồi Quyền Trên Sepolia', `${normalizedAccount} • ${roleName}`, 'success');
+      addToast(grant ? 'ÄÃ£ Cáº¥p Quyá»n TrÃªn Sepolia' : 'ÄÃ£ Thu Há»“i Quyá»n TrÃªn Sepolia', `${normalizedAccount} â€¢ ${roleName}`, 'success');
       await wallet.refresh();
     } catch (err: any) {
-      addToast('Giao Dịch Quyền Thất Bại', err?.reason || err?.message || 'Không thể cập nhật quyền; không thay đổi dữ liệu cục bộ.', 'error');
+      addToast('Giao Dá»‹ch Quyá»n Tháº¥t Báº¡i', err?.reason || err?.message || 'KhÃ´ng thá»ƒ cáº­p nháº­t quyá»n; khÃ´ng thay Ä‘á»•i dá»¯ liá»‡u cá»¥c bá»™.', 'error');
     } finally { removeToast(toast); }
   };
   const handleAssignRole = (account: string, roleName: string) => updateRoleOnChain(account, roleName, true);
@@ -918,12 +918,12 @@ export const App: React.FC = () => {
   // 9. Set Creation Fee On-Chain
   const handleSetBatchCreationFee = async (newFeeEth: string) => {
     if (!currentAccount) {
-      addToast('Chưa Kết Nối Ví', 'Vui lòng kết nối ví MetaMask.', 'warning');
+      addToast('ChÆ°a Káº¿t Ná»‘i VÃ­', 'Vui lÃ²ng káº¿t ná»‘i vÃ­ MetaMask.', 'warning');
       setIsRoleModalOpen(true);
       return;
     }
 
-    const loadingToastId = addToast('Yêu Cầu MetaMask', 'Vui lòng xác nhận setBatchCreationFee() trên MetaMask...', 'loading', 0);
+    const loadingToastId = addToast('YÃªu Cáº§u MetaMask', 'Vui lÃ²ng xÃ¡c nháº­n setBatchCreationFee() trÃªn MetaMask...', 'loading', 0);
 
     try {
       const signer = await wallet.authorizedSigner('ADMIN');
@@ -933,16 +933,16 @@ export const App: React.FC = () => {
       const tx = await contract.setBatchCreationFee(newFeeWei);
 
       removeToast(loadingToastId);
-      const waitToastId = addToast('Đang Chờ Khối Sepolia', `Giao dịch ${tx.hash.slice(0, 10)}... đang cập nhật phí...`, 'loading', 0);
+      const waitToastId = addToast('Äang Chá» Khá»‘i Sepolia', `Giao dá»‹ch ${tx.hash.slice(0, 10)}... Ä‘ang cáº­p nháº­t phÃ­...`, 'loading', 0);
 
       await tx.wait();
       removeToast(waitToastId);
 
-      addToast('Cập Nhật Mức Phí Thành Công!', `Mức phí tạo lô hàng đã chuyển sang ${newFeeEth} ETH.`, 'success');
+      addToast('Cáº­p Nháº­t Má»©c PhÃ­ ThÃ nh CÃ´ng!', `Má»©c phÃ­ táº¡o lÃ´ hÃ ng Ä‘Ã£ chuyá»ƒn sang ${newFeeEth} ETH.`, 'success');
       await fetchContractData();
     } catch (err: any) {
       removeToast(loadingToastId);
-      addToast('Lỗi Cập Nhật Phí', err?.reason || err?.message || 'Cần vai trò ROLE_ADMIN để đổi phí.', 'error');
+      addToast('Lá»—i Cáº­p Nháº­t PhÃ­', err?.reason || err?.message || 'Cáº§n vai trÃ² ROLE_ADMIN Ä‘á»ƒ Ä‘á»•i phÃ­.', 'error');
     }
   };
 
@@ -1122,3 +1122,4 @@ export const App: React.FC = () => {
     </div>
   );
 };
+

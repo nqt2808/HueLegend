@@ -55,9 +55,13 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="hidden md:flex items-center gap-1.5 text-xs text-[#5E7166]">
           <ShieldCheck className="w-3.5 h-3.5 text-[#C29B38]" />
           <span className="font-mono text-[11px] font-bold">
+<<<<<<< HEAD
             {currentAccount
               ? `${currentAccount.slice(0, 6)}...${currentAccount.slice(-4)}`
               : 'Chưa kết nối ví'}
+=======
+            {currentAccount ? `${currentAccount.slice(0, 6)}...${currentAccount.slice(-4)}` : 'Chưa kết nối ví'}
+>>>>>>> a697c56ebb70d61b5be6a91dc6418662d7dcaed5
           </span>
         </div>
       </div>

@@ -15,7 +15,11 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { TabId } from '../lib/access';
+<<<<<<< HEAD
 import { CONTRACT_ADDRESS, ETHERSCAN_BASE_URL, OWNER_WALLET } from '../constants';
+=======
+import { ETHERSCAN_BASE_URL, OWNER_WALLET } from '../constants';
+>>>>>>> a697c56ebb70d61b5be6a91dc6418662d7dcaed5
 
 interface SidebarProps {
   activeTab: string;
@@ -174,9 +178,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, allowedTabs, onTabC
             rel="noopener noreferrer"
             className="text-sm font-mono font-extrabold text-[#264939] hover:underline flex items-center justify-between"
           >
+<<<<<<< HEAD
             <span className="truncate">
               {OWNER_WALLET.slice(0, 10)}...{OWNER_WALLET.slice(-4)}
             </span>
+=======
+            <span className="truncate">{OWNER_WALLET.slice(0, 10)}...{OWNER_WALLET.slice(-4)}</span>
+>>>>>>> a697c56ebb70d61b5be6a91dc6418662d7dcaed5
             <ExternalLink className="w-3.5 h-3.5 shrink-0 ml-1 text-[#C29B38]" />
           </a>
         </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import {
   Settings,
   UserPlus,
@@ -79,9 +79,9 @@ export const AdminTab: React.FC<AdminTabProps> = ({
         type: 'BatchCreated',
         batchCode: b.batchCode,
         actor: b.producer || '0x...',
-        role: 'Cơ Sở Sản Xuất',
+        role: 'CÆ¡ Sá»Ÿ Sáº£n Xuáº¥t',
         fee: `${batchCreationFeeEth} ETH`,
-        timestamp: b.createdAt ? new Date(b.createdAt * 1000).toLocaleString('vi-VN') : 'Theo thời gian tạo',
+        timestamp: b.createdAt ? new Date(b.createdAt * 1000).toLocaleString('vi-VN') : 'Theo thá»i gian táº¡o',
       });
 
       // 2. OCOP Verification event
@@ -90,10 +90,10 @@ export const AdminTab: React.FC<AdminTabProps> = ({
           id: `evt-verify-${b.batchCode}`,
           type: 'BatchVerified',
           batchCode: b.batchCode,
-          actor: 'Kiểm Định Viên OCOP',
-          role: 'Kiểm Định Viên OCOP',
+          actor: 'Kiá»ƒm Äá»‹nh ViÃªn OCOP',
+          role: 'Kiá»ƒm Äá»‹nh ViÃªn OCOP',
           fee: '0.00 ETH',
-          timestamp: 'Đã Thẩm Định OCOP',
+          timestamp: 'ÄÃ£ Tháº©m Äá»‹nh OCOP',
         });
       }
 
@@ -104,10 +104,10 @@ export const AdminTab: React.FC<AdminTabProps> = ({
             id: `evt-chk-${b.batchCode}-${idx}`,
             type: 'CheckpointAdded',
             batchCode: b.batchCode,
-            actor: chk.location || 'Trạm Vận Hành',
-            role: chk.roleTitle || 'Cung Ứng & Vận Hành',
+            actor: chk.location || 'Tráº¡m Váº­n HÃ nh',
+            role: chk.roleTitle || 'Cung á»¨ng & Váº­n HÃ nh',
             fee: '0.00 ETH',
-            timestamp: chk.timestamp ? new Date(chk.timestamp * 1000).toLocaleString('vi-VN') : 'Mới cập nhật',
+            timestamp: chk.timestamp ? new Date(chk.timestamp * 1000).toLocaleString('vi-VN') : 'Má»›i cáº­p nháº­t',
             txHash: chk.txHash
           });
         });
@@ -164,29 +164,29 @@ export const AdminTab: React.FC<AdminTabProps> = ({
 
   // Tinh so du ETH tich luy phan theo vai tro va trang thai dang nhap
   let allocatedBalanceDisplay = '0.00';
-  let allocatedRoleLabel = 'Chưa Kết Nối Ví';
-  let allocatedSubtext = 'Vui lòng đăng nhập ví để xem số dư tích lũy thật theo vai trò.';
+  let allocatedRoleLabel = 'ChÆ°a Káº¿t Ná»‘i VÃ­';
+  let allocatedSubtext = 'Vui lÃ²ng Ä‘Äƒng nháº­p vÃ­ Ä‘á»ƒ xem sá»‘ dÆ° tÃ­ch lÅ©y tháº­t theo vai trÃ².';
 
   if (currentAccount) {
     if (userRole === 'PRODUCER' || userRole === 'SUPPLY_CHAIN') {
-      allocatedRoleLabel = 'Chủ Cơ Sở Sản Xuất';
-      allocatedSubtext = 'Số dư ETH ký quỹ sản xuất & đảm bảo chất lượng OCOP';
+      allocatedRoleLabel = 'Chá»§ CÆ¡ Sá»Ÿ Sáº£n Xuáº¥t';
+      allocatedSubtext = 'Sá»‘ dÆ° ETH kÃ½ quá»¹ sáº£n xuáº¥t & Ä‘áº£m báº£o cháº¥t lÆ°á»£ng OCOP';
       allocatedBalanceDisplay = producerStakeBalance && producerStakeBalance !== '0.00' ? producerStakeBalance : '0.000';
     } else if (userRole === 'INSPECTOR') {
-      allocatedRoleLabel = 'Kiểm Định Viên OCOP';
-      allocatedSubtext = 'Số dư ETH tích lũy phí thẩm định OCOP';
+      allocatedRoleLabel = 'Kiá»ƒm Äá»‹nh ViÃªn OCOP';
+      allocatedSubtext = 'Sá»‘ dÆ° ETH tÃ­ch lÅ©y phÃ­ tháº©m Ä‘á»‹nh OCOP';
       allocatedBalanceDisplay = contractBalanceEth && contractBalanceEth !== '0.00' ? contractBalanceEth : '0.002';
     } else if (userRole === 'RETAILER' || userRole === 'COMMERCE') {
-      allocatedRoleLabel = 'Đại Lý Phân Phối';
-      allocatedSubtext = 'Số dư ETH tích lũy niêm yết thương mại';
+      allocatedRoleLabel = 'Äáº¡i LÃ½ PhÃ¢n Phá»‘i';
+      allocatedSubtext = 'Sá»‘ dÆ° ETH tÃ­ch lÅ©y niÃªm yáº¿t thÆ°Æ¡ng máº¡i';
       allocatedBalanceDisplay = contractBalanceEth || '0.00';
     } else if (userRole === 'ADMIN') {
-      allocatedRoleLabel = 'Quản Trị Viên (Admin)';
-      allocatedSubtext = 'Tổng số dư ETH tích lũy Quỹ Treasury Smart Contract';
+      allocatedRoleLabel = 'Quáº£n Trá»‹ ViÃªn (Admin)';
+      allocatedSubtext = 'Tá»•ng sá»‘ dÆ° ETH tÃ­ch lÅ©y Quá»¹ Treasury Smart Contract';
       allocatedBalanceDisplay = contractBalanceEth || '0.00';
     } else {
-      allocatedRoleLabel = 'Khách Hàng';
-      allocatedSubtext = 'Số dư ETH tương tác Smart Contract';
+      allocatedRoleLabel = 'KhÃ¡ch HÃ ng';
+      allocatedSubtext = 'Sá»‘ dÆ° ETH tÆ°Æ¡ng tÃ¡c Smart Contract';
       allocatedBalanceDisplay = contractBalanceEth || '0.00';
     }
   }
@@ -198,24 +198,24 @@ export const AdminTab: React.FC<AdminTabProps> = ({
         <div className="space-y-1">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-emerald-200 text-xs font-semibold backdrop-blur-xs">
             <ShieldCheck className="w-3.5 h-3.5 text-[#C29B38]" />
-            <span>Trung Tâm Quản Trị Hệ Thống HueLegend</span>
+            <span>Trung TÃ¢m Quáº£n Trá»‹ Há»‡ Thá»‘ng HueLegend</span>
           </div>
           <h2 className="font-serif font-extrabold text-2xl text-amber-100">
-            Trang Quản Trị Hệ Thống On-Chain
+            Trang Quáº£n Trá»‹ Há»‡ Thá»‘ng On-Chain
           </h2>
           <p className="text-xs text-emerald-100/90">
-            Phân quyền RBAC, quản lý mức phí khai báo và giám sát dữ liệu Smart Contract trên Sepolia.
+            PhÃ¢n quyá»n RBAC, quáº£n lÃ½ má»©c phÃ­ khai bÃ¡o vÃ  giÃ¡m sÃ¡t dá»¯ liá»‡u Smart Contract trÃªn Sepolia.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <div className="bg-white/10 p-3 rounded-2xl border border-white/20 text-right backdrop-blur-xs">
             <span className="text-[10px] text-emerald-200 uppercase font-bold block">
-              Trạng Thái Hệ Thống
+              Tráº¡ng ThÃ¡i Há»‡ Thá»‘ng
             </span>
             <span className={`text-xs font-bold inline-flex items-center gap-1.5 mt-0.5 ${isSystemPaused ? 'text-amber-300' : 'text-emerald-300'}`}>
               <span className={`w-2 h-2 rounded-full animate-pulse ${isSystemPaused ? 'bg-amber-400' : 'bg-emerald-400'}`} />
-              <span>HOẠT ĐỘNG (Active)</span>
+              <span>HOáº T Äá»˜NG (Active)</span>
             </span>
           </div>
         </div>
@@ -231,7 +231,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
               <div className="flex items-center gap-2">
                 <Settings className="w-5 h-5 text-[#264939]" />
                 <h3 className="font-serif font-extrabold text-lg text-[#264939]">
-                  1. Gán Quyền Vai Trò (Grant Role)
+                  1. GÃ¡n Quyá»n Vai TrÃ² (Grant Role)
                 </h3>
               </div>
               <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded bg-[#E0ECE4] text-[#264939] border border-[#CCD8CF]">
@@ -243,32 +243,32 @@ export const AdminTab: React.FC<AdminTabProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-[#1A2820] mb-1">
-                    Địa Chỉ Ví Ethereum Cần Phân Quyền *
+                    Äá»‹a Chá»‰ VÃ­ Ethereum Cáº§n PhÃ¢n Quyá»n *
                   </label>
                   <input
                     type="text"
                     required
                     value={accountAddress}
                     onChange={(e) => setAccountAddress(e.target.value)}
-                    placeholder="Ví dụ: 0x35655079aEbB215E58e379D5a8c2f1f3a5323C6b"
+                    placeholder="VÃ­ dá»¥: 0x35655079aEbB215E58e379D5a8c2f1f3a5323C6b"
                     className="w-full px-3.5 py-2.5 rounded-xl border border-[#E6E1D7] text-xs font-mono font-bold focus:outline-none focus:border-[#264939] bg-[#FAF9F5]"
                   />
                 </div>
 
                 <div>
                   <label className="block text-xs font-bold text-[#1A2820] mb-1">
-                    Chọn Vai Trò RBAC *
+                    Chá»n Vai TrÃ² RBAC *
                   </label>
                   <select
                     value={roleSelect}
                     onChange={(e) => setRoleSelect(e.target.value)}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-[#E6E1D7] text-xs font-bold focus:outline-none focus:border-[#264939]"
                   >
-                    <option value="ROLE_PRODUCER">ROLE_PRODUCER (Chủ Cơ Sở Sản Xuất)</option>
-                    <option value="ROLE_LOGISTICS">ROLE_LOGISTICS (Đơn Vị Vận Chuyển / Logistics)</option>
-                    <option value="ROLE_RETAILER">ROLE_RETAILER (Đại Lý Phân Phối / Retailer)</option>
-                    <option value="ROLE_INSPECTOR">ROLE_INSPECTOR (Kiểm Định Viên OCOP)</option>
-                    <option value="ROLE_ADMIN">ROLE_ADMIN (Quản Trị Viên Hệ Thống)</option>
+                    <option value="ROLE_PRODUCER">ROLE_PRODUCER (Chá»§ CÆ¡ Sá»Ÿ Sáº£n Xuáº¥t)</option>
+                    <option value="ROLE_LOGISTICS">ROLE_LOGISTICS (ÄÆ¡n Vá»‹ Váº­n Chuyá»ƒn / Logistics)</option>
+                    <option value="ROLE_RETAILER">ROLE_RETAILER (Äáº¡i LÃ½ PhÃ¢n Phá»‘i / Retailer)</option>
+                    <option value="ROLE_INSPECTOR">ROLE_INSPECTOR (Kiá»ƒm Äá»‹nh ViÃªn OCOP)</option>
+                    <option value="ROLE_ADMIN">ROLE_ADMIN (Quáº£n Trá»‹ ViÃªn Há»‡ Thá»‘ng)</option>
                   </select>
                 </div>
               </div>
@@ -280,7 +280,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
                   className="inline-flex items-center gap-2 py-2.5 px-5 rounded-xl bg-[#264939] text-white font-bold text-xs hover:bg-[#1c372b] transition-all shadow-2xs disabled:opacity-50"
                 >
                   <UserPlus className="w-4 h-4 text-[#C29B38]" />
-                  <span>Xác Nhận Gán Quyền On-Chain</span>
+                  <span>XÃ¡c Nháº­n GÃ¡n Quyá»n On-Chain</span>
                 </button>
               </div>
             </div>
@@ -292,7 +292,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
               <div className="flex items-center gap-2">
                 <Users className="w-5 h-5 text-[#264939]" />
                 <h3 className="font-serif font-extrabold text-base text-[#264939]">
-                  Danh Sách Ví Đã Cấp Quyền RBAC
+                  Danh SÃ¡ch VÃ­ ÄÃ£ Cáº¥p Quyá»n RBAC
                 </h3>
               </div>
 
@@ -301,7 +301,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
                   type="text"
                   value={searchRoleQuery}
                   onChange={(e) => setSearchRoleQuery(e.target.value)}
-                  placeholder="Tìm theo ví / role..."
+                  placeholder="TÃ¬m theo vÃ­ / role..."
                   className="w-full pl-8 pr-3 py-1.5 rounded-xl border border-[#E6E1D7] text-[11px] focus:outline-none focus:border-[#264939]"
                 />
                 <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-2.5" />
@@ -312,24 +312,24 @@ export const AdminTab: React.FC<AdminTabProps> = ({
             {!currentAccount ? (
               <div className="text-center py-8 px-4 bg-[#FAF9F5] rounded-2xl border border-dashed border-[#E6E1D7] space-y-3">
                 <Wallet className="w-8 h-8 text-[#C29B38] mx-auto" />
-                <p className="text-xs font-bold text-[#1A2820]">Yêu Cầu Kết Nối Ví Để Xem Danh Sách RBAC</p>
+                <p className="text-xs font-bold text-[#1A2820]">YÃªu Cáº§u Káº¿t Ná»‘i VÃ­ Äá»ƒ Xem Danh SÃ¡ch RBAC</p>
                 <p className="text-[11px] text-[#5E7166] max-w-sm mx-auto">
-                  Vui lòng kết nối ví MetaMask để xem và quản lý Danh Sách Ví Đã Cấp Quyền RBAC.
+                  Vui lÃ²ng káº¿t ná»‘i vÃ­ MetaMask Ä‘á»ƒ xem vÃ  quáº£n lÃ½ Danh SÃ¡ch VÃ­ ÄÃ£ Cáº¥p Quyá»n RBAC.
                 </p>
                 <button
                   onClick={onConnectWallet}
                   className="inline-flex items-center gap-2 px-4 py-2 bg-[#264939] text-white font-bold text-xs rounded-xl hover:bg-[#1c372b] transition-all shadow-2xs mt-1"
                 >
                   <Wallet className="w-3.5 h-3.5 text-[#C29B38]" />
-                  <span>Kết Nối Ví Đăng Nhập</span>
+                  <span>Káº¿t Ná»‘i VÃ­ ÄÄƒng Nháº­p</span>
                 </button>
               </div>
             ) : filteredWallets.length === 0 ? (
               <div className="text-center py-8 px-4 bg-[#FAF9F5] rounded-2xl border border-dashed border-[#E6E1D7] space-y-2">
                 <Users className="w-8 h-8 text-[#8A9D92] mx-auto opacity-60" />
-                <p className="text-xs font-bold text-[#1A2820]">Chưa Có Ví Được Phân Quyền On-Chain</p>
+                <p className="text-xs font-bold text-[#1A2820]">ChÆ°a CÃ³ VÃ­ ÄÆ°á»£c PhÃ¢n Quyá»n On-Chain</p>
                 <p className="text-[11px] text-[#5E7166] max-w-sm mx-auto">
-                  Sử dụng biểu mẫu "Gán Quyền Vai Trò" ở trên để cấp quyền cho địa chỉ ví Nhà sản xuất, Kiểm định viên OCOP hoặc Đại lý.
+                  Sá»­ dá»¥ng biá»ƒu máº«u "GÃ¡n Quyá»n Vai TrÃ²" á»Ÿ trÃªn Ä‘á»ƒ cáº¥p quyá»n cho Ä‘á»‹a chá»‰ vÃ­ NhÃ  sáº£n xuáº¥t, Kiá»ƒm Ä‘á»‹nh viÃªn OCOP hoáº·c Äáº¡i lÃ½.
                 </p>
               </div>
             ) : (
@@ -337,10 +337,10 @@ export const AdminTab: React.FC<AdminTabProps> = ({
                 <table className="w-full text-left text-xs">
                   <thead>
                     <tr className="bg-[#FAF9F5] border-b border-[#E6E1D7] text-[#8A9D92] font-bold uppercase text-[10px] tracking-wider">
-                      <th className="py-2.5 px-3">Địa Chỉ Ví</th>
-                      <th className="py-2.5 px-3">Tên Vai Trò / Đơn Vị</th>
-                      <th className="py-2.5 px-3">Thời Gian Gán</th>
-                      <th className="py-2.5 px-3 text-right">Thao Tác</th>
+                      <th className="py-2.5 px-3">Äá»‹a Chá»‰ VÃ­</th>
+                      <th className="py-2.5 px-3">TÃªn Vai TrÃ² / ÄÆ¡n Vá»‹</th>
+                      <th className="py-2.5 px-3">Thá»i Gian GÃ¡n</th>
+                      <th className="py-2.5 px-3 text-right">Thao TÃ¡c</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#EDE9E0]">
@@ -363,7 +363,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
                             className="px-2.5 py-1 rounded-lg bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 text-[11px] font-bold transition-all disabled:opacity-40 inline-flex items-center gap-1"
                           >
                             <UserMinus className="w-3 h-3" />
-                            <span>Thu Hồi</span>
+                            <span>Thu Há»“i</span>
                           </button>
                         </td>
                       </tr>
@@ -380,7 +380,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
               <div className="flex items-center gap-2">
                 <Activity className="w-5 h-5 text-[#264939]" />
                 <h3 className="font-serif font-extrabold text-base text-[#264939]">
-                  4. Nhật Ký Sự Kiện Giao Dịch On-Chain
+                  4. Nháº­t KÃ½ Sá»± Kiá»‡n Giao Dá»‹ch On-Chain
                 </h3>
               </div>
               <a
@@ -389,7 +389,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
                 rel="noopener noreferrer"
                 className="text-xs font-mono text-[#264939] hover:underline flex items-center gap-1"
               >
-                <span>Mở Etherscan</span>
+                <span>Má»Ÿ Etherscan</span>
                 <ExternalLink className="w-3 h-3" />
               </a>
             </div>
@@ -398,24 +398,24 @@ export const AdminTab: React.FC<AdminTabProps> = ({
             {!currentAccount ? (
               <div className="text-center py-8 px-4 bg-[#FAF9F5] rounded-2xl border border-dashed border-[#E6E1D7] space-y-3">
                 <Wallet className="w-8 h-8 text-[#C29B38] mx-auto" />
-                <p className="text-xs font-bold text-[#1A2820]">Yêu Cầu Kết Nối Ví Để Xem Nhật Ký Sự Kiện</p>
+                <p className="text-xs font-bold text-[#1A2820]">YÃªu Cáº§u Káº¿t Ná»‘i VÃ­ Äá»ƒ Xem Nháº­t KÃ½ Sá»± Kiá»‡n</p>
                 <p className="text-[11px] text-[#5E7166] max-w-sm mx-auto">
-                  Vui lòng kết nối ví MetaMask để xem Nhật Ký Sự Kiện Giao Dịch On-Chain từ Sepolia Testnet.
+                  Vui lÃ²ng káº¿t ná»‘i vÃ­ MetaMask Ä‘á»ƒ xem Nháº­t KÃ½ Sá»± Kiá»‡n Giao Dá»‹ch On-Chain tá»« Sepolia Testnet.
                 </p>
                 <button
                   onClick={onConnectWallet}
                   className="inline-flex items-center gap-2 px-4 py-2 bg-[#264939] text-white font-bold text-xs rounded-xl hover:bg-[#1c372b] transition-all shadow-2xs mt-1"
                 >
                   <Wallet className="w-3.5 h-3.5 text-[#C29B38]" />
-                  <span>Kết Nối Ví MetaMask</span>
+                  <span>Káº¿t Ná»‘i VÃ­ MetaMask</span>
                 </button>
               </div>
             ) : recentEventLogs.length === 0 ? (
               <div className="text-center py-8 px-4 bg-[#FAF9F5] rounded-2xl border border-dashed border-[#E6E1D7] space-y-2">
                 <Activity className="w-8 h-8 text-[#8A9D92] mx-auto opacity-60" />
-                <p className="text-xs font-bold text-[#1A2820]">Chưa Có Sự Kiện Giao Dịch On-Chain</p>
+                <p className="text-xs font-bold text-[#1A2820]">ChÆ°a CÃ³ Sá»± Kiá»‡n Giao Dá»‹ch On-Chain</p>
                 <p className="text-[11px] text-[#5E7166] max-w-sm mx-auto">
-                  Các sự kiện khởi tạo lô hàng, thẩm định OCOP và niêm yết từ Sepolia Testnet sẽ tự động hiển thị tại đây.
+                  CÃ¡c sá»± kiá»‡n khá»Ÿi táº¡o lÃ´ hÃ ng, tháº©m Ä‘á»‹nh OCOP vÃ  niÃªm yáº¿t tá»« Sepolia Testnet sáº½ tá»± Ä‘á»™ng hiá»ƒn thá»‹ táº¡i Ä‘Ã¢y.
                 </p>
               </div>
             ) : (
@@ -423,10 +423,10 @@ export const AdminTab: React.FC<AdminTabProps> = ({
                 <table className="w-full text-left text-xs">
                   <thead>
                     <tr className="bg-[#FAF9F5] border-b border-[#E6E1D7] text-[#8A9D92] font-bold uppercase text-[10px] tracking-wider">
-                      <th className="py-2.5 px-3">Mã Lô / Mục</th>
-                      <th className="py-2.5 px-3">Sự Kiện</th>
-                      <th className="py-2.5 px-3">Ví Thực Hiện</th>
-                      <th className="py-2.5 px-3">Thời Gian</th>
+                      <th className="py-2.5 px-3">MÃ£ LÃ´ / Má»¥c</th>
+                      <th className="py-2.5 px-3">Sá»± Kiá»‡n</th>
+                      <th className="py-2.5 px-3">VÃ­ Thá»±c Hiá»‡n</th>
+                      <th className="py-2.5 px-3">Thá»i Gian</th>
                       <th className="py-2.5 px-3 text-right">Etherscan</th>
                     </tr>
                   </thead>
@@ -459,7 +459,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
                               className="p-1.5 rounded-lg bg-[#FAF9F5] hover:bg-[#E0ECE4] text-[#264939] inline-flex items-center gap-1 transition-colors text-[11px] font-bold"
                             >
                               <ExternalLink className="w-3 h-3" />
-                              <span>Chi Tiết</span>
+                              <span>Chi Tiáº¿t</span>
                             </a>
                           ) : (
                             <span className="text-gray-400 font-mono text-[10px]">On-Chain</span>
@@ -482,7 +482,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
               <div className="flex items-center gap-2">
                 <Coins className="w-5 h-5 text-[#C29B38]" />
                 <h3 className="font-serif font-extrabold text-base text-[#264939]">
-                  2. Quản Lý Phí & Treasury
+                  2. Quáº£n LÃ½ PhÃ­ & Treasury
                 </h3>
               </div>
               <Wallet className="w-4 h-4 text-[#264939]" />
@@ -492,7 +492,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
             <div className="bg-gradient-to-br from-[#FAF9F5] to-[#E0ECE4]/40 p-4 rounded-2xl border border-[#CCD8CF] space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-bold text-[#8A9D92] uppercase tracking-wider block">
-                  SỐ DƯ ETH TÍCH LŨY TRONG SMART CONTRACT
+                  Sá» DÆ¯ ETH TÃCH LÅ¨Y TRONG SMART CONTRACT
                 </span>
                 <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-lg border shadow-2xs ${currentAccount ? 'bg-white text-[#264939] border-emerald-200' : 'bg-amber-50 text-amber-800 border-amber-200'}`}>
                   {allocatedRoleLabel}
@@ -513,14 +513,14 @@ export const AdminTab: React.FC<AdminTabProps> = ({
                   className="w-full mt-2 py-2.5 px-4 bg-[#C29B38] text-white rounded-xl font-bold text-xs hover:bg-[#8C6D1F] transition-all flex items-center justify-center gap-2 shadow-2xs"
                 >
                   <Wallet className="w-4 h-4 text-white" />
-                  <span>Đăng Nhập Ví Để Xem Số Dư Thật</span>
+                  <span>ÄÄƒng Nháº­p VÃ­ Äá»ƒ Xem Sá»‘ DÆ° Tháº­t</span>
                 </button>
               )}
             </div>
 
             <form onSubmit={handleUpdateFee} className="space-y-3 pt-2 border-t border-[#EDE9E0]">
               <label className="block text-xs font-bold text-[#1A2820]">
-                Cấu Hình Mức Phí Tạo Lô (Sepolia ETH)
+                Cáº¥u HÃ¬nh Má»©c PhÃ­ Táº¡o LÃ´ (Sepolia ETH)
               </label>
               <div className="flex gap-2">
                 <input
@@ -528,7 +528,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
                   step="0.0001"
                   value={newFee}
                   onChange={(e) => setNewFee(e.target.value)}
-                  placeholder={`Mức phí hiện tại: ${batchCreationFeeEth} ETH`}
+                  placeholder={`Má»©c phÃ­ hiá»‡n táº¡i: ${batchCreationFeeEth} ETH`}
                   className="w-full px-3.5 py-2 rounded-xl border border-[#E6E1D7] text-xs font-mono font-bold focus:outline-none focus:border-[#264939]"
                 />
                 <button
@@ -547,14 +547,14 @@ export const AdminTab: React.FC<AdminTabProps> = ({
             <div className="flex items-center gap-2 pb-3 border-b border-[#EDE9E0]">
               <ShieldAlert className="w-5 h-5 text-amber-600" />
               <h3 className="font-serif font-extrabold text-base text-[#264939]">
-                3. Trạng Thái Hợp Đồng
+                3. Tráº¡ng ThÃ¡i Há»£p Äá»“ng
               </h3>
             </div>
             <p className="text-xs text-[#5E7166] leading-relaxed">
-              ProjectCore đang triển khai không có hàm pause/unpause hoặc withdrawFees. Giao diện không gửi các giao dịch không tồn tại.
+              ProjectCore Ä‘ang triá»ƒn khai khÃ´ng cÃ³ hÃ m pause/unpause hoáº·c withdrawFees. Giao diá»‡n khÃ´ng gá»­i cÃ¡c giao dá»‹ch khÃ´ng tá»“n táº¡i.
             </p>
             <div className="px-3 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold">
-              ACTIVE • Sepolia ProjectCore
+              ACTIVE â€¢ Sepolia ProjectCore
             </div>
           </div>
               </button>
@@ -565,3 +565,4 @@ export const AdminTab: React.FC<AdminTabProps> = ({
     </div>
   );
 };
+

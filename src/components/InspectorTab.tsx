@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Batch } from '../types';
 import {
   ShieldCheck,
@@ -80,7 +80,7 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
       const generatedCertURI = `ipfs://huelegend/cert/${selectedBatchCode}`;
       await onVerifyBatch(selectedBatchCode, inspectorNote, generatedCertURI, starRating);
 
-      // Khi cap chung nhan thành cong, an tat ca thong tin tao lo hang bang cach reset selectedBatchCode ve rông
+      // Khi cap chung nhan thÃ nh cong, an tat ca thong tin tao lo hang bang cach reset selectedBatchCode ve rÃ´ng
       setSelectedBatchCode('');
       setInspectorNote('');
       setActiveSubTab('verified');
@@ -123,13 +123,13 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
         <div className="space-y-1 max-w-2xl">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#C29B38]/20 text-[#C29B38] text-xs font-bold border border-[#C29B38]/30">
             <ShieldCheck className="w-3.5 h-3.5" />
-            <span>HỘI ĐỒNG THẨM ĐỊNH OCOP TỈNH THỪA THIÊN HUẾ</span>
+            <span>Há»˜I Äá»’NG THáº¨M Äá»ŠNH OCOP Tá»ˆNH THá»ªA THIÃŠN HUáº¾</span>
           </div>
           <h2 className="font-serif font-extrabold text-2xl sm:text-3xl text-amber-100 leading-tight">
-            Thẩm Định & Cấp Chứng Nhận OCOP On-Chain
+            Tháº©m Äá»‹nh & Cáº¥p Chá»©ng Nháº­n OCOP On-Chain
           </h2>
           <p className="text-xs sm:text-sm text-emerald-100/80 font-sans">
-            Thẩm định chất lượng đặc sản Cố Đô Huế, xếp hạng sao OCOP chính thức và mã hóa chứng nhận lên Blockchain Sepolia Testnet.
+            Tháº©m Ä‘á»‹nh cháº¥t lÆ°á»£ng Ä‘áº·c sáº£n Cá»‘ ÄÃ´ Huáº¿, xáº¿p háº¡ng sao OCOP chÃ­nh thá»©c vÃ  mÃ£ hÃ³a chá»©ng nháº­n lÃªn Blockchain Sepolia Testnet.
           </p>
         </div>
 
@@ -137,10 +137,10 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
           <Award className="w-8 h-8 text-[#C29B38]" />
           <div>
             <span className="text-[10px] text-emerald-200 uppercase font-bold block">
-              Thẩm Định Viên
+              Tháº©m Äá»‹nh ViÃªn
             </span>
             <span className="text-xs font-mono font-bold text-white">
-              {currentAccount ? `${currentAccount.slice(0, 8)}...${currentAccount.slice(-4)}` : 'Chưa kết nối ví'}
+              {currentAccount ? `${currentAccount.slice(0, 8)}...${currentAccount.slice(-4)}` : 'ChÆ°a káº¿t ná»‘i vÃ­'}
             </span>
           </div>
         </div>
@@ -158,7 +158,7 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
             }`}
           >
             <ShieldCheck className="w-4 h-4 text-[#C29B38]" />
-            <span>Thẩm Định Lô Hàng Mới ({pendingBatches.length})</span>
+            <span>Tháº©m Äá»‹nh LÃ´ HÃ ng Má»›i ({pendingBatches.length})</span>
           </button>
 
           <button
@@ -170,12 +170,12 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
             }`}
           >
             <Award className="w-4 h-4 text-[#C29B38]" />
-            <span>Danh Sách Đã Kiểm Định OCOP ({verifiedBatches.length})</span>
+            <span>Danh SÃ¡ch ÄÃ£ Kiá»ƒm Äá»‹nh OCOP ({verifiedBatches.length})</span>
           </button>
         </div>
 
         <div className="text-xs text-[#5E7166] font-medium hidden sm:block">
-          Vai trò: <strong className="text-[#264939]">Kiểm Định Viên OCOP (ROLE_INSPECTOR)</strong>
+          Vai trÃ²: <strong className="text-[#264939]">Kiá»ƒm Äá»‹nh ViÃªn OCOP (ROLE_INSPECTOR)</strong>
         </div>
       </div>
 
@@ -187,10 +187,10 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
           </div>
           <div className="space-y-1.5 max-w-md mx-auto">
             <h3 className="text-xl font-serif font-extrabold text-[#264939]">
-              Yêu Cầu Kết Nối Ví Để Thẩm Định OCOP
+              YÃªu Cáº§u Káº¿t Ná»‘i VÃ­ Äá»ƒ Tháº©m Äá»‹nh OCOP
             </h3>
             <p className="text-xs text-[#5E7166] leading-relaxed">
-              Vui lòng kết nối ví MetaMask có quyền Kiểm Định Viên OCOP (ROLE_INSPECTOR) để thực hiện thẩm định & quản lý danh sách chứng nhận On-Chain.
+              Vui lÃ²ng káº¿t ná»‘i vÃ­ MetaMask cÃ³ quyá»n Kiá»ƒm Äá»‹nh ViÃªn OCOP (ROLE_INSPECTOR) Ä‘á»ƒ thá»±c hiá»‡n tháº©m Ä‘á»‹nh & quáº£n lÃ½ danh sÃ¡ch chá»©ng nháº­n On-Chain.
             </p>
           </div>
           {onConnectWallet && (
@@ -199,12 +199,12 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
               className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#C29B38] text-white font-sans font-bold text-xs hover:bg-[#8C6D1F] transition-all shadow-md mt-2"
             >
               <Wallet className="w-4 h-4 text-white" />
-              <span>Kết Nối Ví MetaMask Ngay</span>
+              <span>Káº¿t Ná»‘i VÃ­ MetaMask Ngay</span>
             </button>
           )}
         </div>
       ) : activeSubTab === 'form' ? (
-        /* ================= SUB TAB 1: FORM THẨM ĐỊNH LÔ HÀNG MỚI ================= */
+        /* ================= SUB TAB 1: FORM THáº¨M Äá»ŠNH LÃ” HÃ€NG Má»šI ================= */
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Cot Trai (7/12): Form Tham Dinh */}
           <div className="lg:col-span-7 bg-white p-6 sm:p-7 rounded-3xl border border-[#E6E1D7] shadow-2xs space-y-6">
@@ -215,10 +215,10 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
                 </div>
                 <div>
                   <h3 className="text-lg font-serif font-extrabold text-[#264939]">
-                    Biểu Mẫu Thẩm Định OCOP
+                    Biá»ƒu Máº«u Tháº©m Äá»‹nh OCOP
                   </h3>
                   <p className="text-xs text-[#5E7166]">
-                    Chọn lô hàng đang chờ, xếp hạng sao và bấm ký xác nhận on-chain
+                    Chá»n lÃ´ hÃ ng Ä‘ang chá», xáº¿p háº¡ng sao vÃ  báº¥m kÃ½ xÃ¡c nháº­n on-chain
                   </p>
                 </div>
               </div>
@@ -232,12 +232,12 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
               <div className="flex items-center gap-2.5">
                 <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
                 <div>
-                  <span className="font-bold text-[#1A2820] block">Thẩm Định On-Chain:</span>
-                  <span className="text-[11px] text-[#5E7166]">ProjectCore không thu phí thẩm định riêng; chỉ phát sinh gas Sepolia.</span>
+                  <span className="font-bold text-[#1A2820] block">Tháº©m Äá»‹nh On-Chain:</span>
+                  <span className="text-[11px] text-[#5E7166]">ProjectCore khÃ´ng thu phÃ­ tháº©m Ä‘á»‹nh riÃªng; chá»‰ phÃ¡t sinh gas Sepolia.</span>
                 </div>
               </div>
               <span className="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full font-bold text-[11px] border border-emerald-200 shrink-0 text-center">
-                Chỉ Phí Gas
+                Chá»‰ PhÃ­ Gas
               </span>
             </div>
 
@@ -246,22 +246,22 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
               <div>
                 <label className="block text-xs font-bold text-[#1A2820] mb-1.5 flex items-center gap-1.5">
                   <Package className="w-4 h-4 text-[#264939]" />
-                  <span>Chọn Lô Hàng Cần Thẩm Định *</span>
+                  <span>Chá»n LÃ´ HÃ ng Cáº§n Tháº©m Äá»‹nh *</span>
                 </label>
                 <select
                   value={selectedBatchCode}
                   onChange={(e) => setSelectedBatchCode(e.target.value)}
                   className="w-full px-4 py-3 rounded-2xl border border-[#E6E1D7] text-xs font-mono font-bold focus:outline-none focus:border-[#264939] bg-[#FAF9F5] text-[#1A2820] shadow-inner"
                 >
-                  <option value="">-- Chọn lô hàng mới cần thẩm định OCOP --</option>
+                  <option value="">-- Chá»n lÃ´ hÃ ng má»›i cáº§n tháº©m Ä‘á»‹nh OCOP --</option>
                   {pendingBatches.length > 0 ? (
                     pendingBatches.map((batch) => (
                       <option key={batch.batchCode} value={batch.batchCode}>
-                        {batch.batchCode} — {batch.productName} (Chờ Thẩm Định OCOP)
+                        {batch.batchCode} â€” {batch.productName} (Chá» Tháº©m Äá»‹nh OCOP)
                       </option>
                     ))
                   ) : (
-                    <option value="" disabled>Tất cả các lô hàng đã được kiểm định OCOP</option>
+                    <option value="" disabled>Táº¥t cáº£ cÃ¡c lÃ´ hÃ ng Ä‘Ã£ Ä‘Æ°á»£c kiá»ƒm Ä‘á»‹nh OCOP</option>
                   )}
                 </select>
               </div>
@@ -270,13 +270,13 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
               <div>
                 <label className="block text-xs font-bold text-[#1A2820] mb-1.5 flex items-center gap-1.5">
                   <Star className="w-4 h-4 text-[#C29B38]" />
-                  <span>Xếp Hạng Sao OCOP Thừa Thiên Huế *</span>
+                  <span>Xáº¿p Háº¡ng Sao OCOP Thá»«a ThiÃªn Huáº¿ *</span>
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {[
-                    { val: '3', label: '3 Sao OCOP', stars: '⭐⭐⭐', desc: 'Đạt chuẩn chất lượng cấp Tỉnh' },
-                    { val: '4', label: '4 Sao OCOP', stars: '⭐⭐⭐⭐', desc: 'Chất lượng cao, tiềm năng Quốc gia' },
-                    { val: '5', label: '5 Sao OCOP', stars: '⭐⭐⭐⭐⭐', desc: 'Đặc sản Cấp Quốc Gia' },
+                    { val: '3', label: '3 Sao OCOP', stars: 'â­â­â­', desc: 'Äáº¡t chuáº©n cháº¥t lÆ°á»£ng cáº¥p Tá»‰nh' },
+                    { val: '4', label: '4 Sao OCOP', stars: 'â­â­â­â­', desc: 'Cháº¥t lÆ°á»£ng cao, tiá»m nÄƒng Quá»‘c gia' },
+                    { val: '5', label: '5 Sao OCOP', stars: 'â­â­â­â­â­', desc: 'Äáº·c sáº£n Cáº¥p Quá»‘c Gia' },
                   ].map((item) => (
                     <button
                       type="button"
@@ -305,14 +305,14 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
               <div>
                 <label className="block text-xs font-bold text-[#1A2820] mb-1.5 flex items-center gap-1.5">
                   <FileText className="w-4 h-4 text-[#264939]" />
-                  <span>Nội Dung / Nhận Xét Thẩm Định Chính Thức *</span>
+                  <span>Ná»™i Dung / Nháº­n XÃ©t Tháº©m Äá»‹nh ChÃ­nh Thá»©c *</span>
                 </label>
                 <textarea
                   required
                   rows={3}
                   value={inspectorNote}
                   onChange={(e) => setInspectorNote(e.target.value)}
-                  placeholder="Nhập ghi chú thẩm định (Ví dụ: Sản phẩm đạt chuẩn an toàn vệ sinh thực phẩm, quy trình sản xuất truyền thống Cố Đô Huế đạt tiêu chuẩn OCOP 4 sao tỉnh Thừa Thiên Huế...)"
+                  placeholder="Nháº­p ghi chÃº tháº©m Ä‘á»‹nh (VÃ­ dá»¥: Sáº£n pháº©m Ä‘áº¡t chuáº©n an toÃ n vá»‡ sinh thá»±c pháº©m, quy trÃ¬nh sáº£n xuáº¥t truyá»n thá»‘ng Cá»‘ ÄÃ´ Huáº¿ Ä‘áº¡t tiÃªu chuáº©n OCOP 4 sao tá»‰nh Thá»«a ThiÃªn Huáº¿...)"
                   className="w-full px-4 py-3 rounded-2xl border border-[#E6E1D7] text-xs focus:outline-none focus:border-[#264939] bg-white placeholder:text-[#8A9D92]"
                 />
               </div>
@@ -321,7 +321,7 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
               <div className="text-[11px] text-[#5E7166] bg-[#FAF9F5] p-3 rounded-2xl border border-[#EDE9E0] flex items-center gap-2">
                 <Coins className="w-4 h-4 text-[#C29B38] shrink-0" />
                 <span>
-                  ⚡ <strong>Lưu ý Kiểm Định Viên:</strong> Thao tác ký duyệt OCOP <strong>KHÔNG MẤT PHÍ THẨM ĐỊNH (0 ETH)</strong>. Bạn chỉ cần trả một lượng nhỏ gas Sepolia để ghi nhận chữ ký lên Smart Contract.
+                  âš¡ <strong>LÆ°u Ã½ Kiá»ƒm Äá»‹nh ViÃªn:</strong> Thao tÃ¡c kÃ½ duyá»‡t OCOP <strong>KHÃ”NG Máº¤T PHÃ THáº¨M Äá»ŠNH (0 ETH)</strong>. Báº¡n chá»‰ cáº§n tráº£ má»™t lÆ°á»£ng nhá» gas Sepolia Ä‘á»ƒ ghi nháº­n chá»¯ kÃ½ lÃªn Smart Contract.
                 </span>
               </div>
 
@@ -334,7 +334,7 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
                 >
                   <ShieldCheck className="w-4 h-4 text-white" />
                   <span>
-                    {selectedBatch?.isVerified ? 'Lô Hàng Đã Đạt OCOP' : 'Ký Xác Nhận & Cấp OCOP On-Chain'}
+                    {selectedBatch?.isVerified ? 'LÃ´ HÃ ng ÄÃ£ Äáº¡t OCOP' : 'KÃ½ XÃ¡c Nháº­n & Cáº¥p OCOP On-Chain'}
                   </span>
                 </button>
               </div>
@@ -348,7 +348,7 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
                 <div className="pb-3 border-b border-[#EDE9E0] flex items-center justify-between">
                   <div>
                     <span className="text-[10px] font-bold text-[#8A9D92] uppercase tracking-wider block">
-                      TẤT CẢ THÔNG TIN TẠO LÔ HÀNG
+                      Táº¤T Cáº¢ THÃ”NG TIN Táº O LÃ” HÃ€NG
                     </span>
                     <div className="font-mono text-sm sm:text-base font-extrabold text-[#264939] mt-0.5">
                       {selectedBatch.batchCode}
@@ -374,7 +374,7 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
                       {selectedBatch.productName}
                     </h4>
                     <span className="text-[10px] font-bold text-[#264939] bg-[#E0ECE4] px-2.5 py-0.5 rounded-full border border-[#CCD8CF] inline-block mt-1">
-                      Ảnh Sản Phẩm Mặc Định Từ CS SX
+                      áº¢nh Sáº£n Pháº©m Máº·c Äá»‹nh Tá»« CS SX
                     </span>
                   </div>
                 </div>
@@ -382,25 +382,25 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
                 {/* Verification Status Card */}
                 <div className="bg-[#FAF9F5] p-4 rounded-2xl border border-[#E6E1D7] space-y-2">
                   <span className="text-[10px] font-bold text-[#8A9D92] uppercase block">
-                    TRẠNG THÁI KIỂM ĐỊNH OCOP:
+                    TRáº NG THÃI KIá»‚M Äá»ŠNH OCOP:
                   </span>
                   {selectedBatch.isVerified ? (
                     <div className="space-y-1.5">
                       <span className="inline-flex items-center gap-1.5 bg-amber-100 text-[#8C6D1F] border border-amber-300 px-3.5 py-1 rounded-full text-xs font-extrabold shadow-2xs">
                         <ShieldCheck className="w-4 h-4 text-[#C29B38]" />
-                        <span>ĐÃ CẤP CHỨNG NHẬN OCOP</span>
+                        <span>ÄÃƒ Cáº¤P CHá»¨NG NHáº¬N OCOP</span>
                       </span>
                       {selectedBatch.starRating && (
                         <div className="text-xs font-bold text-[#C29B38] flex items-center gap-1 pt-0.5">
                           <Star className="w-3.5 h-3.5 fill-[#C29B38]" />
-                          <span>Hạng {selectedBatch.starRating} Sao OCOP Thừa Thiên Huế</span>
+                          <span>Háº¡ng {selectedBatch.starRating} Sao OCOP Thá»«a ThiÃªn Huáº¿</span>
                         </div>
                       )}
                     </div>
                   ) : (
                     <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-900 border border-amber-200 px-3 py-1 rounded-full text-xs font-bold">
                       <Clock className="w-3.5 h-3.5 text-amber-600" />
-                      <span>CHỜ CẤP CHỨNG NHẬN OCOP</span>
+                      <span>CHá»œ Cáº¤P CHá»¨NG NHáº¬N OCOP</span>
                     </span>
                   )}
                 </div>
@@ -410,7 +410,7 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
                   <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#FAF9F5] border border-[#EDE9E0]">
                     <span className="font-medium flex items-center gap-1.5 text-[11px]">
                       <Package className="w-3.5 h-3.5 text-[#264939] shrink-0" />
-                      <span>Tên Đặc Sản Khai Báo:</span>
+                      <span>TÃªn Äáº·c Sáº£n Khai BÃ¡o:</span>
                     </span>
                     <strong className="text-[#1A2820] font-serif font-bold truncate max-w-[160px]">
                       {selectedBatch.productName}
@@ -420,17 +420,17 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
                   <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#FAF9F5] border border-[#EDE9E0]">
                     <span className="font-medium flex items-center gap-1.5 text-[11px]">
                       <MapPin className="w-3.5 h-3.5 text-[#264939] shrink-0" />
-                      <span>Địa Danh / Nguồn Gốc:</span>
+                      <span>Äá»‹a Danh / Nguá»“n Gá»‘c:</span>
                     </span>
                     <strong className="text-[#1A2820] truncate max-w-[160px]">
-                      {selectedBatch.origin || 'Thừa Thiên Huế'}
+                      {selectedBatch.origin || 'Thá»«a ThiÃªn Huáº¿'}
                     </strong>
                   </div>
 
                   <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#FAF9F5] border border-[#EDE9E0]">
                     <span className="font-medium flex items-center gap-1.5 text-[11px]">
                       <UserCheck className="w-3.5 h-3.5 text-[#264939] shrink-0" />
-                      <span>Ví CS SX (Producer):</span>
+                      <span>VÃ­ CS SX (Producer):</span>
                     </span>
                     <a
                       href={`${ETHERSCAN_BASE_URL}/address/${selectedBatch.producer}`}
@@ -438,7 +438,7 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
                       rel="noopener noreferrer"
                       className="font-mono text-emerald-800 font-bold hover:underline flex items-center gap-1 truncate max-w-[140px]"
                     >
-                      <span>{selectedBatch.producer ? `${selectedBatch.producer.slice(0, 6)}...${selectedBatch.producer.slice(-4)}` : 'Chưa cập nhật'}</span>
+                      <span>{selectedBatch.producer ? `${selectedBatch.producer.slice(0, 6)}...${selectedBatch.producer.slice(-4)}` : 'ChÆ°a cáº­p nháº­t'}</span>
                       <ExternalLink className="w-3 h-3 shrink-0" />
                     </a>
                   </div>
@@ -446,10 +446,10 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
                   <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#FAF9F5] border border-[#EDE9E0]">
                     <span className="font-medium flex items-center gap-1.5 text-[11px]">
                       <Calendar className="w-3.5 h-3.5 text-[#264939] shrink-0" />
-                      <span>Thời Gian Khởi Tạo:</span>
+                      <span>Thá»i Gian Khá»Ÿi Táº¡o:</span>
                     </span>
                     <strong className="text-[#1A2820] font-mono text-[11px]">
-                      {selectedBatch.createdAt ? new Date(selectedBatch.createdAt * 1000).toLocaleString('vi-VN') : 'Vừa tạo'}
+                      {selectedBatch.createdAt ? new Date(selectedBatch.createdAt * 1000).toLocaleString('vi-VN') : 'Vá»«a táº¡o'}
                     </strong>
                   </div>
                 </div>
@@ -460,17 +460,17 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
                   <Package className="w-6 h-6 text-[#C29B38]" />
                 </div>
                 <h4 className="font-serif font-extrabold text-base text-[#264939]">
-                  Thông Tin Tạo Lô Hàng Đã Được Ẩn
+                  ThÃ´ng Tin Táº¡o LÃ´ HÃ ng ÄÃ£ ÄÆ°á»£c áº¨n
                 </h4>
                 <p className="text-xs text-[#5E7166] leading-relaxed max-w-xs mx-auto">
-                  Đã cấp chứng nhận OCOP thành công hoặc chưa chọn lô hàng. Vui lòng chọn một lô hàng mới từ danh sách thả xuống để xem tất cả thông tin tạo lô hàng.
+                  ÄÃ£ cáº¥p chá»©ng nháº­n OCOP thÃ nh cÃ´ng hoáº·c chÆ°a chá»n lÃ´ hÃ ng. Vui lÃ²ng chá»n má»™t lÃ´ hÃ ng má»›i tá»« danh sÃ¡ch tháº£ xuá»‘ng Ä‘á»ƒ xem táº¥t cáº£ thÃ´ng tin táº¡o lÃ´ hÃ ng.
                 </p>
               </div>
             )}
           </div>
         </div>
       ) : (
-        /* ================= SUB TAB 2: DANH SÁCH LÔ HÀNG ĐÃ KIỂM ĐỊNH OCOP (DẠNG BẢNG GIỐNG ẢNH 2) ================= */
+        /* ================= SUB TAB 2: DANH SÃCH LÃ” HÃ€NG ÄÃƒ KIá»‚M Äá»ŠNH OCOP (Dáº NG Báº¢NG GIá»NG áº¢NH 2) ================= */
         <div className="bg-white p-6 sm:p-7 rounded-3xl border border-[#E6E1D7] shadow-2xs space-y-6 font-sans">
           {/* Header & Search Bar for Verified Batches */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[#EDE9E0]">
@@ -480,10 +480,10 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
               </div>
               <div>
                 <h3 className="text-xl font-serif font-extrabold text-[#264939]">
-                  Danh Sách Đã Kiểm Định OCOP
+                  Danh SÃ¡ch ÄÃ£ Kiá»ƒm Äá»‹nh OCOP
                 </h3>
                 <p className="text-xs text-[#5E7166]">
-                  Danh sách lô hàng đặc sản Thừa Thiên Huế đã được ký duyệt chứng nhận OCOP
+                  Danh sÃ¡ch lÃ´ hÃ ng Ä‘áº·c sáº£n Thá»«a ThiÃªn Huáº¿ Ä‘Ã£ Ä‘Æ°á»£c kÃ½ duyá»‡t chá»©ng nháº­n OCOP
                 </p>
               </div>
             </div>
@@ -494,7 +494,7 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Tìm theo mã lô / sản phẩm..."
+                placeholder="TÃ¬m theo mÃ£ lÃ´ / sáº£n pháº©m..."
                 className="w-full pl-10 pr-4 py-2.5 rounded-2xl border border-[#E6E1D7] text-xs focus:outline-none focus:border-[#264939] bg-[#FAF9F5]"
               />
             </div>
@@ -504,9 +504,9 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
           {filteredVerifiedBatches.length === 0 ? (
             <div className="p-12 text-center text-xs text-gray-400 bg-[#FAF9F5] rounded-3xl border border-dashed border-[#E6E1D7] space-y-3">
               <Award className="w-12 h-12 text-gray-300 mx-auto" />
-              <p className="font-bold text-[#264939] text-sm">Chưa có lô hàng nào trong danh sách đã kiểm định</p>
+              <p className="font-bold text-[#264939] text-sm">ChÆ°a cÃ³ lÃ´ hÃ ng nÃ o trong danh sÃ¡ch Ä‘Ã£ kiá»ƒm Ä‘á»‹nh</p>
               <p className="text-gray-500 max-w-md mx-auto">
-                Sau khi ký xác nhận ở Tab "Thẩm Định Lô Hàng Mới", lô hàng sẽ tự động xuất hiện ở phần này.
+                Sau khi kÃ½ xÃ¡c nháº­n á»Ÿ Tab "Tháº©m Äá»‹nh LÃ´ HÃ ng Má»›i", lÃ´ hÃ ng sáº½ tá»± Ä‘á»™ng xuáº¥t hiá»‡n á»Ÿ pháº§n nÃ y.
               </p>
             </div>
           ) : (
@@ -514,10 +514,10 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
               <table className="w-full text-left border-collapse font-sans">
                 <thead>
                   <tr className="bg-[#FAF9F5] border-b border-[#E6E1D7] text-[11px] font-extrabold text-[#5E7166] uppercase tracking-wider">
-                    <th className="py-3.5 px-5">MÃ LÔ HÀNG</th>
-                    <th className="py-3.5 px-5">TÊN ĐẶC SẢN / HẠNG OCOP</th>
-                    <th className="py-3.5 px-5">THỜI GIAN KIỂM ĐỊNH</th>
-                    <th className="py-3.5 px-5 text-right">THAO TÁC</th>
+                    <th className="py-3.5 px-5">MÃƒ LÃ” HÃ€NG</th>
+                    <th className="py-3.5 px-5">TÃŠN Äáº¶C Sáº¢N / Háº NG OCOP</th>
+                    <th className="py-3.5 px-5">THá»œI GIAN KIá»‚M Äá»ŠNH</th>
+                    <th className="py-3.5 px-5 text-right">THAO TÃC</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#EDE9E0] text-xs bg-white">
@@ -571,7 +571,7 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
                             className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-red-200 bg-red-50/50 text-red-600 hover:bg-red-100 hover:border-red-300 transition-all text-xs font-bold shadow-2xs active:scale-95"
                           >
                             <UserX className="w-3.5 h-3.5 text-red-600" />
-                            <span>Thu Hồi</span>
+                            <span>Thu Há»“i</span>
                           </button>
                         </td>
                       </tr>
@@ -601,9 +601,9 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
                 </div>
                 <div>
                   <h3 className="font-serif font-extrabold text-base text-red-900">
-                    Thu Hồi Chứng Nhận OCOP
+                    Thu Há»“i Chá»©ng Nháº­n OCOP
                   </h3>
-                  <p className="text-[11px] text-gray-500">Ghi nhận quyết định thu hồi lên Blockchain</p>
+                  <p className="text-[11px] text-gray-500">Ghi nháº­n quyáº¿t Ä‘á»‹nh thu há»“i lÃªn Blockchain</p>
                 </div>
               </div>
               <button
@@ -616,23 +616,23 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
 
             <div className="bg-red-50 p-3.5 rounded-2xl border border-red-200 text-xs text-red-900 space-y-1">
               <div className="font-bold flex items-center justify-between">
-                <span>Lô Hàng Bị Thu Hồi:</span>
+                <span>LÃ´ HÃ ng Bá»‹ Thu Há»“i:</span>
                 <span className="font-mono font-extrabold text-red-950">{revokingBatch.batchCode}</span>
               </div>
-              <div>Tên sản phẩm: <strong>{revokingBatch.productName}</strong></div>
+              <div>TÃªn sáº£n pháº©m: <strong>{revokingBatch.productName}</strong></div>
             </div>
 
             <form onSubmit={handleConfirmRevoke} className="space-y-4">
               <div>
                 <label className="block text-xs font-bold text-[#1A2820] mb-1">
-                  Nhập Lý Do Thu Hồi Chứng Nhận OCOP *
+                  Nháº­p LÃ½ Do Thu Há»“i Chá»©ng Nháº­n OCOP *
                 </label>
                 <textarea
                   required
                   rows={3}
                   value={revokeReason}
                   onChange={(e) => setRevokeReason(e.target.value)}
-                  placeholder="Ví dụ: Phát hiện lô hàng không đảm bảo chỉ tiêu vệ sinh an toàn thực phẩm theo kết quả kiểm nghiệm đột xuất..."
+                  placeholder="VÃ­ dá»¥: PhÃ¡t hiá»‡n lÃ´ hÃ ng khÃ´ng Ä‘áº£m báº£o chá»‰ tiÃªu vá»‡ sinh an toÃ n thá»±c pháº©m theo káº¿t quáº£ kiá»ƒm nghiá»‡m Ä‘á»™t xuáº¥t..."
                   className="w-full px-3.5 py-2.5 rounded-xl border border-[#E6E1D7] text-xs focus:outline-none focus:border-red-600 bg-[#FAF9F5]"
                 />
               </div>
@@ -643,7 +643,7 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
                   onClick={() => setRevokingBatch(null)}
                   className="px-4 py-2.5 rounded-xl bg-gray-100 text-gray-700 font-bold text-xs hover:bg-gray-200 transition-all"
                 >
-                  Hủy Bỏ
+                  Há»§y Bá»
                 </button>
 
                 <button
@@ -652,7 +652,7 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
                   className="px-5 py-2.5 rounded-xl bg-red-600 text-white font-bold text-xs hover:bg-red-700 transition-all flex items-center gap-1.5 shadow-md disabled:opacity-50"
                 >
                   <Send className="w-3.5 h-3.5" />
-                  <span>Xác Nhận Thu Hồi On-Chain</span>
+                  <span>XÃ¡c Nháº­n Thu Há»“i On-Chain</span>
                 </button>
               </div>
             </form>
@@ -662,3 +662,4 @@ export const InspectorTab: React.FC<InspectorTabProps> = ({
     </div>
   );
 };
+

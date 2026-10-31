@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { X, ExternalLink, Download, Smartphone, ShieldAlert } from 'lucide-react';
 import { useDraggable } from '../hooks/useDraggable';
 
@@ -51,16 +51,16 @@ export const MobileMetaMaskModal: React.FC<MobileMetaMaskModalProps> = ({
             </div>
             <div>
               <h3 className="font-serif font-extrabold text-base text-[#264939]">
-                Kết Nối Ví MetaMask Mobile
+                Káº¿t Ná»‘i VÃ­ MetaMask Mobile
               </h3>
-              <p className="text-[11px] text-[#5E7166]">Ứng dụng di động Web3 Sepolia</p>
+              <p className="text-[11px] text-[#5E7166]">á»¨ng dá»¥ng di Ä‘á»™ng Web3 Sepolia</p>
             </div>
           </div>
           <button
             onClick={onClose}
             onPointerDown={(e) => e.stopPropagation()}
             className="p-1.5 rounded-full bg-[#FAF9F5] border border-[#E6E1D7] text-gray-400 hover:text-gray-700 hover:bg-[#E0ECE4] transition-all"
-            title="Đóng"
+            title="ÄÃ³ng"
           >
             <X className="w-5 h-5" />
           </button>
@@ -71,8 +71,8 @@ export const MobileMetaMaskModal: React.FC<MobileMetaMaskModalProps> = ({
           <div className="bg-[#FAF9F5] p-3.5 rounded-2xl border border-[#E6E1D7] flex items-start gap-3">
             <ShieldAlert className="w-5 h-5 text-[#C29B38] shrink-0 mt-0.5" />
             <div className="text-xs text-[#2C3E35] leading-relaxed">
-              Trình duyệt di động thông thường (Safari, Chrome) chưa tích hợp sẵn MetaMask Web3.
-              Vui lòng mở trang web này bằng <strong>App MetaMask</strong> đã cài đặt trên điện thoại.
+              TrÃ¬nh duyá»‡t di Ä‘á»™ng thÃ´ng thÆ°á»ng (Safari, Chrome) chÆ°a tÃ­ch há»£p sáºµn MetaMask Web3.
+              Vui lÃ²ng má»Ÿ trang web nÃ y báº±ng <strong>App MetaMask</strong> Ä‘Ã£ cÃ i Ä‘áº·t trÃªn Ä‘iá»‡n thoáº¡i.
             </div>
           </div>
 
@@ -82,7 +82,7 @@ export const MobileMetaMaskModal: React.FC<MobileMetaMaskModalProps> = ({
               className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#264939] text-white font-extrabold text-sm hover:bg-[#1c372b] transition-all shadow-md active:scale-98"
             >
               <ExternalLink className="w-4 h-4 text-[#C29B38]" />
-              <span>Mở Trực Tiếp Trên App MetaMask</span>
+              <span>Má»Ÿ Trá»±c Tiáº¿p TrÃªn App MetaMask</span>
             </button>
 
             <button
@@ -90,16 +90,17 @@ export const MobileMetaMaskModal: React.FC<MobileMetaMaskModalProps> = ({
               className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-white border border-[#C29B38] text-[#8C6D1F] font-bold text-xs hover:bg-[#FAF9F5] transition-all shadow-2xs active:scale-98"
             >
               <Download className="w-4 h-4 text-[#C29B38]" />
-              <span>Chưa Cài App? Tải MetaMask App Ngay</span>
+              <span>ChÆ°a CÃ i App? Táº£i MetaMask App Ngay</span>
             </button>
           </div>
         </div>
 
         {/* Footer info */}
         <div className="pt-3 border-t border-[#EDE9E0] text-center text-[10px] font-sans text-[#8A9D92]">
-          Deep Link tự động kích hoạt chuyển hướng sang ứng dụng MetaMask trên iOS / Android.
+          Deep Link tá»± Ä‘á»™ng kÃ­ch hoáº¡t chuyá»ƒn hÆ°á»›ng sang á»©ng dá»¥ng MetaMask trÃªn iOS / Android.
         </div>
       </div>
     </div>
   );
 };
+
