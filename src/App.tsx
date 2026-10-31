@@ -228,7 +228,7 @@ export const App: React.FC = () => {
                   : 'Xưởng sản xuất (Chờ Thẩm Định OCOP)',
               certificateURI: batchData.certificateURI || `ipfs://huelegend/cert/${batchCode}`,
               txHash: 'Xác nhận từ Smart Contract',
-              inspectionFeePaid: '0.002 ETH',
+              inspectionFeePaid: '0 ETH',
               checkpoints
             };
           } catch (e) {
@@ -500,17 +500,13 @@ export const App: React.FC = () => {
         console.warn('Cannot read batchCreationFee on-chain, using fallback 0.001 ETH:', feeErr);
       }
 
-      const inspectionFeeWei = ethers.parseEther('0.002');
-      const transportFeeWei = ethers.parseEther('0.002');
-      const totalFeeWei = feeWei + inspectionFeeWei + transportFeeWei;
-
       const tx = await contract.createBatch(
         cleanBatchCode,
         cleanProductName,
         cleanOrigin,
         cleanMetadataURI,
         {
-          value: totalFeeWei
+          value: feeWei
         }
       );
 
@@ -544,7 +540,7 @@ export const App: React.FC = () => {
             role: ROLE_HASHES.ROLE_PRODUCER,
             roleTitle: 'Cơ Sở Sản Xuất',
             location: cleanOrigin,
-            action: `Khởi tạo lô hàng & Thanh toán Phí Thẩm Định OCOP. NSX: ${cleanProdDate} - HSD: ${cleanExpDate}`,
+            action: `Khởi tạo lô hàng on-chain. NSX: ${cleanProdDate} - HSD: ${cleanExpDate}`,
             timestamp: Math.floor(Date.now() / 1000),
             recorder: cleanUserAddress,
             metadataURI: cleanMetadataURI,
@@ -593,9 +589,7 @@ export const App: React.FC = () => {
 
     const loadingToastId = addToast(
       'Yêu Cầu MetaMask',
-      valueWei
-        ? `Vui lòng xác nhận giao dịch niêm yết (${Number(valueEth).toFixed(4)} ETH) trên MetaMask...`
-        : 'Vui lòng xác nhận giao dịch addCheckpoint() trên MetaMask...',
+      'Vui lòng xác nhận giao dịch addCheckpoint() trên MetaMask...',
       'loading',
       0
     );
@@ -611,21 +605,7 @@ export const App: React.FC = () => {
       const roleHash = ROLE_HASHES[`ROLE_${actionRole}` as keyof typeof ROLE_HASHES];
       const fullActionText = conditionNote ? `${action} (Ghi chú: ${conditionNote})` : action;
 
-      let tx;
-      if (valueWei) {
-        try {
-          tx = await contract.addCheckpoint(batchCode, roleHash, location, fullActionText, metadataURI, { value: valueWei });
-        } catch (callErr) {
-          // Fallback neu hop dong khong phai payable tren bytecode: thuc hien addCheckpoint va transfer ETH
-          tx = await contract.addCheckpoint(batchCode, roleHash, location, fullActionText, metadataURI);
-          await signer.sendTransaction({
-            to: safeGetAddress(CONTRACT_ADDRESS),
-            value: valueWei
-          });
-        }
-      } else {
-        tx = await contract.addCheckpoint(batchCode, roleHash, location, fullActionText, metadataURI);
-      }
+      const tx = await contract.addCheckpoint(batchCode, roleHash, location, fullActionText, metadataURI);
 
       removeToast(loadingToastId);
       const waitToastId = addToast('Đang Chờ Khối Sepolia', `Giao dịch ${tx.hash.slice(0, 10)}... đang chờ xác nhận...`, 'loading', 0);
@@ -720,19 +700,7 @@ export const App: React.FC = () => {
       await tx.wait();
       removeToast(waitToastId);
 
-      // Ghi dong thoi Chang 2 vao Checkpoints Array tren Sepolia Smart Contract
-      try {
-        const cpTx = await contract.addCheckpoint(
-          batchCode,
-          ROLE_HASHES.ROLE_INSPECTOR,
-          'Sở Nông Nghiệp & PTNT Tỉnh Thừa Thiên Huế',
-          `Hội đồng thẩm định OCOP Tỉnh Thừa Thiên Huế đã duyệt và cấp chứng nhận hạng ${starRating} Sao. Ghi chú: ${inspectorNote || 'Đạt tiêu chuẩn an toàn thực phẩm.'}`,
-          certificateURI || `ipfs://huelegend/cert/${batchCode}`
-        );
-        await cpTx.wait();
-      } catch (cpErr) {
-        console.warn('Add inspector checkpoint on-chain notice:', cpErr);
-      }
+      // verifyBatch() da tu ghi checkpoint INSPECTOR trong ProjectCore.
 
       setBatches((prev) => {
         const target = prev[batchCode];
@@ -912,32 +880,7 @@ export const App: React.FC = () => {
 
   // 6b. Rut Doanh Thu Dai Ly Tu Smart Contract Ve Vi Dai Ly
   const handleWithdrawRetailerRevenue = async () => {
-    if (!currentAccount) {
-      addToast('Chưa Kết Nối Ví', 'Vui lòng kết nối ví đại lý MetaMask.', 'warning');
-      setIsRoleModalOpen(true);
-      return;
-    }
-
-    const loadingToastId = addToast('Yêu Cầu MetaMask', 'Vui lòng xác nhận giao dịch rút doanh thu bán hàng...', 'loading', 0);
-
-    try {
-      const signer = await wallet.authorizedSigner('RETAILER');
-      const contract = new ethers.Contract(safeGetAddress(CONTRACT_ADDRESS), PROJECT_CORE_ABI, signer);
-
-      const tx = await contract.withdrawFees();
-
-      removeToast(loadingToastId);
-      const waitToastId = addToast('Đang Chờ Khối Sepolia', `Giao dịch ${tx.hash.slice(0, 10)}... đang chuyển doanh thu về ví đại lý...`, 'loading', 0);
-
-      await tx.wait();
-      removeToast(waitToastId);
-
-      addToast('Rút Doanh Thu Thành Công!', `Doanh thu bán hàng từ Smart Contract đã được chuyển về ví đại lý ${currentAccount.slice(0, 8)}...`, 'success');
-      await fetchContractData();
-    } catch (err: any) {
-      removeToast(loadingToastId);
-      addToast('Không Thể Rút Doanh Thu', err?.reason || err?.message || 'Hợp đồng chưa hỗ trợ chức năng này.', 'error');
-    }
+    addToast('Chưa Hỗ Trợ On-Chain', 'ProjectCore hiện tại chưa có cơ chế doanh thu bán lẻ/rút doanh thu. Không có giao dịch nào được gửi.', 'info');
   };
 
   // Cap/thu hoi quyen theo dung ABI cua contracts/project/ProjectCore.sol.
@@ -971,68 +914,6 @@ export const App: React.FC = () => {
   };
   const handleAssignRole = (account: string, roleName: string) => updateRoleOnChain(account, roleName, true);
   const handleRevokeRole = (account: string, roleName: string) => updateRoleOnChain(account, roleName, false);
-
-  // 9. Withdraw Treasury Fees On-Chain
-  const handleWithdrawFees = async () => {
-    if (!currentAccount) {
-      addToast('Chưa Kết Nối Ví', 'Vui lòng kết nối ví Admin/Owner.', 'warning');
-      setIsRoleModalOpen(true);
-      return;
-    }
-
-    const loadingToastId = addToast('Yêu Cầu MetaMask', 'Vui lòng xác nhận giao dịch withdrawFees() trên MetaMask...', 'loading', 0);
-
-    try {
-      const signer = await wallet.authorizedSigner('ADMIN');
-      const contract = new ethers.Contract(safeGetAddress(CONTRACT_ADDRESS), PROJECT_CORE_ABI, signer);
-
-      const tx = await contract.withdrawFees();
-
-      removeToast(loadingToastId);
-      const waitToastId = addToast('Đang Chờ Khối Sepolia', `Giao dịch ${tx.hash.slice(0, 10)}... đang rút phí Treasury...`, 'loading', 0);
-
-      await tx.wait();
-      removeToast(waitToastId);
-
-      addToast('Rút Phí Thành Công!', 'Toàn bộ ETH phí tích lũy trong Treasury đã được chuyển về ví Admin.', 'success');
-      await fetchContractData();
-    } catch (err: any) {
-      removeToast(loadingToastId);
-      addToast('Lỗi Rút Phí', err?.reason || err?.message || 'Cần quyền Owner/Admin để rút phí Treasury.', 'error');
-    }
-  };
-
-  // 10. Toggle Emergency System Pause / Unpause
-  const handleTogglePauseSystem = async (shouldPause: boolean) => {
-    if (!currentAccount) {
-      addToast('Chưa Kết Nối Ví', 'Vui lòng kết nối ví Admin/Owner.', 'warning');
-      setIsRoleModalOpen(true);
-      return;
-    }
-
-    const actionText = shouldPause ? 'pause()' : 'unpause()';
-    const loadingToastId = addToast('Yêu Cầu MetaMask', `Vui lòng xác nhận giao dịch ${actionText} trên MetaMask...`, 'loading', 0);
-
-    try {
-      const signer = await wallet.authorizedSigner('ADMIN');
-      const contract = new ethers.Contract(safeGetAddress(CONTRACT_ADDRESS), PROJECT_CORE_ABI, signer);
-
-      const tx = shouldPause ? await contract.pause() : await contract.unpause();
-
-      removeToast(loadingToastId);
-      const waitToastId = addToast('Đang Chờ Khối Sepolia', `Giao dịch ${tx.hash.slice(0, 10)}... đang cập nhật trạng thái hệ thống...`, 'loading', 0);
-
-      await tx.wait();
-      removeToast(waitToastId);
-
-      setIsSystemPaused(shouldPause);
-      addToast('Cập Nhật Trạng Thái!', shouldPause ? 'Hệ thống đã chuyển sang TẠM DỪNG (Paused).' : 'Hệ thống đã HOẠT ĐỘNG BÌNH THƯỜNG (Active).', 'success');
-      await fetchContractData();
-    } catch (err: any) {
-      removeToast(loadingToastId);
-      addToast('Không Thể Đổi Trạng Thái', err?.reason || err?.message || 'Giao dịch không thành công. Không thay đổi trạng thái cục bộ.', 'error');
-    }
-  };
 
   // 9. Set Creation Fee On-Chain
   const handleSetBatchCreationFee = async (newFeeEth: string) => {
@@ -1186,8 +1067,6 @@ export const App: React.FC = () => {
               onSetBatchCreationFee={handleSetBatchCreationFee}
               onAssignRole={handleAssignRole}
               onRevokeRole={handleRevokeRole}
-              onWithdrawFees={handleWithdrawFees}
-              onTogglePauseSystem={handleTogglePauseSystem}
             />
           )}
         </main>
