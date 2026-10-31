@@ -15,7 +15,7 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { TabId } from '../lib/access';
-import { CONTRACT_ADDRESS, ETHERSCAN_BASE_URL } from '../constants';
+import { ETHERSCAN_BASE_URL, OWNER_WALLET } from '../constants';
 
 interface SidebarProps {
   activeTab: string;
@@ -161,19 +161,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, allowedTabs, onTabC
           </div>
         </div>
 
-        {/* Smart Contract Card */}
+        {/* Admin / Owner Wallet Card */}
         <div className="bg-white p-3.5 rounded-2xl border border-[#E6E1D7] space-y-1.5 shadow-2xs">
           <div className="text-xs font-extrabold text-[#6B8073] uppercase tracking-wider flex items-center justify-between">
-            <span>SMART CONTRACT</span>
+            <span>VÍ ADMIN / OWNER</span>
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
           </div>
           <a
-            href={`${ETHERSCAN_BASE_URL}/address/${CONTRACT_ADDRESS}`}
+            href={`${ETHERSCAN_BASE_URL}/address/${OWNER_WALLET}`}
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm font-mono font-extrabold text-[#264939] hover:underline flex items-center justify-between"
           >
-            <span className="truncate">{CONTRACT_ADDRESS.slice(0, 10)}...{CONTRACT_ADDRESS.slice(-4)}</span>
+            <span className="truncate">{OWNER_WALLET.slice(0, 10)}...{OWNER_WALLET.slice(-4)}</span>
             <ExternalLink className="w-3.5 h-3.5 shrink-0 ml-1 text-[#C29B38]" />
           </a>
         </div>
