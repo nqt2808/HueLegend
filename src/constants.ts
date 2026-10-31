@@ -61,7 +61,7 @@ export const PROJECT_CORE_ABI = [
   "function ROLE_LOGISTICS() view returns (bytes32)",
   "function ROLE_PRODUCER() view returns (bytes32)",
   "function ROLE_RETAILER() view returns (bytes32)",
-  "function addCheckpoint(string batchCode, bytes32 role, string location, string action, string metadataURI) payable",
+  "function addCheckpoint(string batchCode, bytes32 role, string location, string action, string metadataURI)",
   "function batchCreationFee() view returns (uint256)",
   "function createBatch(string batchCode, string productName, string origin, string initialMetadataURI) payable",
   "function depositStake() payable",
@@ -79,11 +79,7 @@ export const PROJECT_CORE_ABI = [
   "function revokeBatchVerification(string batchCode, string reason)",
   "function withdrawStake()",
   "function grantRole(address account, bytes32 role)",
-  "function revokeRole(address account, bytes32 role)",
-  "function pause()",
-  "function unpause()",
-  "function paused() view returns (bool)",
-  "function withdrawFees()"
+  "function revokeRole(address account, bytes32 role)"
 ];
 
 // Zero hardcoded mock products. Live data is read directly from Sepolia Smart Contract.
