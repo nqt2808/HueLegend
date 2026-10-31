@@ -174,20 +174,19 @@ export const CreateBatchTab: React.FC<CreateBatchTabProps> = ({
             </h2>
           </div>
           <span className="px-3 py-1 bg-[#E0ECE4] text-[#264939] rounded-full text-xs font-bold border border-[#CCD8CF]">
-            Tổng Phí: {(parseFloat(batchCreationFeeEth || '0.001') + 0.004).toFixed(3)} ETH
+            Phí Tạo Lô: {batchCreationFeeEth || '0.001'} ETH
           </span>
         </div>
 
         {/* Fee breakdown notice for Producer */}
         <div className="bg-[#FAF9F5] p-3.5 rounded-xl border border-[#E6E1D7] text-xs space-y-1">
           <div className="flex items-center justify-between font-bold text-[#264939]">
-            <span>💰 Chi tiết phí On-Chain khởi tạo lô hàng:</span>
-            <span className="font-mono font-extrabold">{(parseFloat(batchCreationFeeEth || '0.001') + 0.004).toFixed(3)} ETH</span>
+            <span>💰 Phí On-Chain khởi tạo lô hàng:</span>
+            <span className="font-mono font-extrabold">{batchCreationFeeEth || '0.001'} ETH</span>
           </div>
           <div className="text-[11px] text-[#5E7166] flex flex-wrap gap-x-4 gap-y-1 pt-1 border-t border-[#EDE9E0]">
-            <span>• Phí khởi tạo lô hàng: <strong className="text-[#1A2820] font-mono">{batchCreationFeeEth || '0.001'} ETH</strong></span>
-            <span>• Phí thẩm định OCOP (đã trả gộp): <strong className="text-[#C29B38] font-mono">0.002 ETH</strong></span>
-            <span>• Phí Vận Chuyển (đã trả gộp): <strong className="text-[#264939] font-mono">0.002 ETH</strong></span>
+            <span>• Phí createBatch theo Smart Contract: <strong className="text-[#1A2820] font-mono">{batchCreationFeeEth || '0.001'} ETH</strong></span>
+            <span>• Thẩm định, vận chuyển và niêm yết: <strong className="text-[#264939]">chỉ trả gas Sepolia cho từng giao dịch</strong></span>
           </div>
         </div>
 
