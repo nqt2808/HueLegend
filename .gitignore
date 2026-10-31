@@ -3,3 +3,8 @@ node_modules/
 .DS_Store
 artifacts/
 cache/
+dist/
+.vercel/
+.env.*
+!.env.example
+.sync_store.json

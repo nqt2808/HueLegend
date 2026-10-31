@@ -1,0 +1,8 @@
+{
+  "name": "HueLegend — Không Gian Quản Trị & Truy Xuất Nguồn Gốc Đặc Sản Huế",
+  "description": "Hệ thống Quản trị & Truy xuất Nguồn gốc Đặc sản Huế trên Blockchain Sepolia (ECO2432 HueLegend)",
+  "request_permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

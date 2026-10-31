@@ -1,3 +1,13 @@
+# HueLegend - Menu theo quyen vi (ban cap nhat 31/10/2026)
+
+**Huong dan tieng Viet, ma tran vai tro va gioi han kiem thu:** [docs/ROLE_NAVIGATION.md](docs/ROLE_NAVIGATION.md).
+
+Ban nay duoc sua tu file HueLegend-main.zip do nguoi dung gui. Giu React/Vite/TypeScript va giao dien xanh-vang hien tai.
+Khach chua ket noi chi thay Tong quan he thong va Cua hang dac san. Vai tro duoc xac minh bang owner()/hasRole() tren Sepolia; khong gan vi mac dinh va khong lay quyen tu localStorage.
+Cac ghi chu lich su ben duoi khong phai xac nhan nghiem thu blockchain cua ban nay.
+
+---
+
 # HueLegend — Hệ Thống Quản Trị & Truy Xuất Nguồn Gốc Đặc Sản Huế (React + Vite + TypeScript)
 
 > **HueLegend (ECO2432):** Nền tảng Web3 DApp minh bạch 100% lịch sử nguồn gốc và quy trình OCOP cho các sản phẩm đặc sản Cố Đô Huế trên Blockchain Sepolia.
@@ -52,5 +62,4 @@ npm run build
 ## 🔗 Thông tin Smart Contract:
 
 - **Mạng:** Ethereum Sepolia Testnet (Chain ID: `11155111`)
-- **Địa chỉ Smart Contract ProjectCore:** `0x35655079aEbB215E58e379D5a8c2f1f3a5323C6b`
-- **Tài khoản Admin / Deployer:** `0x82d022a704706B2f144863D619D7418F8a0f19A7`
+- **Địa chỉ Smart Contract ProjectCore:** `0xfe7BFa3ec478b621ecCA20DD73014Eb79B0bf5C5`
