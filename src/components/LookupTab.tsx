@@ -912,7 +912,7 @@ export const LookupTab: React.FC<LookupTabProps> = ({
                   <span>Danh Sách Tất Cả Sản Phẩm & Lô Hàng Đặc Sản</span>
                 </h3>
                 <p className="text-xs text-[#5E7166] mt-0.5">
-                  Bấm "Xem Chi Tiết Tra Cứu" trên từng sản phẩm để xem tem QR niêm phong và nhật ký hành trình 4 chặng on-chain.
+                  Bấm nút "Tem QR" trên từng sản phẩm để xem trực tiếp tem QR niêm phong xác thực on-chain.
                 </p>
               </div>
               <span className="text-xs font-bold px-3 py-1 bg-[#E0ECE4] text-[#264939] rounded-full border border-[#CCD8CF]">
@@ -980,19 +980,13 @@ export const LookupTab: React.FC<LookupTabProps> = ({
                       </div>
                     </div>
 
-                    {/* Action Button: Mo day du cac muc chi tiet & nhat ky 4 chang */}
+                    {/* Action Button: Mo truc tiep Tem QR cua lo hang */}
                     <button
-                      onClick={() => {
-                        setActiveBatch(batch);
-                        setSearchCode(batch.batchCode);
-                        if (onOpenJourneyModal) {
-                          onOpenJourneyModal(batch.batchCode);
-                        }
-                      }}
-                      className="w-full py-2.5 px-4 bg-[#264939] hover:bg-[#1c372b] text-white font-sans font-bold text-xs rounded-xl transition-all shadow-2xs flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                      onClick={() => onOpenQRStampModal(batch.batchCode)}
+                      className="w-full py-2.5 px-4 bg-[#C29B38] hover:bg-[#8C6D1F] text-white font-sans font-bold text-xs rounded-xl transition-all shadow-2xs flex items-center justify-center gap-2 cursor-pointer active:scale-98"
                     >
-                      <QrCode className="w-4 h-4 text-[#C29B38]" />
-                      <span>Xem Chi Tiết Tra Cứu</span>
+                      <QrCode className="w-4 h-4 text-white" />
+                      <span>Tem QR</span>
                     </button>
                   </div>
                 ))}

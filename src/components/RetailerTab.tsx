@@ -442,11 +442,7 @@ export const RetailerTab: React.FC<RetailerTabProps> = ({
               </div>
             )}
 
-            <div className="pt-3 border-t border-[#EDE9E0] flex items-center justify-between">
-              <span className="text-[11px] text-[#8A9D92]">
-                Ví Thụ Hưởng: <strong className="font-mono text-[#264939]">{currentAccount ? `${currentAccount.slice(0, 8)}...${currentAccount.slice(-4)}` : 'Chưa kết nối ví'}</strong>
-              </span>
-
+            <div className="pt-3 border-t border-[#EDE9E0] flex items-center justify-end">
               <button
                 type="submit"
                 disabled={isSubmitting || !selectedBatch}
@@ -468,9 +464,6 @@ export const RetailerTab: React.FC<RetailerTabProps> = ({
                 Trạng Thái Niêm Yết Lô Hàng
               </h3>
             </div>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
-              Danh Sách Lô Hàng
-            </span>
           </div>
 
           {allTransportBatches.length === 0 ? (
@@ -561,12 +554,6 @@ export const RetailerTab: React.FC<RetailerTabProps> = ({
                         <span>Tồn kho đại lý:</span>
                         <span className="font-mono font-bold text-amber-800">
                           {listingInfo?.stock || (isSelected ? stockQuantity : null) || batch.quantity || '100'} đơn vị
-                        </span>
-                      </div>
-                      <div className="flex justify-between text-[10px] pt-1 border-t border-[#EDE9E0]">
-                        <span>Ví Retailer thụ hưởng:</span>
-                        <span className="font-mono font-bold text-emerald-700 truncate max-w-[140px]">
-                          {listingInfo?.sellerAddr || (currentAccount ? `${currentAccount.slice(0, 8)}...${currentAccount.slice(-4)}` : 'ROLE_RETAILER')}
                         </span>
                       </div>
                     </div>

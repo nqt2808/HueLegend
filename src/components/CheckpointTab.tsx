@@ -145,15 +145,6 @@ export const CheckpointTab: React.FC<CheckpointTabProps> = ({
                 Khai Báo & Ghi Nhật Ký Vận Chuyển / Kho Vận
               </h2>
             </div>
-            <span className="px-3 py-1 bg-[#E0ECE4] text-[#264939] rounded-full text-xs font-bold border border-[#CCD8CF]">
-              ⚡ Miễn Phí (0 ETH)
-            </span>
-          </div>
-
-          {/* Fee Notice: Producer paid upfront */}
-          <div className="bg-[#FAF9F5] p-3 rounded-xl border border-[#E6E1D7] text-xs text-[#264939] flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-[#264939] shrink-0" />
-            <span><strong>Trạng thái phí:</strong> Miễn phí cho Đơn vị vận chuyển (0 ETH). Phí vận chuyển 0.002 ETH đã do Cơ sở sản xuất chi trả gộp khi khởi tạo lô hàng.</span>
           </div>
 
           {/* Quick Preset Buttons */}

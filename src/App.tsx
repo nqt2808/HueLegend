@@ -130,10 +130,14 @@ export const App: React.FC = () => {
           localStorage.setItem('huelegend_connected_account', currentAccount);
         } else {
           localStorage.removeItem('huelegend_connected_account');
+          // Khi chua ket noi vi, bat buoc chuyen ve 1 trong 3 tab duoc phep (Mac dinh: overview)
+          if (!['overview', 'lookup', 'store'].includes(activeTab)) {
+            setActiveTab('overview');
+          }
         }
       }
     } catch (e) {}
-  }, [currentAccount]);
+  }, [currentAccount, activeTab]);
 
   useEffect(() => {
     try {
@@ -1986,6 +1990,10 @@ export const App: React.FC = () => {
         'success'
       );
       await fetchContractData();
+      // Tu dong chuyen den phan nhat ky ghi chang cua lo hang vua tra phi
+      if (unpaidBatches.length > 0) {
+        handleNavigateTab('lookup', unpaidBatches[0].batchCode);
+      }
     } catch (e: any) {
       addToast('Lỗi Trả Phí Kiểm Định Viên', e?.reason || e?.message || 'Giao dịch trả phí thất bại.', 'error');
     }
@@ -2090,6 +2098,200 @@ export const App: React.FC = () => {
         'success'
       );
       await fetchContractData();
+      // Tu dong chuyen den phan nhat ky ghi chang cua lo hang vua tra phi
+      if (unpaidLogisticsBatches.length > 0) {
+        handleNavigateTab('lookup', unpaidLogisticsBatches[0].batchCode);
+      }
+    } catch (e: any) {
+      addToast('Lỗi Trả Phí Vận Chuyển', e?.reason || e?.message || 'Giao dịch trả phí thất bại.', 'error');
+    }
+  };
+
+  // 10b. Handler Admin Tra phi cho 1 lo hang kiem dinh OCOP cu the chuyen ve vi Kiem dinh vien da tham dinh
+  const handlePaySingleInspectorFee = async (batchCode: string, inspectorAddress: string) => {
+    if (!currentAccount) {
+      addToast('Chưa Kết Nối Ví', 'Vui lòng kết nối ví Quản trị viên (Admin) trước khi thực hiện trả phí.', 'warning');
+      setIsRoleModalOpen(true);
+      return;
+    }
+
+    const targetBatch = batches[batchCode];
+    if (!targetBatch) {
+      addToast('Không Tìm Thấy Lô Hàng', `Lô hàng ${batchCode} không tồn tại trên hệ thống.`, 'error');
+      return;
+    }
+
+    if (targetBatch.adminPaidInspectorFee) {
+      addToast('Đã Thanh Toán', `Lô hàng ${batchCode} đã được chi trả phí thẩm định OCOP trước đó.`, 'info');
+      return;
+    }
+
+    // Xac dinh dia chi vi Kiem dinh vien da ky kiem dinh lo hang nay
+    const cleanInspectorAddr = inspectorAddress && ethers.isAddress(inspectorAddress)
+      ? safeGetAddress(inspectorAddress)
+      : '0x35655079aEbB215E58e379D5a8c2f1f3a5323C6b';
+
+    const loadingToastId = addToast(
+      'Yêu Cầu MetaMask',
+      `Vui lòng xác nhận giao dịch chuyển 0.0020 ETH phí thẩm định lô ${batchCode} tới ví Kiểm định viên (${cleanInspectorAddr.slice(0, 6)}...${cleanInspectorAddr.slice(-4)})...`,
+      'loading',
+      0
+    );
+
+    try {
+      let txHash = '';
+      if (typeof window !== 'undefined' && (window as any).ethereum) {
+        const provider = new ethers.BrowserProvider((window as any).ethereum);
+        const signer = await provider.getSigner();
+        const valueWei = ethers.parseEther('0.002');
+
+        const tx = await signer.sendTransaction({
+          to: cleanInspectorAddr,
+          value: valueWei
+        });
+
+        removeToast(loadingToastId);
+        const waitToastId = addToast('Đang Chờ Khối Sepolia', `Giao dịch ${tx.hash.slice(0, 10)}... đang chuyển 0.002 ETH tới ví Kiểm định viên...`, 'loading', 0);
+        await tx.wait();
+        removeToast(waitToastId);
+        txHash = tx.hash;
+      } else {
+        removeToast(loadingToastId);
+        txHash = '0x' + Math.random().toString(16).substring(2, 42);
+      }
+
+      // Cap nhat trang thai lo hang va luu checkpoint tra phi tren Smart Contract & Supabase
+      setBatches((prev) => {
+        const target = prev[batchCode];
+        if (!target) return prev;
+
+        const existingCp = target.checkpoints || [];
+        const newCp = {
+          stepName: 'Quản Trị Viên Trả Phí Thẩm Định',
+          role: 'ROLE_ADMIN',
+          roleTitle: 'Quản Trị Viên (Admin)',
+          location: 'Treasury Smart Contract',
+          action: `Ví Quản trị viên đã thanh toán 0.002 ETH phí thẩm định OCOP On-Chain cho Kiểm định viên (${cleanInspectorAddr.slice(0, 6)}...)`,
+          timestamp: Math.floor(Date.now() / 1000),
+          recorder: currentAccount || DEFAULT_ADMIN_ADDRESS,
+          metadataURI: 'ipfs://QmHueAdminInspectorFeePayment2026',
+          txHash: txHash,
+          conditionNote: `Đã chi trả 0.002 ETH cho lô hàng ${batchCode} qua Sepolia Tx ${txHash.slice(0, 10)}`
+        };
+
+        const updatedBatchObj = {
+          ...target,
+          adminPaidInspectorFee: true,
+          checkpoints: [...existingCp, newCp]
+        };
+
+        saveBatchToSupabase(updatedBatchObj);
+        return { ...prev, [batchCode]: updatedBatchObj };
+      });
+
+      addToast(
+        'Trả Phí Kiểm Định Thành Công!',
+        `Đã chuyển 0.002 ETH cho Kiểm Định Viên OCOP (${cleanInspectorAddr.slice(0, 6)}...) cho lô hàng ${batchCode}.`,
+        'success'
+      );
+      await fetchContractData();
+      // Tu dong chuyen den phan nhat ky ghi chang cua lo hang vua tra phi
+      handleNavigateTab('lookup', batchCode);
+    } catch (e: any) {
+      addToast('Lỗi Trả Phí Kiểm Định Viên', e?.reason || e?.message || 'Giao dịch trả phí thất bại.', 'error');
+    }
+  };
+
+  // 11b. Handler Admin Tra phi cho 1 lo/chang van chuyen cu the chuyen ve vi Don vi Vot Chuyen da ghi chang
+  const handlePaySingleLogisticsFee = async (batchCode: string, logisticsAddress: string) => {
+    if (!currentAccount) {
+      addToast('Chưa Kết Nối Ví', 'Vui lòng kết nối ví Quản trị viên (Admin) trước khi thực hiện trả phí.', 'warning');
+      setIsRoleModalOpen(true);
+      return;
+    }
+
+    const targetBatch = batches[batchCode];
+    if (!targetBatch) {
+      addToast('Không Tìm Thấy Lô Hàng', `Lô hàng ${batchCode} không tồn tại trên hệ thống.`, 'error');
+      return;
+    }
+
+    if (targetBatch.adminPaidLogisticsFee) {
+      addToast('Đã Thanh Toán', `Lô hàng ${batchCode} đã được chi trả phí vận chuyển trước đó.`, 'info');
+      return;
+    }
+
+    // Xac dinh dia chi vi Don vi Vot Chuyen da ghi chang lo hang nay
+    const cleanLogisticsAddr = logisticsAddress && ethers.isAddress(logisticsAddress)
+      ? safeGetAddress(logisticsAddress)
+      : '0x42965579aEbB215E58e379D5a8c2f1f3a5323C6b';
+
+    const loadingToastId = addToast(
+      'Yêu Cầu MetaMask',
+      `Vui lòng xác nhận giao dịch chuyển 0.0020 ETH phí vận chuyển lô ${batchCode} tới ví Đơn vị Vận chuyển (${cleanLogisticsAddr.slice(0, 6)}...${cleanLogisticsAddr.slice(-4)})...`,
+      'loading',
+      0
+    );
+
+    try {
+      let txHash = '';
+      if (typeof window !== 'undefined' && (window as any).ethereum) {
+        const provider = new ethers.BrowserProvider((window as any).ethereum);
+        const signer = await provider.getSigner();
+        const valueWei = ethers.parseEther('0.002');
+
+        const tx = await signer.sendTransaction({
+          to: cleanLogisticsAddr,
+          value: valueWei
+        });
+
+        removeToast(loadingToastId);
+        const waitToastId = addToast('Đang Chờ Khối Sepolia', `Giao dịch ${tx.hash.slice(0, 10)}... đang chuyển 0.002 ETH tới ví Vận chuyển...`, 'loading', 0);
+        await tx.wait();
+        removeToast(waitToastId);
+        txHash = tx.hash;
+      } else {
+        removeToast(loadingToastId);
+        txHash = '0x' + Math.random().toString(16).substring(2, 42);
+      }
+
+      // Cap nhat trang thai lo hang va luu checkpoint tra phi tren Smart Contract & Supabase
+      setBatches((prev) => {
+        const target = prev[batchCode];
+        if (!target) return prev;
+
+        const existingCp = target.checkpoints || [];
+        const newCp = {
+          stepName: 'Quản Trị Viên Trả Phí Vận Chuyển',
+          role: 'ROLE_ADMIN',
+          roleTitle: 'Quản Trị Viên (Admin)',
+          location: 'Treasury Smart Contract',
+          action: `Ví Quản trị viên đã thanh toán 0.002 ETH phí vận chuyển On-Chain cho Đơn vị vận chuyển (${cleanLogisticsAddr.slice(0, 6)}...)`,
+          timestamp: Math.floor(Date.now() / 1000),
+          recorder: currentAccount || DEFAULT_ADMIN_ADDRESS,
+          metadataURI: 'ipfs://QmHueAdminLogisticsFeePayment2026',
+          txHash: txHash,
+          conditionNote: `Đã chi trả 0.002 ETH phí vận chuyển cho lô hàng ${batchCode} qua Sepolia Tx ${txHash.slice(0, 10)}`
+        };
+
+        const updatedBatchObj = {
+          ...target,
+          adminPaidLogisticsFee: true,
+          checkpoints: [...existingCp, newCp]
+        };
+
+        saveBatchToSupabase(updatedBatchObj);
+        return { ...prev, [batchCode]: updatedBatchObj };
+      });
+
+      addToast(
+        'Trả Phí Vận Chuyển Thành Công!',
+        `Đã chuyển 0.002 ETH cho Đơn Vị Vận Chuyển (${cleanLogisticsAddr.slice(0, 6)}...) cho lô hàng ${batchCode}.`,
+        'success'
+      );
+      await fetchContractData();
+      // Tu dong chuyen den phan nhat ky ghi chang cua lo hang vua tra phi
+      handleNavigateTab('lookup', batchCode);
     } catch (e: any) {
       addToast('Lỗi Trả Phí Vận Chuyển', e?.reason || e?.message || 'Giao dịch trả phí thất bại.', 'error');
     }
@@ -2117,7 +2319,7 @@ export const App: React.FC = () => {
   return (
     <div className="flex min-h-screen bg-[#F4F1EA]/30 backdrop-blur-[1px] bg-cover bg-fixed bg-center text-[#1A2820]">
       {/* Sidebar Navigation */}
-      <Sidebar activeTab={activeTab} userRole={simulatedRole} onTabChange={(tab) => handleNavigateTab(tab)} />
+      <Sidebar activeTab={activeTab} userRole={simulatedRole} currentAccount={currentAccount} onTabChange={(tab) => handleNavigateTab(tab)} />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
@@ -2239,6 +2441,8 @@ export const App: React.FC = () => {
               onTogglePauseSystem={handleTogglePauseSystem}
               onPayInspectorFees={handlePayInspectorFees}
               onPayLogisticsFees={handlePayLogisticsFees}
+              onPaySingleInspectorFee={handlePaySingleInspectorFee}
+              onPaySingleLogisticsFee={handlePaySingleLogisticsFee}
             />
           )}
         </main>

@@ -19,10 +19,11 @@ import { CONTRACT_ADDRESS, ETHERSCAN_BASE_URL } from '../constants';
 interface SidebarProps {
   activeTab: string;
   userRole?: string;
+  currentAccount?: string | null;
   onTabChange: (tab: string) => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ activeTab, userRole = 'ALL', onTabChange }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ activeTab, userRole = 'ALL', currentAccount, onTabChange }) => {
   const navItems = [
     {
       id: 'overview',
@@ -74,28 +75,27 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, userRole = 'ALL', o
     },
   ];
 
-  // Loc danh sach menu theo vai tro (RBAC) khi da ket noi vi, hoac hien thi day du khi chua ket noi (ALL)
+  // Loc danh sach menu: Khi CHUA KET NOI VI (!currentAccount), CHI hien 3 chuc nang: Tong Quan He Thong, Tra Cuu Tem QR, Cua Hang Dac San
   const filteredNavItems = navItems.filter((item) => {
+    if (!currentAccount) {
+      return ['overview', 'lookup', 'store'].includes(item.id);
+    }
     if (userRole === 'INSPECTOR') {
-      // Kiem dinh vien OCOP: Tong Quan He Thong, Tra Cuu Tem QR, Cua hang dac san, Kiem Dinh OCOP
       return ['overview', 'lookup', 'store', 'inspector'].includes(item.id);
     }
     if (userRole === 'LOGISTICS') {
-      // Don vi van chuyen: Tong Quan He Thong, Tra Cuu Tem QR, Cua hang dac san, Van Chuyen
       return ['overview', 'lookup', 'store', 'checkpoint'].includes(item.id);
     }
     if (userRole === 'RETAILER' || userRole === 'COMMERCE') {
-      // Dai ly ban le: Tong Quan He Thong, Tra Cuu Tem QR, Cua hang dac san, Quan Ly Niem Yet
       return ['overview', 'lookup', 'store', 'retailer'].includes(item.id);
     }
     if (userRole === 'PRODUCER' || userRole === 'SUPPLY_CHAIN') {
-      // Co so san xuat: Tong Quan He Thong, Tra Cuu Tem QR, Cua hang dac san, Tao Lo Hang
       return ['overview', 'lookup', 'store', 'create-batch'].includes(item.id);
     }
     if (userRole === 'CUSTOMER') {
       return ['overview', 'lookup', 'store'].includes(item.id);
     }
-    // Khi chua ket noi vi (ALL) hoac khi Dang nhap bang vi Admin (ADMIN), hien thi DAY DU 8 CHUC NANG
+    // Khi DA KET NOI VI voi vai tro Admin hoac ALL, hien thi DAY DU 8 CHUC NANG
     return true;
   });
 

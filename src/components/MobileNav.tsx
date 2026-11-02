@@ -93,28 +93,27 @@ export const MobileNav: React.FC<MobileNavProps> = ({
     },
   ];
 
-  // 2. Loc menu theo vai tro phan quyen RBAC cua tai khoan dang ket noi
+  // 2. Loc menu: Khi CHUA KET NOI VI (!currentAccount), CHI hien 3 chuc nang: Tong Quan He Thong, Tra Cuu Tem QR, Cua Hang Dac San
   const filteredNavItems = navItems.filter((item) => {
+    if (!currentAccount) {
+      return ['overview', 'lookup', 'store'].includes(item.id);
+    }
     if (userRole === 'INSPECTOR') {
-      // Kiem dinh vien OCOP: Tong Quan He Thong, Tra Cuu Tem QR, Cua hang dac san, Kiem Dinh OCOP
       return ['overview', 'lookup', 'store', 'inspector'].includes(item.id);
     }
     if (userRole === 'LOGISTICS') {
-      // Don vi van chuyen: Tong Quan He Thong, Tra Cuu Tem QR, Cua hang dac san, Van Chuyen
       return ['overview', 'lookup', 'store', 'checkpoint'].includes(item.id);
     }
     if (userRole === 'RETAILER' || userRole === 'COMMERCE') {
-      // Dai ly ban le: Tong Quan He Thong, Tra Cuu Tem QR, Cua hang dac san, Quan Ly Niem Yet
       return ['overview', 'lookup', 'store', 'retailer'].includes(item.id);
     }
     if (userRole === 'PRODUCER' || userRole === 'SUPPLY_CHAIN') {
-      // Co so san xuat: Tong Quan He Thong, Tra Cuu Tem QR, Cua hang dac san, Tao Lo Hang
       return ['overview', 'lookup', 'store', 'create-batch'].includes(item.id);
     }
     if (userRole === 'CUSTOMER') {
       return ['overview', 'lookup', 'store'].includes(item.id);
     }
-    // Mac dinh khi chua chon vai tro hoac ADMIN thi hien thi day du 8 chuc nang
+    // Mac dinh khi da ket noi vi voi vai tro ADMIN hoac ALL thi hien thi day du 8 chuc nang
     return true;
   });
 

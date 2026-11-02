@@ -15,7 +15,7 @@ import {
   Users,
   Search
 } from 'lucide-react';
-import { ETHERSCAN_BASE_URL, CONTRACT_ADDRESS, safeGetAddress } from '../constants';
+import { ETHERSCAN_BASE_URL, CONTRACT_ADDRESS, safeGetAddress, ROLE_HASHES } from '../constants';
 
 import { Batch, Checkpoint, GrantedWallet } from '../types';
 
@@ -48,6 +48,8 @@ interface AdminTabProps {
   onTogglePauseSystem?: (shouldPause: boolean) => Promise<void>;
   onPayInspectorFees?: () => Promise<void>;
   onPayLogisticsFees?: () => Promise<void>;
+  onPaySingleInspectorFee?: (batchCode: string, inspectorAddress: string) => Promise<void>;
+  onPaySingleLogisticsFee?: (batchCode: string, logisticsAddress: string) => Promise<void>;
 }
 
 export const AdminTab: React.FC<AdminTabProps> = ({
@@ -68,6 +70,8 @@ export const AdminTab: React.FC<AdminTabProps> = ({
   onTogglePauseSystem,
   onPayInspectorFees,
   onPayLogisticsFees,
+  onPaySingleInspectorFee,
+  onPaySingleLogisticsFee,
 }) => {
   const [accountAddress, setAccountAddress] = useState('');
   const [roleSelect, setRoleSelect] = useState('ROLE_PRODUCER');
@@ -115,6 +119,30 @@ export const AdminTab: React.FC<AdminTabProps> = ({
     setIsSubmitting(true);
     try {
       await onPayLogisticsFees();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handlePaySingleInspector = async (batchCode: string, inspectorAddress: string) => {
+    if (!onPaySingleInspectorFee) return;
+    setIsSubmitting(true);
+    try {
+      await onPaySingleInspectorFee(batchCode, inspectorAddress);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handlePaySingleLogistics = async (batchCode: string, logisticsAddress: string) => {
+    if (!onPaySingleLogisticsFee) return;
+    setIsSubmitting(true);
+    try {
+      await onPaySingleLogisticsFee(batchCode, logisticsAddress);
     } catch (err) {
       console.error(err);
     } finally {
@@ -276,10 +304,10 @@ export const AdminTab: React.FC<AdminTabProps> = ({
         </div>
       </div>
 
-      {/* 5 Production Feature Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column (2 cols): RBAC Management & Granted Wallets Table */}
-        <div className="lg:col-span-2 space-y-6">
+      {/* Main Top Grid: Balanced 2 Equal Columns for Controls */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Left Column: RBAC Granting & Granted Wallets List */}
+        <div className="space-y-6">
           {/* Feature 1: Grant Role Panel */}
           <div className="bg-white p-6 rounded-3xl border border-[#E6E1D7] shadow-2xs space-y-5">
             <div className="flex items-center justify-between pb-3 border-b border-[#EDE9E0]">
@@ -289,9 +317,6 @@ export const AdminTab: React.FC<AdminTabProps> = ({
                   1. Gán Quyền Vai Trò (Grant Role)
                 </h3>
               </div>
-              <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded bg-[#E0ECE4] text-[#264939] border border-[#CCD8CF]">
-                AccessControl
-              </span>
             </div>
 
             <div className="space-y-4 font-sans">
@@ -428,108 +453,9 @@ export const AdminTab: React.FC<AdminTabProps> = ({
               </div>
             )}
           </div>
-
-          {/* Feature 4: Event Logs Table with Sepolia Etherscan Links */}
-          <div className="bg-white p-6 rounded-3xl border border-[#E6E1D7] shadow-2xs space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-[#EDE9E0]">
-              <div className="flex items-center gap-2">
-                <Activity className="w-5 h-5 text-[#264939]" />
-                <h3 className="font-serif font-extrabold text-base text-[#264939]">
-                  4. Nhật Ký Sự Kiện Giao Dịch On-Chain
-                </h3>
-              </div>
-              <a
-                href={`${ETHERSCAN_BASE_URL}/address/${CONTRACT_ADDRESS}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs font-mono text-[#264939] hover:underline flex items-center gap-1"
-              >
-                <span>Mở Etherscan</span>
-                <ExternalLink className="w-3 h-3" />
-              </a>
-            </div>
-
-            {/* Chi hien thi nhat ky su kien khi da ket noi vi */}
-            {!currentAccount ? (
-              <div className="text-center py-8 px-4 bg-[#FAF9F5] rounded-2xl border border-dashed border-[#E6E1D7] space-y-3">
-                <Wallet className="w-8 h-8 text-[#C29B38] mx-auto" />
-                <p className="text-xs font-bold text-[#1A2820]">Yêu Cầu Kết Nối Ví Để Xem Nhật Ký Sự Kiện</p>
-                <p className="text-[11px] text-[#5E7166] max-w-sm mx-auto">
-                  Vui lòng kết nối ví MetaMask để xem Nhật Ký Sự Kiện Giao Dịch On-Chain từ Sepolia Testnet.
-                </p>
-                <button
-                  onClick={onConnectWallet}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-[#264939] text-white font-bold text-xs rounded-xl hover:bg-[#1c372b] transition-all shadow-2xs mt-1"
-                >
-                  <Wallet className="w-3.5 h-3.5 text-[#C29B38]" />
-                  <span>Kết Nối Ví MetaMask</span>
-                </button>
-              </div>
-            ) : recentEventLogs.length === 0 ? (
-              <div className="text-center py-8 px-4 bg-[#FAF9F5] rounded-2xl border border-dashed border-[#E6E1D7] space-y-2">
-                <Activity className="w-8 h-8 text-[#8A9D92] mx-auto opacity-60" />
-                <p className="text-xs font-bold text-[#1A2820]">Chưa Có Sự Kiện Giao Dịch On-Chain</p>
-                <p className="text-[11px] text-[#5E7166] max-w-sm mx-auto">
-                  Các sự kiện khởi tạo lô hàng, thẩm định OCOP và niêm yết từ Sepolia Testnet sẽ tự động hiển thị tại đây.
-                </p>
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
-                  <thead>
-                    <tr className="bg-[#FAF9F5] border-b border-[#E6E1D7] text-[#8A9D92] font-bold uppercase text-[10px] tracking-wider">
-                      <th className="py-2.5 px-3">Mã Lô / Mục</th>
-                      <th className="py-2.5 px-3">Sự Kiện</th>
-                      <th className="py-2.5 px-3">Ví Thực Hiện</th>
-                      <th className="py-2.5 px-3">Thời Gian</th>
-                      <th className="py-2.5 px-3 text-right">Etherscan</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#EDE9E0]">
-                    {recentEventLogs.map((log) => (
-                      <tr key={log.id} className="hover:bg-[#FAF9F5]/80 transition-colors">
-                        <td className="py-3 px-3 font-mono font-bold text-[#264939]">
-                          {log.batchCode}
-                        </td>
-                        <td className="py-3 px-3">
-                          <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-900 font-mono text-[10px] font-bold border border-emerald-200">
-                            {log.type}
-                          </span>
-                        </td>
-                        <td className="py-3 px-3">
-                          <span className="font-mono text-xs block text-[#1A2820]">
-                            {log.actor.slice(0, 8)}...
-                          </span>
-                          <span className="text-[10px] text-gray-500">{log.role}</span>
-                        </td>
-                        <td className="py-3 px-3 text-gray-500 text-[11px]">
-                          {log.timestamp}
-                        </td>
-                        <td className="py-3 px-3 text-right">
-                          {log.txHash ? (
-                            <a
-                              href={`${ETHERSCAN_BASE_URL}/tx/${log.txHash}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="p-1.5 rounded-lg bg-[#FAF9F5] hover:bg-[#E0ECE4] text-[#264939] inline-flex items-center gap-1 transition-colors text-[11px] font-bold"
-                            >
-                              <ExternalLink className="w-3 h-3" />
-                              <span>Chi Tiết</span>
-                            </a>
-                          ) : (
-                            <span className="text-gray-400 font-mono text-[10px]">On-Chain</span>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
         </div>
 
-        {/* Right Column (1 col): Treasury & Emergency Control */}
+        {/* Right Column: Treasury Config & Emergency Controls */}
         <div className="space-y-6 font-sans">
           {/* Feature 2: Treasury Fee Config & Withdraw Panel */}
           <div className="bg-white p-6 rounded-3xl border border-[#E6E1D7] shadow-2xs space-y-5">
@@ -537,7 +463,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
               <div className="flex items-center gap-2">
                 <Coins className="w-5 h-5 text-[#C29B38]" />
                 <h3 className="font-serif font-extrabold text-base text-[#264939]">
-                  2. Quản Lý Phí & Treasury
+                  2. Quản Lý Phí & Treasury Smart Contract
                 </h3>
               </div>
               <Wallet className="w-4 h-4 text-[#264939]" />
@@ -549,9 +475,11 @@ export const AdminTab: React.FC<AdminTabProps> = ({
                 <span className="text-[10px] font-bold text-[#8A9D92] uppercase tracking-wider block">
                   SỐ DƯ ETH TÍCH LŨY TRONG SMART CONTRACT
                 </span>
-                <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-lg border shadow-2xs ${currentAccount ? 'bg-white text-[#264939] border-emerald-200' : 'bg-amber-50 text-amber-800 border-amber-200'}`}>
-                  {allocatedRoleLabel}
-                </span>
+                {allocatedRoleLabel !== 'Khách Hàng' && (
+                  <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-lg border shadow-2xs ${currentAccount ? 'bg-white text-[#264939] border-emerald-200' : 'bg-amber-50 text-amber-800 border-amber-200'}`}>
+                    {allocatedRoleLabel}
+                  </span>
+                )}
               </div>
 
               <div className="text-2xl font-extrabold font-mono text-[#264939]">
@@ -589,98 +517,13 @@ export const AdminTab: React.FC<AdminTabProps> = ({
                 <button
                   type="submit"
                   disabled={isSubmitting || !isAdminRole || !newFee}
-                  className="px-4 py-2 bg-[#C29B38] text-[#FFFFFF] rounded-xl font-bold text-xs hover:bg-[#8C6D1F] transition-all shrink-0 disabled:opacity-50"
+                  className="px-4 py-2 bg-[#C29B38] text-[#FFFFFF] rounded-xl font-bold text-xs hover:bg-[#8C6D1F] transition-all shrink-0 disabled:opacity-50 flex items-center gap-1.5"
                 >
                   <RefreshCw className="w-4 h-4" />
+                  <span>Cập Nhật Phí</span>
                 </button>
               </div>
             </form>
-
-            {/* Sub-section: Chi Trả Phí Kiểm Định Viên & Phí Vận Chuyển Từ Quỹ Treasury Smart Contract */}
-            <div className="pt-3 border-t border-[#EDE9E0] space-y-4 font-sans">
-              <div className="flex items-center justify-between">
-                <span className="block text-xs font-extrabold text-[#264939] uppercase tracking-wider">
-                  CÔNG CỤ ĐẾM & CHI TRẢ PHÍ SỐ LÔ / CHẶNG THÀNH CÔNG
-                </span>
-                <span className="text-[10px] font-mono font-bold text-[#8A9D92] bg-[#FAF9F5] px-2 py-0.5 rounded border border-[#E6E1D7]">
-                  0.002 ETH / Lượt
-                </span>
-              </div>
-
-              {/* Button 1: Trả phí Kiểm định viên */}
-              <div className="p-3.5 rounded-2xl bg-[#FAF9F5] border border-[#E6E1D7] space-y-2.5">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-[#264939] flex items-center gap-1.5">
-                    <ShieldCheck className="w-4 h-4 text-[#C29B38]" />
-                    <span>Trả Phí Kiểm Định Viên (0.002 ETH/lô)</span>
-                  </span>
-                  <span className={`font-mono font-black text-xs px-2.5 py-0.5 rounded border ${
-                    unpaidInspectorBatches.length > 0
-                      ? 'text-[#264939] bg-emerald-50 border-emerald-200'
-                      : 'text-gray-500 bg-gray-100 border-gray-200'
-                  }`}>
-                    {totalInspectorFeeEth} ETH
-                  </span>
-                </div>
-
-                <p className="text-[11px] text-[#5E7166] leading-relaxed">
-                  {unpaidInspectorBatches.length > 0
-                    ? `Chuyển đúng ${totalInspectorFeeEth} ETH cho ${unpaidInspectorBatches.length} lô kiểm định OCOP thành công chưa trả phí.`
-                    : 'Tất cả các lô kiểm định OCOP thành công đều đã được thanh toán hoàn tất.'}
-                </p>
-
-                <button
-                  type="button"
-                  onClick={handlePayInspector}
-                  disabled={isSubmitting || !isAdminRole || unpaidInspectorBatches.length === 0}
-                  className="w-full py-2.5 px-4 rounded-xl bg-[#264939] text-white font-bold text-xs hover:bg-[#1c372b] transition-all flex items-center justify-center gap-2 shadow-2xs disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  <Coins className="w-4 h-4 text-[#C29B38]" />
-                  <span>
-                    {unpaidInspectorBatches.length > 0
-                      ? `Trả Phí Kiểm Định Viên (${unpaidInspectorBatches.length} lô - ${totalInspectorFeeEth} ETH)`
-                      : 'Đã Thanh Toán Đủ (0 Lô Chờ Trả)'}
-                  </span>
-                </button>
-              </div>
-
-              {/* Button 2: Trả phí Vận Chuyển */}
-              <div className="p-3.5 rounded-2xl bg-[#FAF9F5] border border-[#E6E1D7] space-y-2.5">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-[#264939] flex items-center gap-1.5">
-                    <RefreshCw className="w-4 h-4 text-[#C29B38]" />
-                    <span>Trả Phí Vận Chuyển (0.002 ETH/chặng)</span>
-                  </span>
-                  <span className={`font-mono font-black text-xs px-2.5 py-0.5 rounded border ${
-                    unpaidLogisticsBatches.length > 0
-                      ? 'text-[#264939] bg-emerald-50 border-emerald-200'
-                      : 'text-gray-500 bg-gray-100 border-gray-200'
-                  }`}>
-                    {totalLogisticsFeeEth} ETH
-                  </span>
-                </div>
-
-                <p className="text-[11px] text-[#5E7166] leading-relaxed">
-                  {unpaidLogisticsBatches.length > 0
-                    ? `Chuyển đúng ${totalLogisticsFeeEth} ETH cho ${unpaidLogisticsBatches.length} chặng vận chuyển thành công chưa trả phí.`
-                    : 'Tất cả các chặng vận chuyển thành công đều đã được thanh toán hoàn tất.'}
-                </p>
-
-                <button
-                  type="button"
-                  onClick={handlePayLogistics}
-                  disabled={isSubmitting || !isAdminRole || unpaidLogisticsBatches.length === 0}
-                  className="w-full py-2.5 px-4 rounded-xl bg-[#C29B38] text-white font-bold text-xs hover:bg-[#8C6D1F] transition-all flex items-center justify-center gap-2 shadow-2xs disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  <Wallet className="w-4 h-4 text-white" />
-                  <span>
-                    {unpaidLogisticsBatches.length > 0
-                      ? `Trả Phí Vận Chuyển (${unpaidLogisticsBatches.length} chặng - ${totalLogisticsFeeEth} ETH)`
-                      : 'Đã Thanh Toán Đủ (0 Chặng Chờ Trả)'}
-                  </span>
-                </button>
-              </div>
-            </div>
           </div>
 
           {/* Feature 3: Emergency Control (Pause / Unpause) */}
@@ -689,12 +532,9 @@ export const AdminTab: React.FC<AdminTabProps> = ({
               <div className="flex items-center gap-2">
                 <ShieldAlert className="w-5 h-5 text-amber-600" />
                 <h3 className="font-serif font-extrabold text-base text-[#264939]">
-                  3. An Toàn Hệ Thống (Emergency)
+                  3. An Toàn Hệ Thống (Emergency Circuit Breaker)
                 </h3>
               </div>
-              <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${isSystemPaused ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}`}>
-                {isSystemPaused ? 'Paused' : 'Active'}
-              </span>
             </div>
 
             <p className="text-xs text-[#5E7166] leading-relaxed">
@@ -722,6 +562,336 @@ export const AdminTab: React.FC<AdminTabProps> = ({
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Full-Width Bottom Section A: Dedicated Treasury Fee Payment Tables */}
+      <div className="bg-white p-6 rounded-3xl border border-[#E6E1D7] shadow-2xs space-y-6">
+        <div className="flex items-center justify-between pb-3 border-b border-[#EDE9E0]">
+          <div className="flex items-center gap-2">
+            <Coins className="w-5 h-5 text-[#C29B38]" />
+            <h3 className="font-serif font-extrabold text-lg text-[#264939]">
+              Quản Lý Danh Sách Chi Trả Phí Thẩm Định & Vận Chuyển
+            </h3>
+          </div>
+          <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded bg-[#FAF9F5] text-[#264939] border border-[#E6E1D7]">
+            0.002 ETH / Giao Dịch
+          </span>
+        </div>
+
+        {/* 2-Column Grid inside Full-Width Container for Inspector and Logistics Tables */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 font-sans">
+          {/* Dedicated Table 1: Trả phí Kiểm định viên */}
+          <div className="p-5 rounded-2xl bg-[#FAF9F5] border border-[#E6E1D7] space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-xs text-[#264939] flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-[#C29B38]" />
+                <span>Danh Sách Phí Kiểm Định OCOP (0.002 ETH/lô)</span>
+              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-mono text-gray-500 font-bold">
+                  Chờ trả: {unpaidInspectorBatches.length} lô ({totalInspectorFeeEth} ETH)
+                </span>
+                {unpaidInspectorBatches.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={handlePayInspector}
+                    disabled={isSubmitting || !isAdminRole}
+                    className="px-2.5 py-1 rounded-lg bg-[#264939] text-white text-[10px] font-bold hover:bg-[#1c372b] transition-all disabled:opacity-40"
+                  >
+                    Trả Phí Tất Cả ({totalInspectorFeeEth} ETH)
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {totalVerifiedInspectorBatches.length === 0 ? (
+              <div className="text-center py-6 text-xs text-gray-400 italic bg-white rounded-xl border border-dashed border-gray-200">
+                Chưa có lô hàng nào được kiểm định OCOP thành công.
+              </div>
+            ) : (
+              <div className="overflow-x-auto bg-white rounded-xl border border-[#EDE9E0]">
+                <table className="w-full text-left text-xs">
+                  <thead>
+                    <tr className="bg-[#FAF9F5] border-b border-[#EDE9E0] text-[10px] font-bold text-[#8A9D92] uppercase">
+                      <th className="p-2.5">Mã Lô / Đặc Sản</th>
+                      <th className="p-2.5">Ví Kiểm Định Viên</th>
+                      <th className="p-2.5">Mức Phí</th>
+                      <th className="p-2.5">Trạng Thái</th>
+                      <th className="p-2.5 text-right">Thao Tác</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#EDE9E0]">
+                    {totalVerifiedInspectorBatches.map((b) => {
+                      const inspectorCp = b.checkpoints?.find(
+                        (c) =>
+                          c.role === 'ROLE_INSPECTOR' ||
+                          c.role === ROLE_HASHES.ROLE_INSPECTOR ||
+                          (c.stepName && (c.stepName.toLowerCase().includes('chặng 2') || c.stepName.toLowerCase().includes('ocop')))
+                      );
+                      const inspectorGrantedWallet = grantedWallets.find(
+                        (w) => w.role === 'ROLE_INSPECTOR' || w.role === ROLE_HASHES.ROLE_INSPECTOR
+                      );
+                      const inspectorAddr = inspectorCp?.recorder || inspectorGrantedWallet?.address || '0x35655079aEbB215E58e379D5a8c2f1f3a5323C6b';
+                      const isPaid = Boolean(b.adminPaidInspectorFee);
+
+                      return (
+                        <tr key={`insp-fee-${b.batchCode}`} className="hover:bg-[#FAF9F5]/80 transition-colors">
+                          <td className="p-2.5 font-sans">
+                            <span className="font-mono font-extrabold text-[#264939] block text-xs">{b.batchCode}</span>
+                            <span className="text-[11px] text-gray-600 font-medium">{b.productName}</span>
+                          </td>
+                          <td className="p-2.5 font-mono text-[11px] font-bold text-[#1A2820]">
+                            {inspectorAddr.slice(0, 6)}...{inspectorAddr.slice(-4)}
+                          </td>
+                          <td className="p-2.5 font-mono font-bold text-[#264939]">
+                            0.002 ETH
+                          </td>
+                          <td className="p-2.5">
+                            {isPaid ? (
+                              <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold border border-emerald-200">
+                                Đã Thanh Toán
+                              </span>
+                            ) : (
+                              <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-bold border border-amber-200">
+                                Chờ Thanh Toán
+                              </span>
+                            )}
+                          </td>
+                          <td className="p-2.5 text-right">
+                            {isPaid ? (
+                              <button
+                                type="button"
+                                disabled
+                                className="px-3 py-1.5 rounded-lg bg-gray-100 text-gray-400 font-bold text-[11px] cursor-not-allowed border border-gray-200"
+                              >
+                                Đã Trả Phí
+                              </button>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => handlePaySingleInspector(b.batchCode, inspectorAddr)}
+                                disabled={isSubmitting || !isAdminRole}
+                                className="px-3 py-1.5 rounded-lg bg-[#264939] text-white font-bold text-[11px] hover:bg-[#1c372b] transition-all shadow-2xs disabled:opacity-40"
+                              >
+                                Trả Phí (0.002 ETH)
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+
+          {/* Dedicated Table 2: Trả phí Vận Chuyển */}
+          <div className="p-5 rounded-2xl bg-[#FAF9F5] border border-[#E6E1D7] space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-xs text-[#264939] flex items-center gap-1.5">
+                <RefreshCw className="w-4 h-4 text-[#C29B38]" />
+                <span>Danh Sách Phí Vận Chuyển (0.002 ETH/chặng)</span>
+              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-mono text-gray-500 font-bold">
+                  Chờ trả: {unpaidLogisticsBatches.length} chặng ({totalLogisticsFeeEth} ETH)
+                </span>
+                {unpaidLogisticsBatches.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={handlePayLogistics}
+                    disabled={isSubmitting || !isAdminRole}
+                    className="px-2.5 py-1 rounded-lg bg-[#C29B38] text-white text-[10px] font-bold hover:bg-[#8C6D1F] transition-all disabled:opacity-40"
+                  >
+                    Trả Phí Tất Cả ({totalLogisticsFeeEth} ETH)
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {allLogisticsBatches.length === 0 ? (
+              <div className="text-center py-6 text-xs text-gray-400 italic bg-white rounded-xl border border-dashed border-gray-200">
+                Chưa có chặng vận chuyển nào được ghi nhận.
+              </div>
+            ) : (
+              <div className="overflow-x-auto bg-white rounded-xl border border-[#EDE9E0]">
+                <table className="w-full text-left text-xs">
+                  <thead>
+                    <tr className="bg-[#FAF9F5] border-b border-[#EDE9E0] text-[10px] font-bold text-[#8A9D92] uppercase">
+                      <th className="p-2.5">Mã Lô / Đặc Sản</th>
+                      <th className="p-2.5">Ví Đơn Vị Vận Chuyển</th>
+                      <th className="p-2.5">Mức Phí</th>
+                      <th className="p-2.5">Trạng Thái</th>
+                      <th className="p-2.5 text-right">Thao Tác</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#EDE9E0]">
+                    {allLogisticsBatches.map((b) => {
+                      const logisticsCp = b.checkpoints?.find(
+                        (c) =>
+                          c.role === 'ROLE_LOGISTICS' ||
+                          c.role === 'LOGISTICS' ||
+                          c.role === '0x32c4b0b14798e1f57ec053359d33b879c5a1a0df3bc25e62f6b8df05373a0c4f' ||
+                          (c.stepName && (c.stepName.toLowerCase().includes('vận chuyển') || c.stepName.toLowerCase().includes('chặng 3') || c.stepName.toLowerCase().includes('kho')))
+                      );
+                      const logisticsGrantedWallet = grantedWallets.find(
+                        (w) => w.role === 'ROLE_LOGISTICS' || w.role === ROLE_HASHES.ROLE_LOGISTICS
+                      );
+                      const logisticsAddr = logisticsCp?.recorder || logisticsGrantedWallet?.address || '0x42965579aEbB215E58e379D5a8c2f1f3a5323C6b';
+                      const isPaid = Boolean(b.adminPaidLogisticsFee);
+
+                      return (
+                        <tr key={`logistics-fee-${b.batchCode}`} className="hover:bg-[#FAF9F5]/80 transition-colors">
+                          <td className="p-2.5 font-sans">
+                            <span className="font-mono font-extrabold text-[#264939] block text-xs">{b.batchCode}</span>
+                            <span className="text-[11px] text-gray-600 font-medium">{b.productName}</span>
+                          </td>
+                          <td className="p-2.5 font-mono text-[11px] font-bold text-[#1A2820]">
+                            {logisticsAddr.slice(0, 6)}...{logisticsAddr.slice(-4)}
+                          </td>
+                          <td className="p-2.5 font-mono font-bold text-[#264939]">
+                            0.002 ETH
+                          </td>
+                          <td className="p-2.5">
+                            {isPaid ? (
+                              <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold border border-emerald-200">
+                                Đã Thanh Toán
+                              </span>
+                            ) : (
+                              <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-bold border border-amber-200">
+                                Chờ Thanh Toán
+                              </span>
+                            )}
+                          </td>
+                          <td className="p-2.5 text-right">
+                            {isPaid ? (
+                              <button
+                                type="button"
+                                disabled
+                                className="px-3 py-1.5 rounded-lg bg-gray-100 text-gray-400 font-bold text-[11px] cursor-not-allowed border border-gray-200"
+                              >
+                                Đã Trả Phí
+                              </button>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => handlePaySingleLogistics(b.batchCode, logisticsAddr)}
+                                disabled={isSubmitting || !isAdminRole}
+                                className="px-3 py-1.5 rounded-lg bg-[#C29B38] text-white font-bold text-[11px] hover:bg-[#8C6D1F] transition-all shadow-2xs disabled:opacity-40"
+                              >
+                                Trả Phí (0.002 ETH)
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Full-Width Bottom Section B: Event Logs Table with Sepolia Etherscan Links */}
+      <div className="bg-white p-6 rounded-3xl border border-[#E6E1D7] shadow-2xs space-y-4">
+        <div className="flex items-center justify-between pb-3 border-b border-[#EDE9E0]">
+          <div className="flex items-center gap-2">
+            <Activity className="w-5 h-5 text-[#264939]" />
+            <h3 className="font-serif font-extrabold text-[#264939]">
+              Nhật Ký Sự Kiện Giao Dịch On-Chain
+            </h3>
+          </div>
+          <a
+            href={`${ETHERSCAN_BASE_URL}/address/${CONTRACT_ADDRESS}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs font-mono text-[#264939] hover:underline flex items-center gap-1"
+          >
+            <span>Mở Etherscan</span>
+            <ExternalLink className="w-3 h-3" />
+          </a>
+        </div>
+
+        {/* Chi hien thi nhat ky su kien khi da ket noi vi */}
+        {!currentAccount ? (
+          <div className="text-center py-8 px-4 bg-[#FAF9F5] rounded-2xl border border-dashed border-[#E6E1D7] space-y-3">
+            <Wallet className="w-8 h-8 text-[#C29B38] mx-auto" />
+            <p className="text-xs font-bold text-[#1A2820]">Yêu Cầu Kết Nối Ví Để Xem Nhật Ký Sự Kiện</p>
+            <p className="text-[11px] text-[#5E7166] max-w-sm mx-auto">
+              Vui lòng kết nối ví MetaMask để xem Nhật Ký Sự Kiện Giao Dịch On-Chain từ Sepolia Testnet.
+            </p>
+            <button
+              onClick={onConnectWallet}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-[#264939] text-white font-bold text-xs rounded-xl hover:bg-[#1c372b] transition-all shadow-2xs mt-1"
+            >
+              <Wallet className="w-3.5 h-3.5 text-[#C29B38]" />
+              <span>Kết Nối Ví MetaMask</span>
+            </button>
+          </div>
+        ) : recentEventLogs.length === 0 ? (
+          <div className="text-center py-8 px-4 bg-[#FAF9F5] rounded-2xl border border-dashed border-[#E6E1D7] space-y-2">
+            <Activity className="w-8 h-8 text-[#8A9D92] mx-auto opacity-60" />
+            <p className="text-xs font-bold text-[#1A2820]">Chưa Có Sự Kiện Giao Dịch On-Chain</p>
+            <p className="text-[11px] text-[#5E7166] max-w-sm mx-auto">
+              Các sự kiện khởi tạo lô hàng, thẩm định OCOP và niêm yết từ Sepolia Testnet sẽ tự động hiển thị tại đây.
+            </p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead>
+                <tr className="bg-[#FAF9F5] border-b border-[#E6E1D7] text-[#8A9D92] font-bold uppercase text-[10px] tracking-wider">
+                  <th className="py-2.5 px-3">Mã Lô / Mục</th>
+                  <th className="py-2.5 px-3">Sự Kiện</th>
+                  <th className="py-2.5 px-3">Ví Thực Hiện</th>
+                  <th className="py-2.5 px-3">Thời Gian</th>
+                  <th className="py-2.5 px-3 text-right">Etherscan</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#EDE9E0]">
+                {recentEventLogs.map((log) => (
+                  <tr key={log.id} className="hover:bg-[#FAF9F5]/80 transition-colors">
+                    <td className="py-3 px-3 font-mono font-bold text-[#264939]">
+                      {log.batchCode}
+                    </td>
+                    <td className="py-3 px-3">
+                      <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-900 font-mono text-[10px] font-bold border border-emerald-200">
+                        {log.type}
+                      </span>
+                    </td>
+                    <td className="py-3 px-3">
+                      <span className="font-mono text-xs block text-[#1A2820]">
+                        {log.actor.slice(0, 8)}...
+                      </span>
+                      <span className="text-[10px] text-gray-500">{log.role}</span>
+                    </td>
+                    <td className="py-3 px-3 text-gray-500 text-[11px]">
+                      {log.timestamp}
+                    </td>
+                    <td className="py-3 px-3 text-right">
+                      {log.txHash ? (
+                        <a
+                          href={`${ETHERSCAN_BASE_URL}/tx/${log.txHash}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-1.5 rounded-lg bg-[#FAF9F5] hover:bg-[#E0ECE4] text-[#264939] inline-flex items-center gap-1 transition-colors text-[11px] font-bold"
+                        >
+                          <ExternalLink className="w-3 h-3" />
+                          <span>Chi Tiết</span>
+                        </a>
+                      ) : (
+                        <span className="text-gray-400 font-mono text-[10px]">On-Chain</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );
