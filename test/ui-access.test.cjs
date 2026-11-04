@@ -27,12 +27,23 @@ class MockWallet extends EventEmitter {
   chain = SEPOLIA_CHAIN;
   calls = [];
   rejectConnect = false;
+  permissionsUnsupported = false;
+  selectedAccountOnApproval = null;
+  permissionGate = null;
   rejectSwitch = false;
   unknownChain = false;
   async request({ method, params }) {
     this.calls.push(method);
     if (method === 'eth_accounts') return this.account ? [this.account] : [];
     if (method === 'eth_chainId') return this.chain;
+    if (method === 'wallet_requestPermissions') {
+      assert.deepEqual(params, [{ eth_accounts: {} }]);
+      if (this.permissionsUnsupported) throw { code: -32601 };
+      if (this.rejectConnect) throw { code: 4001 };
+      if (this.permissionGate) await this.permissionGate;
+      if (this.selectedAccountOnApproval) this.account = this.selectedAccountOnApproval;
+      return [{ parentCapability: 'eth_accounts', caveats: [] }];
+    }
     if (method === 'eth_requestAccounts') {
       if (this.rejectConnect) throw { code: 4001 };
       return this.account ? [this.account] : [];
@@ -137,6 +148,48 @@ test('A previously authorized extension does not auto-login on page load', () =>
   f.provider.emit('accountsChanged', [A]);
   assert.deepEqual(visibleTabs(f.controller.getSnapshot()), ['overview', 'store']);
   assert.equal(f.provider.calls.length, 0);
+  f.controller.destroy();
+});
+test('Role selection always requests an explicit MetaMask account picker, even for an authorized wallet', async () => {
+  const f = fixture({}, A);
+  await f.controller.connect('ADMIN');
+  assert.equal(f.controller.getSnapshot().workspace, 'ADMIN');
+  f.controller.disconnect();
+  await f.controller.connect('ADMIN');
+  assert.equal(f.provider.calls.filter(method => method === 'wallet_requestPermissions').length, 2);
+  assert.equal(f.provider.calls.includes('eth_requestAccounts'), false);
+  assert.equal(f.controller.getSnapshot().workspace, 'ADMIN');
+  f.controller.destroy();
+});
+test('Picking a different MetaMask account verifies only the newly selected account', async () => {
+  const f = fixture({ [A]: { ROLE_PRODUCER: true } });
+  f.provider.selectedAccountOnApproval = B;
+  await f.controller.connect('PRODUCER');
+  assert.equal(f.controller.getSnapshot().account, B);
+  assert.equal(f.controller.getSnapshot().workspace, 'CUSTOMER');
+  assert.deepEqual(visibleTabs(f.controller.getSnapshot()), matrices.CUSTOMER);
+  f.controller.destroy();
+});
+test('No role is verified while the MetaMask account selection is pending', async () => {
+  const f = fixture({}, A);
+  let approve;
+  f.provider.permissionGate = new Promise(resolve => { approve = resolve; });
+  const pending = f.controller.connect('ADMIN');
+  assert.equal(f.controller.getSnapshot().status, 'connecting');
+  assert.deepEqual(visibleTabs(f.controller.getSnapshot()), ['overview', 'store']);
+  assert.deepEqual(f.provider.calls, ['wallet_requestPermissions']);
+  approve();
+  await pending;
+  assert.equal(f.controller.getSnapshot().workspace, 'ADMIN');
+  f.controller.destroy();
+});
+test('Unsupported account chooser must not silently reuse an already authorized wallet', async () => {
+  const f = fixture({}, A);
+  f.provider.permissionsUnsupported = true;
+  await f.controller.connect('ADMIN');
+  assert.equal(f.controller.getSnapshot().account, null);
+  assert.deepEqual(visibleTabs(f.controller.getSnapshot()), ['overview', 'store']);
+  assert.equal(f.provider.calls.includes('eth_requestAccounts'), false);
   f.controller.destroy();
 });
 test('Switching away from Admin removes private menus immediately', async () => {
@@ -253,7 +306,7 @@ function loadComponent(name) {
   m.require = name => {
     if (name === 'react') return { __esModule: true, default: react, ...react };
     if (name === 'lucide-react') return new Proxy({}, { get(_, key) { return String(key); } });
-    if (name.includes('constants')) return { CONTRACT_ADDRESS: C, ETHERSCAN_BASE_URL: 'https://sepolia.etherscan.io' };
+    if (name.includes('constants')) return { CONTRACT_ADDRESS: C, OWNER_WALLET: C, ETHERSCAN_BASE_URL: 'https://sepolia.etherscan.io' };
     if (name.includes('lib/access')) return access;
     if (name.includes('useDraggable')) return { useDraggable: () => ({ modalStyle: {}, dragHeaderProps: {} }) };
     if (name.includes('types')) return { SPECIALTY_CATEGORIES: [] };

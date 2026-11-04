@@ -1,5 +1,9 @@
 # HueLegend - Menu theo quyen vi (ban cap nhat 31/10/2026)
 
+**Cap nhat ket noi MetaMask (04/11/2026):** moi lan bam Ket noi > Chon vai tro, ung dung yeu cau chon/xac nhan tai khoan trong MetaMask bang `wallet_requestPermissions` truoc khi xac minh role tren Sepolia; khong tu nhan lai vi da dang nhap truoc. Xem [docs/METAMASK_ROLE_PICKER.md](docs/METAMASK_ROLE_PICKER.md).
+
+**Cap nhat HSD Blockchain + IPFS (04/11/2026):** da bo sung metadata JSON Pinata/IPFS, chu ky Producer, doi chieu CID Sepolia va hien trang thai HSD khi tra cuu. Can cau hinh `PINATA_JWT` tren server de upload. Xem [docs/IPFS_HSD.md](docs/IPFS_HSD.md) de cai dat bang PowerShell, chay test va biet nhung gioi han cua ban buoc 1.
+
 **Huong dan tieng Viet, ma tran vai tro va gioi han kiem thu:** [docs/ROLE_NAVIGATION.md](docs/ROLE_NAVIGATION.md).
 
 Ban nay duoc sua tu file HueLegend-main.zip do nguoi dung gui. Giu React/Vite/TypeScript va giao dien xanh-vang hien tai.

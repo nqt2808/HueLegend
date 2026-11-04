@@ -44,7 +44,9 @@ export interface Batch {
   certificateURI?: string;
   imageUrl?: string; // Hinh anh dac san duoc tai len khi tao lo
   productionDate?: string; // Ngay san xuat (NSX)
-  expiryDate?: string; // Han su dung (HSD)
+  expiryDate?: string | null; // Han su dung (HSD)
+  metadataVerified?: boolean; // Metadata duoc doc tu CID IPFS tren Sepolia
+  batchMetadataURI?: string;
   txHash?: string;
   verifyTxHash?: string;
   inspectionFeePaid?: string;

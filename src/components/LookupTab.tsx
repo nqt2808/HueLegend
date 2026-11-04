@@ -29,6 +29,7 @@ import {
 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { ETHERSCAN_BASE_URL, ROLE_HASHES } from '../constants';
+import { displayMetadataDate, extractIPFSCid, getExpiryState } from '../lib/batchMetadata';
 
 interface LookupTabProps {
   batches: Record<string, Batch>;
@@ -43,8 +44,8 @@ interface LookupTabProps {
 export const getEnrichedCheckpoints = (batch: Batch): (Checkpoint & { stageIcon: any; stageBadgeColor: string; envNote?: string; isCompleted: boolean })[] => {
   const existing = batch.checkpoints || [];
 
-  const prodDate = batch.productionDate || new Date(batch.createdAt * 1000).toLocaleDateString('vi-VN');
-  const expDate = batch.expiryDate || new Date((batch.createdAt + 180 * 86400) * 1000).toLocaleDateString('vi-VN');
+  const prodDate = displayMetadataDate(batch.productionDate, Boolean(batch.metadataVerified));
+  const expDate = displayMetadataDate(batch.expiryDate, Boolean(batch.metadataVerified), true);
 
   // Chang 1: San xuat & Khai bao lo hang (Luon la buoc dau tien khi tao lo)
   const explicitCp1 = existing[0];
@@ -53,22 +54,22 @@ export const getEnrichedCheckpoints = (batch: Batch): (Checkpoint & { stageIcon:
     stepName: explicitCp1.stepName || 'Chặng 1: Khai Báo Nguồn Gốc & Sản Xuất Ban Đầu',
     stageIcon: Package,
     stageBadgeColor: 'bg-emerald-100 text-emerald-800 border-emerald-300',
-    envNote: `NSX: ${prodDate} | HSD: ${expDate} | Đạt ATVSTP`,
+    envNote: `NSX: ${prodDate} | HSD: ${expDate}`,
     isCompleted: true
   } : {
     stepName: 'Chặng 1: Khai Báo Nguồn Gốc & Sản Xuất Ban Đầu',
     role: ROLE_HASHES.ROLE_PRODUCER,
     roleTitle: 'Cơ Sở Sản Xuất',
     location: batch.origin || 'Phú Vang, Thừa Thiên Huế',
-    action: `Khởi tạo lô hàng & thanh toán phí thẩm định OCOP. Đã mã hóa dữ liệu nguyên liệu và quy trình sản xuất thủ công truyền thống lên Sepolia Testnet.`,
+    action: 'Khởi tạo lô hàng trên Sepolia. Chưa có metadata hạn sử dụng IPFS để xác minh.',
     timestamp: batch.createdAt,
     recorder: batch.producer,
-    metadataURI: `ipfs://huelegend/batch/${batch.batchCode}`,
-    txHash: batch.txHash || '0x4f8e...82a1',
-    conditionNote: `Nhiệt độ đóng gói: 22°C | Độ ẩm: 45% | Hạn sử dụng: ${expDate}`,
+    metadataURI: batch.batchMetadataURI || '',
+    txHash: batch.txHash || '',
+    conditionNote: `Hạn sử dụng: ${expDate}`,
     stageIcon: Package,
     stageBadgeColor: 'bg-emerald-100 text-emerald-800 border-emerald-300',
-    envNote: `NSX: ${prodDate} | HSD: ${expDate} | Bảo quản nơi khô ráo thoáng mát`,
+    envNote: `NSX: ${prodDate} | HSD: ${expDate}`,
     isCompleted: true
   };
 
@@ -507,7 +508,7 @@ export const LookupTab: React.FC<LookupTabProps> = ({
                       <div>
                         <span className="text-[10px] font-bold text-[#8A9D92] block">Ngày Sản Xuất:</span>
                         <strong className="text-[11px] font-mono font-bold text-[#1A2820]">
-                          {activeBatch.productionDate || new Date(activeBatch.createdAt * 1000).toLocaleDateString('vi-VN')}
+                          {displayMetadataDate(activeBatch.productionDate, Boolean(activeBatch.metadataVerified))}
                         </strong>
                       </div>
                     </div>
@@ -517,11 +518,40 @@ export const LookupTab: React.FC<LookupTabProps> = ({
                       <div>
                         <span className="text-[10px] font-bold text-[#8A9D92] block">Hạn Sử Dụng:</span>
                         <strong className="text-[11px] font-mono font-bold text-[#8C6D1F]">
-                          {activeBatch.expiryDate || new Date((activeBatch.createdAt + 180 * 86400) * 1000).toLocaleDateString('vi-VN')}
+                          {displayMetadataDate(activeBatch.expiryDate, Boolean(activeBatch.metadataVerified), true)}
                         </strong>
                       </div>
                     </div>
                   </div>
+
+                  {(() => {
+                    const expiryState = getExpiryState(activeBatch.expiryDate, Boolean(activeBatch.metadataVerified));
+                    const labels = {
+                      UNKNOWN: 'HSD chưa được xác minh từ IPFS',
+                      NOT_APPLICABLE: 'Sản phẩm không áp dụng hạn sử dụng',
+                      VALID: 'HSD còn hiệu lực',
+                      EXPIRING: 'Sắp hết hạn trong 30 ngày',
+                      EXPIRED: 'Đã hết hạn sử dụng',
+                    };
+                    return (
+                      <div className={`rounded-lg p-2 text-xs font-semibold border ${expiryState === 'EXPIRED' ? 'bg-red-50 border-red-300 text-red-700' : expiryState === 'EXPIRING' ? 'bg-amber-50 border-amber-300 text-amber-800' : expiryState === 'VALID' ? 'bg-green-50 border-green-200 text-green-800' : 'bg-gray-50 border-gray-200 text-gray-600'}`}>
+                        {labels[expiryState]}
+                        {activeBatch.metadataVerified && activeBatch.batchMetadataURI && (
+                          <span className="block mt-1 font-normal text-[10px]">Dữ liệu HSD đã được đối chiếu với CID trong giao dịch Sepolia.</span>
+                        )}
+                      </div>
+                    );
+                  })()}
+                  {activeBatch.metadataVerified && extractIPFSCid(activeBatch.batchMetadataURI) && (
+                    <a
+                      href={`https://dweb.link/ipfs/${extractIPFSCid(activeBatch.batchMetadataURI)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-emerald-700 underline underline-offset-2"
+                    >
+                      Xem metadata HSD gốc trên IPFS
+                    </a>
+                  )}
 
                   {/* Chi hien thi So Chung Nhan OCOP khi lo hang da duoc tham dinh OCOP thanh cong */}
                   {activeBatch.isVerified && (

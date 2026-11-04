@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
 
 import fs from 'fs';
+import ipfsMetadataHandler from './api/ipfs-metadata.js';
 
 // Bo nho va file luu tru du lieu dong bo giua Desktop, Mobile & Web Preview
 const memorySyncStore = new Map<string, any>();
@@ -186,7 +187,14 @@ function syncServerPlugin(): Plugin {
 
 export default defineConfig({
   optimizeDeps: { entries: ['index.html'] },
-  plugins: [react(), tailwindcss(), localDeployPlugin(), syncServerPlugin()],
+  plugins: [react(), tailwindcss(), localDeployPlugin(), syncServerPlugin(), {
+    name: 'huelegend-ipfs-metadata-dev',
+    configureServer(server) {
+      server.middlewares.use('/api/ipfs-metadata', (req, res, next) => {
+        Promise.resolve(ipfsMetadataHandler(req, res)).catch(next);
+      });
+    },
+  }],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
