@@ -39,8 +39,7 @@ export const RetailerTab: React.FC<RetailerTabProps> = ({
     const hasLogisticsCp = b.checkpoints && b.checkpoints.some(
       (c) =>
         c.role === 'ROLE_LOGISTICS' ||
-        c.role === '0x32c4b0b14798e1f57ec053359d33b879c5a1a0df3bc25e62f6b8df05373a0c4f' ||
-        (c.stepName && (c.stepName.toLowerCase().includes('vận chuyển') || c.stepName.toLowerCase().includes('chặng 3') || c.stepName.toLowerCase().includes('kho')))
+        c.role === '0x32c4b0b14798e1f57ec053359d33b879c5a1a0df3bc25e62f6b8df05373a0c4f'
     );
     return Boolean(hasLogisticsCp);
   });
@@ -65,6 +64,12 @@ export const RetailerTab: React.FC<RetailerTabProps> = ({
       setStockQuantity('');
     }
   }, [selectedBatchCode, selectedBatch]);
+
+  React.useEffect(() => {
+    if (selectedBatch?.category && SPECIALTY_CATEGORIES.some(value => value === selectedBatch.category)) {
+      setSelectedCategory(selectedBatch.category);
+    }
+  }, [selectedBatch?.category]);
 
   // Mac dinh lay anh dac san cua don vi tao lo hang
   const defaultProductImageUrl = selectedBatch?.imageUrl || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=600';
@@ -269,6 +274,7 @@ export const RetailerTab: React.FC<RetailerTabProps> = ({
               </label>
               <select
                 value={selectedCategory}
+                disabled={Boolean(selectedBatch?.category)}
                 onChange={(e) => setSelectedCategory(e.target.value)}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-[#E6E1D7] text-xs font-bold focus:outline-none focus:border-[#264939] bg-[#FAF9F5] text-[#264939]"
               >

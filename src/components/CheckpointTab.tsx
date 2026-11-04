@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Batch } from '../types';
 import { Truck, PlusCircle, CheckCircle2, ShieldCheck, MapPin, AlertTriangle, Lock, Wallet } from 'lucide-react';
+import { appendGps, readGps } from '../../api/supply-ledger-core.js';
+import { extractIPFSCid } from '../lib/batchMetadata';
 
 interface CheckpointTabProps {
   batches: Record<string, Batch>;
@@ -38,6 +40,9 @@ export const CheckpointTab: React.FC<CheckpointTabProps> = ({
   const [action, setAction] = useState('');
   const [conditionNote, setConditionNote] = useState('');
   const [metadataURI, setMetadataURI] = useState('');
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
+  const [gpsError, setGpsError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const currentBatch = batches[selectedBatchCode];
@@ -53,11 +58,14 @@ export const CheckpointTab: React.FC<CheckpointTabProps> = ({
 
     setIsSubmitting(true);
     try {
-      // Tu dong tao metadata URI cho chang van chuyen neu chua co
-      const finalMetadataURI = metadataURI || `ipfs://huelegend/logistics/${selectedBatchCode}/${Date.now()}`;
-      await onAddCheckpoint(selectedBatchCode, role, location, action, finalMetadataURI, stepName, conditionNote);
+      if ((latitude && !longitude) || (!latitude && longitude)) throw new Error('Cần nhập đủ vĩ độ và kinh độ.');
+      const gpsLocation = latitude && longitude ? appendGps(location, Number(latitude), Number(longitude)) : location;
+      // Chi tham chieu CID that cua lo, khong tao URI IPFS gia.
+      const finalMetadataURI = extractIPFSCid(metadataURI) ? metadataURI : currentBatch?.batchMetadataURI || '';
+      await onAddCheckpoint(selectedBatchCode, role, gpsLocation, action, finalMetadataURI, stepName, conditionNote);
+      setGpsError('');
     } catch (err) {
-      console.error(err);
+      setGpsError(err instanceof Error ? err.message : 'Ghi GPS thất bại.');
     } finally {
       setIsSubmitting(false);
     }
@@ -259,6 +267,26 @@ export const CheckpointTab: React.FC<CheckpointTabProps> = ({
                 placeholder="Ví dụ: Kiểm tra tem mã QR niêm phong, đóng gói thùng xốp bảo ôn, theo dõi cảm biến..."
                 className="w-full px-3.5 py-2 rounded-xl border border-[#E6E1D7] text-xs focus:outline-none focus:border-[#264939]"
               />
+            </div>
+
+            <div className="rounded-xl border p-3 bg-[#FAF9F5] space-y-2">
+              <h3 className="text-xs font-bold text-[#264939]">Toạ độ GPS thực tế (tuỳ chọn) — hiển thị trên bản đồ hành trình</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <label className="text-xs">Vĩ độ
+                  <input type="number" step="any" min="-90" max="90" value={latitude} onChange={e => setLatitude(e.target.value)} placeholder="16.4637" className="w-full border rounded-lg p-2 mt-1" />
+                </label>
+                <label className="text-xs">Kinh độ
+                  <input type="number" step="any" min="-180" max="180" value={longitude} onChange={e => setLongitude(e.target.value)} placeholder="107.5909" className="w-full border rounded-lg p-2 mt-1" />
+                </label>
+              </div>
+              <button type="button" className="text-xs underline text-[#264939]" onClick={() => {
+                if (!navigator.geolocation) return setGpsError('Trình duyệt không hỗ trợ định vị.');
+                navigator.geolocation.getCurrentPosition(pos => {
+                  setLatitude(String(pos.coords.latitude)); setLongitude(String(pos.coords.longitude)); setGpsError('');
+                }, () => setGpsError('Không có quyền lấy GPS. Bạn có thể nhập thủ công.'), { enableHighAccuracy: true, timeout: 10000 });
+              }}>Lấy vị trí hiện tại (cần cho phép GPS)</button>
+              {gpsError && <p className="text-red-700 text-xs" role="alert">{gpsError}</p>}
+              {currentBatch?.checkpoints.some(cp => readGps(cp.location)) && <p className="text-[11px] text-[#5E7166]">Lô này đã có điểm GPS được ghi từ checkpoint trước.</p>}
             </div>
 
             <div>

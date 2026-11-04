@@ -23,6 +23,7 @@ import { useDraggable } from '../hooks/useDraggable';
 import { ETHERSCAN_BASE_URL } from '../constants';
 import { getEnrichedCheckpoints } from './LookupTab';
 import { displayMetadataDate } from '../lib/batchMetadata';
+import { RouteMap } from './RouteMap';
 
 interface BatchJourneyModalProps {
   batch: Batch | null;
@@ -161,6 +162,8 @@ export const BatchJourneyModal: React.FC<BatchJourneyModalProps> = ({ batch, onC
           )}
         </div>
 
+
+        <RouteMap batch={batch} />
 
         {/* Detailed Timeline Checklist */}
         <div className="space-y-4">

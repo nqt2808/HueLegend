@@ -26,10 +26,14 @@ import { RoleConnectModal } from './components/RoleConnectModal';
 import { WalletDetailsModal } from './components/WalletDetailsModal';
 import { BatchJourneyModal } from './components/BatchJourneyModal';
 import { MobileMetaMaskModal } from './components/MobileMetaMaskModal';
+import { InventoryPanel } from './components/InventoryPanel';
+import { RoleDashboard } from './components/RoleDashboard';
+import { QualityPanel } from './components/QualityPanel';
 import { useWalletAccess } from './hooks/useWalletAccess';
 import { canPerform, canVisitTab, checkpointWorkspace, ROLE_LABELS, visibleTabs, WorkspaceRole } from './lib/access';
 import { metadataUploadMessage, parseBatchMetadata, readBatchMetadata, vietnamToday } from './lib/batchMetadata';
 import { matchesOnChainBatch } from '../api/ipfs-metadata-core.js';
+import { normalizeQualityReport, qualitySignMessage, QualityReport } from '../api/quality-core.js';
 
 async function hydrateVerifiedMetadata(batch: Batch): Promise<Batch> {
   try {
@@ -40,6 +44,7 @@ async function hydrateVerifiedMetadata(batch: Batch): Promise<Batch> {
       productionDate: metadata.productionDate,
       expiryDate: metadata.expiryDate,
       quantity: metadata.quantity,
+      category: metadata.category,
       metadataVerified: true,
     };
   } catch (error) {
@@ -208,7 +213,7 @@ export const App: React.FC = () => {
             // Kiểm tra trạng thái niêm yết bán lẻ on-chain
             const isListedOnChain = checkpoints.some(
               (cp: any) =>
-                cp.role === ROLE_HASHES.ROLE_RETAILER ||
+                (cp.role === ROLE_HASHES.ROLE_RETAILER && cp.action?.toLowerCase().includes('niêm yết')) ||
                 (cp.action && cp.action.toLowerCase().includes('niêm yết')) ||
                 (cp.action && cp.action.toLowerCase().includes('inretail'))
             );
@@ -243,7 +248,7 @@ export const App: React.FC = () => {
               metadataVerified: false,
               currentStage:
                 checkpoints.length > 0
-                  ? checkpoints[checkpoints.length - 1].action
+                  ? [...checkpoints].reverse().find(cp => !cp.action.startsWith('HL_STOCK_V1:'))?.action || 'Sổ kho đã cập nhật'
                   : isVerifiedOnChain
                   ? 'Đã đạt chuẩn OCOP (Chờ Vận Chuyển)'
                   : 'Xưởng sản xuất (Chờ Thẩm Định OCOP)',
@@ -328,8 +333,8 @@ export const App: React.FC = () => {
 
                   const isListedOnChain = checkpoints.some(
                     (cp: any) =>
-                      cp.role === ROLE_HASHES.ROLE_RETAILER ||
-                      (cp.action && cp.action.toLowerCase().includes('niêm yết')) ||
+                    (cp.role === ROLE_HASHES.ROLE_RETAILER && cp.action?.toLowerCase().includes('niêm yết')) ||
+                    (cp.action && cp.action.toLowerCase().includes('niêm yết')) ||
                       (cp.action && cp.action.toLowerCase().includes('inretail'))
                   );
 
@@ -362,7 +367,7 @@ export const App: React.FC = () => {
                     metadataVerified: false,
                     currentStage:
                       checkpoints.length > 0
-                        ? checkpoints[checkpoints.length - 1].action
+                      ? [...checkpoints].reverse().find(cp => !cp.action.startsWith('HL_STOCK_V1:'))?.action || 'Sổ kho đã cập nhật'
                         : isVerifiedOnChain
                         ? 'Đã đạt chuẩn OCOP (Chờ Vận Chuyển)'
                         : 'Xưởng sản xuất (Chờ Thẩm Định OCOP)',
@@ -489,7 +494,8 @@ export const App: React.FC = () => {
     imageUrl?: string,
     productionDate?: string,
     expiryDate?: string | null,
-    quantity?: string
+    quantity?: string,
+    category?: string
   ) => {
     // Bat buoc phai ket noi vi MetaMask truoc khi khoi tao
     if (!currentAccount) {
@@ -522,6 +528,7 @@ export const App: React.FC = () => {
         productionDate: cleanProdDate,
         expiryDate: cleanExpDate,
         quantity: cleanQuantity,
+        ...(category ? { category } : {}),
       }, cleanBatchCode);
       const issuedAt = Date.now();
       const nonce = crypto.randomUUID();
@@ -592,6 +599,7 @@ export const App: React.FC = () => {
         ocopStandard: 'Chưa Thẩm Định OCOP',
         certificationNo: `OCOP-HUE-2026-${cleanBatchCode.slice(-3)}`,
         quantity: cleanQuantity,
+        category,
         currentStage: 'Xưởng sản xuất (Chờ Thẩm Định OCOP)',
         certificateURI: `ipfs://huelegend/cert/${cleanBatchCode}`,
         txHash: tx.hash,
@@ -690,17 +698,16 @@ export const App: React.FC = () => {
       };
 
       const isListingAction =
-        role === 'RETAILER' ||
-        role === ROLE_HASHES.ROLE_RETAILER ||
         (stepName && stepName.toLowerCase().includes('niêm yết')) ||
         (action && action.toLowerCase().includes('niêm yết'));
+      const isStockAction = action.startsWith('HL_STOCK_V1:');
 
       setBatches((prev) => {
         const target = prev[batchCode];
         if (!target) return prev;
         const updatedBatch = {
           ...target,
-          currentStage: action,
+          currentStage: isStockAction ? target.currentStage : action,
           isListed: isListingAction ? true : target.isListed,
           storeName: isListingAction && location ? location : target.storeName,
           checkpoints: [...target.checkpoints, newCheckpoint]
@@ -712,7 +719,7 @@ export const App: React.FC = () => {
       if (journeyBatch && journeyBatch.batchCode === batchCode) {
         setJourneyBatch((prev) => prev ? {
           ...prev,
-          currentStage: action,
+          currentStage: isStockAction ? prev.currentStage : action,
           checkpoints: [...prev.checkpoints, newCheckpoint]
         } : null);
       }
@@ -724,7 +731,7 @@ export const App: React.FC = () => {
         addToast('Ghi Chặng Thành Công!', `Chặng mới của lô ${batchCode} đã được lưu vĩnh viễn on-chain.`, 'success');
       }
       await fetchContractData();
-      handleNavigateTab('lookup', batchCode);
+      if (!isStockAction) handleNavigateTab('lookup', batchCode);
     } catch (err: any) {
       removeToast(loadingToastId);
       addToast('Giao Dịch Thất Bại', err?.reason || err?.message || 'Lỗi ghi chặng lên Blockchain.', 'error');
@@ -1014,6 +1021,25 @@ export const App: React.FC = () => {
     await Promise.all([fetchContractData(), wallet.refresh()]);
   };
 
+  // Phan anh cong khai luu IPFS; chu ky duoc kiem tra lai tai server.
+  const handleQualityReport = async (raw: QualityReport) => {
+    const report = normalizeQualityReport(raw);
+    if (!currentAccount || report.reporter !== currentAccount.toLowerCase()) throw new Error('Ví gửi không khớp tài khoản đã xác minh.');
+    if (!batches[report.batchCode]) throw new Error('Lô hàng chưa tồn tại trong danh sách Sepolia.');
+    const signer = await wallet.authorizedSigner(workspace);
+    const issuedAt = Date.now();
+    const nonce = crypto.randomUUID();
+    const signature = await signer.signMessage(qualitySignMessage(report, issuedAt, nonce, CONTRACT_ADDRESS));
+    if ((await signer.getAddress()).toLowerCase() !== report.reporter) throw new Error('Ví đã thay đổi khi ký.');
+    const response = await fetch('/api/quality-reports', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ report, issuedAt, nonce, signature }),
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error || 'Không lưu được phản ánh lên IPFS.');
+    addToast('Đã ghi nhận phản ánh', `Phản ánh đã được lưu IPFS: ${result.cid.slice(0, 12)}...`, 'success');
+  };
+
   return (
     <div className="flex min-h-screen bg-[#F4F1EA]/30 backdrop-blur-[1px] bg-cover bg-fixed bg-center text-[#1A2820]">
       {/* Sidebar Navigation */}
@@ -1036,6 +1062,8 @@ export const App: React.FC = () => {
         )}
         <main key={`${currentAccount || 'guest'}:${workspace}`} data-active-tab={safeActiveTab} className="flex-1 p-4 sm:p-6 lg:p-8 pb-24 md:pb-8 max-w-7xl w-full mx-auto space-y-6">
           {safeActiveTab === 'overview' && (
+            <>
+            <RoleDashboard batches={batches} account={currentAccount} role={workspace} />
             <OverviewTab
               batches={batches}
               producerStakeBalance={producerStakeBalance}
@@ -1046,9 +1074,11 @@ export const App: React.FC = () => {
               onNavigateTab={handleNavigateTab}
               onSelectBatchForQR={(code) => setQrStampBatch(batches[code] || null)}
             />
+            </>
           )}
 
           {safeActiveTab === 'lookup' && (
+            <>
             <LookupTab
               batches={batches}
               selectedBatchCode={selectedLookupBatch}
@@ -1057,9 +1087,13 @@ export const App: React.FC = () => {
               onOpenQRStampModal={(code) => setQrStampBatch(batches[code] || null)}
               onOpenJourneyModal={(code) => setJourneyBatch(batches[code] || null)}
             />
+            <QualityPanel batches={batches} account={currentAccount} initialCode={selectedLookupBatch}
+              onSignAndSubmit={handleQualityReport} onConnect={handleOpenRoleConnectModal} />
+            </>
           )}
 
           {safeActiveTab === 'create-batch' && (
+            <>
             <CreateBatchTab
               batchCreationFeeEth={batchCreationFeeEth}
               producerStakeBalance={producerStakeBalance}
@@ -1070,6 +1104,8 @@ export const App: React.FC = () => {
               onDepositStake={handleDepositStake}
               onWithdrawStake={handleWithdrawStake}
             />
+            <InventoryPanel batches={batches} account={currentAccount} role="PRODUCER" onAddCheckpoint={handleAddCheckpoint} />
+            </>
           )}
 
           {safeActiveTab === 'checkpoint' && (
@@ -1105,6 +1141,7 @@ export const App: React.FC = () => {
           )}
 
           {safeActiveTab === 'retailer' && (
+            <>
             <RetailerTab
               batches={batches}
               isRetailerRole={isCurrentAccountRetailer}
@@ -1115,6 +1152,8 @@ export const App: React.FC = () => {
               onAddCheckpoint={handleAddCheckpoint}
               onWithdrawEarnings={handleWithdrawRetailerRevenue}
             />
+            <InventoryPanel batches={batches} account={currentAccount} role="RETAILER" onAddCheckpoint={handleAddCheckpoint} />
+            </>
           )}
 
           {safeActiveTab === 'admin' && (

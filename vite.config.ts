@@ -5,6 +5,7 @@ import path from 'path';
 
 import fs from 'fs';
 import ipfsMetadataHandler from './api/ipfs-metadata.js';
+import qualityReportsHandler from './api/quality-reports.js';
 
 // Bo nho va file luu tru du lieu dong bo giua Desktop, Mobile & Web Preview
 const memorySyncStore = new Map<string, any>();
@@ -192,6 +193,13 @@ export default defineConfig({
     configureServer(server) {
       server.middlewares.use('/api/ipfs-metadata', (req, res, next) => {
         Promise.resolve(ipfsMetadataHandler(req, res)).catch(next);
+      });
+    },
+  }, {
+    name: 'huelegend-quality-reports-dev',
+    configureServer(server) {
+      server.middlewares.use('/api/quality-reports', (req, res, next) => {
+        Promise.resolve(qualityReportsHandler(req, res)).catch(next);
       });
     },
   }],
