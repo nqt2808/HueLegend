@@ -90,8 +90,15 @@ export class WalletSessionController {
     const token = ++this.generation;
     this.clear('connecting');
     try {
-      await this.provider.request({ method: 'eth_requestAccounts' });
+      // Moi lan nguoi dung chon vai tro phai xin lai quyen chon tai khoan tren MetaMask.
+      // eth_requestAccounts co the tra ngay vi cu neu trang web da tung duoc cap quyen.
+      const approval = await this.provider.request({
+        method: 'wallet_requestPermissions',
+        params: [{ eth_accounts: {} }],
+      });
       if (token !== this.generation || !this.enabled) return this.snapshot;
+      const granted = Array.isArray(approval) && approval.some((item: any) => item?.parentCapability === 'eth_accounts');
+      if (!granted) throw new WalletAccessError('MetaMask chua xac nhan quyen chon tai khoan.');
       let chain = normalizeChainId(await this.provider.request({ method: 'eth_chainId' }));
       if (chain !== SEPOLIA_CHAIN) {
         try {
@@ -111,7 +118,9 @@ export class WalletSessionController {
     } catch (err: any) {
       if (token === this.generation) {
         this.enabled = false;
-        this.clear('guest', null, Number(err?.code) === 4001 ? 'Bạn đã từ chối kết nối hoặc chuyển mạng trong MetaMask.' : 'Không thể kết nối ví. Hãy kiểm tra MetaMask rồi thử lại.');
+        this.clear('guest', null, Number(err?.code) === 4001
+          ? 'Bạn đã từ chối chọn tài khoản hoặc chuyển mạng trong MetaMask.'
+          : 'Không thể mở hộp chọn tài khoản MetaMask. Hãy kiểm tra tiện ích MetaMask rồi thử lại.');
       }
       return this.snapshot;
     } finally { this.connecting = false; }

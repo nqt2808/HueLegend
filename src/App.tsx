@@ -28,6 +28,25 @@ import { BatchJourneyModal } from './components/BatchJourneyModal';
 import { MobileMetaMaskModal } from './components/MobileMetaMaskModal';
 import { useWalletAccess } from './hooks/useWalletAccess';
 import { canPerform, canVisitTab, checkpointWorkspace, ROLE_LABELS, visibleTabs, WorkspaceRole } from './lib/access';
+import { metadataUploadMessage, parseBatchMetadata, readBatchMetadata, vietnamToday } from './lib/batchMetadata';
+import { matchesOnChainBatch } from '../api/ipfs-metadata-core.js';
+
+async function hydrateVerifiedMetadata(batch: Batch): Promise<Batch> {
+  try {
+    const metadata = await readBatchMetadata(batch.batchMetadataURI, batch.batchCode);
+    if (!metadata || !matchesOnChainBatch(metadata, batch)) return batch;
+    return {
+      ...batch,
+      productionDate: metadata.productionDate,
+      expiryDate: metadata.expiryDate,
+      quantity: metadata.quantity,
+      metadataVerified: true,
+    };
+  } catch (error) {
+    console.warn(`Khong xac minh duoc metadata IPFS cua lo ${batch.batchCode}:`, error);
+    return batch;
+  }
+}
 
 export const App: React.FC = () => {
   // Global State
@@ -220,6 +239,8 @@ export const App: React.FC = () => {
                 : 'Chưa Thẩm Định OCOP',
               certificationNo: `OCOP-HUE-2026-${batchCode.slice(-3)}`,
               quantity: onChainQuantity,
+              batchMetadataURI: String(checkpointsData[0]?.metadataURI || ''),
+              metadataVerified: false,
               currentStage:
                 checkpoints.length > 0
                   ? checkpoints[checkpoints.length - 1].action
@@ -237,7 +258,14 @@ export const App: React.FC = () => {
         }
       }
 
-      // Cập nhật State trực tiếp từ kết quả truy vấn Ethers.js
+      // Doc metadata theo CID da duoc ghi vao checkpoint dau tien.
+      const entries = Object.entries(fetchedBatches);
+      for (let offset = 0; offset < entries.length; offset += 6) {
+        const group = await Promise.all(entries.slice(offset, offset + 6).map(async ([code, batch]) => {
+          return [code, await hydrateVerifiedMetadata(batch)] as const;
+        }));
+        for (const [code, batch] of group) fetchedBatches[code] = batch;
+      }
       if (requestId === dataRequestRef.current) setBatches(fetchedBatches);
     } catch (err: any) {
       console.warn('Lỗi kết nối RPC Provider Smart Contract:', err);
@@ -330,6 +358,8 @@ export const App: React.FC = () => {
                       : 'Chưa Thẩm Định OCOP',
                     certificationNo: `OCOP-HUE-2026-${cleanCode.slice(-3)}`,
                     quantity: onChainQuantity,
+                    batchMetadataURI: String(checkpointsData[0]?.metadataURI || ''),
+                    metadataVerified: false,
                     currentStage:
                       checkpoints.length > 0
                         ? checkpoints[checkpoints.length - 1].action
@@ -342,9 +372,10 @@ export const App: React.FC = () => {
                     checkpoints
                   };
 
-                  setBatches((prev) => ({ ...prev, [cleanCode]: singleBatch }));
+                  const hydratedBatch = await hydrateVerifiedMetadata(singleBatch);
+                  setBatches((prev) => ({ ...prev, [cleanCode]: hydratedBatch }));
                   setSelectedLookupBatch(cleanCode);
-                  setJourneyBatch(singleBatch);
+                  setJourneyBatch(hydratedBatch);
                 }
               } catch (err) {
                 console.warn('Loi khi truy van lo hang tu QR URL qua RPC:', err);
@@ -392,7 +423,7 @@ export const App: React.FC = () => {
       } else addToast('Cần MetaMask', 'Vui lòng cài MetaMask để kết nối ví.', 'warning');
       return;
     }
-    const toast = addToast('Đang Kết Nối Ví', 'Chọn tài khoản trên MetaMask. Hệ thống sẽ kiểm tra quyền trên Sepolia.', 'loading', 0);
+    const toast = addToast('Đang Mở MetaMask', 'Hãy chọn và xác nhận tài khoản trong MetaMask. Sau đó hệ thống mới kiểm tra quyền trên Sepolia.', 'loading', 0);
     try {
       const verified = await wallet.connect(targetRole);
       if (verified.status === 'ready') {
@@ -455,10 +486,9 @@ export const App: React.FC = () => {
     batchCode: string,
     productName: string,
     origin: string,
-    metadataURI: string,
     imageUrl?: string,
     productionDate?: string,
-    expiryDate?: string,
+    expiryDate?: string | null,
     quantity?: string
   ) => {
     // Bat buoc phai ket noi vi MetaMask truoc khi khoi tao
@@ -472,17 +502,10 @@ export const App: React.FC = () => {
     const cleanProductName = productName.trim();
     const cleanOrigin = origin.trim();
     const cleanQuantity = quantity?.trim() || '';
-    const cleanMetadataURI = metadataURI.trim();
     const finalImageUrl = imageUrl || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=600';
-
-    const cleanProdDate = productionDate
-      ? new Date(productionDate).toLocaleDateString('vi-VN')
-      : new Date().toLocaleDateString('vi-VN');
-    const cleanExpDate = expiryDate
-      ? new Date(expiryDate).toLocaleDateString('vi-VN')
-      : new Date(Date.now() + 180 * 24 * 3600 * 1000).toLocaleDateString('vi-VN');
-
-    const loadingToastId = addToast('Yêu Cầu MetaMask', 'Vui lòng xác nhận giao dịch createBatch() trên MetaMask...', 'loading', 0);
+    const cleanProdDate = productionDate || vietnamToday();
+    const cleanExpDate = expiryDate === undefined ? '' : expiryDate;
+    const loadingToastId = addToast('Xác Minh Metadata IPFS', 'Vui lòng ký xác nhận metadata và đợi IPFS trả về CID...', 'loading', 0);
 
     try {
       const signer = await wallet.authorizedSigner('PRODUCER');
@@ -491,7 +514,37 @@ export const App: React.FC = () => {
       const cleanUserAddress = safeGetAddress(rawUserAddr);
       const cleanContractAddress = safeGetAddress(CONTRACT_ADDRESS);
 
-      const contract = new ethers.Contract(cleanContractAddress, PROJECT_CORE_ABI, signer);
+      const metadata = parseBatchMetadata({
+        schemaVersion: 1,
+        batchCode: cleanBatchCode,
+        productName: cleanProductName,
+        origin: cleanOrigin,
+        productionDate: cleanProdDate,
+        expiryDate: cleanExpDate,
+        quantity: cleanQuantity,
+      }, cleanBatchCode);
+      const issuedAt = Date.now();
+      const nonce = crypto.randomUUID();
+      const message = metadataUploadMessage(metadata, issuedAt, nonce);
+      const signature = await signer.signMessage(message);
+      const upload = await fetch('/api/ipfs-metadata', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ metadata, issuedAt, nonce, signature }),
+      });
+      const result = await upload.json();
+      if (!upload.ok || typeof result.uri !== 'string') {
+        throw new Error(result.error || 'Khong the tai metadata len IPFS.');
+      }
+      const cleanMetadataURI = result.uri;
+
+      // Kiem tra lai quyen va tai khoan truoc khi gui giao dich on-chain.
+      const transactionSigner = await wallet.authorizedSigner('PRODUCER');
+      if ((await transactionSigner.getAddress()).toLowerCase() !== cleanUserAddress.toLowerCase()) {
+        throw new Error('Tai khoan MetaMask da thay doi trong luc tai IPFS.');
+      }
+
+      const contract = new ethers.Contract(cleanContractAddress, PROJECT_CORE_ABI, transactionSigner);
 
       let feeWei = ethers.parseEther('0.001');
       try {
@@ -500,21 +553,28 @@ export const App: React.FC = () => {
         console.warn('Cannot read batchCreationFee on-chain, using fallback 0.001 ETH:', feeErr);
       }
 
-      const tx = await contract.createBatch(
-        cleanBatchCode,
-        cleanProductName,
-        cleanOrigin,
-        cleanMetadataURI,
-        {
-          value: feeWei
-        }
-      );
-
       removeToast(loadingToastId);
+      const confirmationToastId = addToast('Xác Nhận Giao Dịch', 'CID đã lưu trên IPFS. Vui lòng xác nhận createBatch() trong MetaMask.', 'loading', 0);
+      let tx: ethers.ContractTransactionResponse;
+      try {
+        tx = await contract.createBatch(
+          cleanBatchCode,
+          cleanProductName,
+          cleanOrigin,
+          cleanMetadataURI,
+          { value: feeWei }
+        );
+      } finally {
+        removeToast(confirmationToastId);
+      }
+
       const waitToastId = addToast('Đang Chờ Khối Sepolia', `Giao dịch ${tx.hash.slice(0, 10)}... đang chờ xác nhận trên Blockchain...`, 'loading', 0);
 
-      await tx.wait();
-      removeToast(waitToastId);
+      try {
+        await tx.wait();
+      } finally {
+        removeToast(waitToastId);
+      }
 
       const newBatchObj: Batch = {
         batchCode: cleanBatchCode,
@@ -523,6 +583,8 @@ export const App: React.FC = () => {
         imageUrl: finalImageUrl,
         productionDate: cleanProdDate,
         expiryDate: cleanExpDate,
+        batchMetadataURI: cleanMetadataURI,
+        metadataVerified: true,
         createdAt: Math.floor(Date.now() / 1000),
         producer: cleanUserAddress,
         isVerified: false,
@@ -540,7 +602,7 @@ export const App: React.FC = () => {
             role: ROLE_HASHES.ROLE_PRODUCER,
             roleTitle: 'Cơ Sở Sản Xuất',
             location: cleanOrigin,
-            action: `Khởi tạo lô hàng on-chain. NSX: ${cleanProdDate} - HSD: ${cleanExpDate}`,
+            action: `Khởi tạo lô hàng on-chain. NSX: ${cleanProdDate} - HSD: ${cleanExpDate ?? 'Không áp dụng'}`,
             timestamp: Math.floor(Date.now() / 1000),
             recorder: cleanUserAddress,
             metadataURI: cleanMetadataURI,
@@ -563,7 +625,8 @@ export const App: React.FC = () => {
       }, 1000);
     } catch (err: any) {
       removeToast(loadingToastId);
-      addToast('Giao Dịch Thất Bại', err?.reason || err?.message || 'Không thể khởi tạo lô hàng trên Sepolia.', 'error');
+      addToast('Không Thể Tạo Lô', err?.reason || err?.message || 'Không thể lưu IPFS hoặc khởi tạo lô trên Sepolia.', 'error');
+      throw err;
     }
   };
 

@@ -169,7 +169,7 @@ export const RoleConnectModal: React.FC<RoleConnectModalProps> = ({
         <div className="pt-3 border-t border-[#EDE9E0] shrink-0 flex flex-wrap items-center justify-between gap-2 text-[11px] font-sans text-[#5E7166]">
           <div className="flex items-center gap-1.5">
             <ShieldCheck className="w-4 h-4 text-[#C29B38] shrink-0" />
-            <span className="leading-tight">Kết nối ví và kiểm tra quyền; không yêu cầu ký đăng nhập.</span>
+            <span className="leading-tight">Mỗi lần chọn vai trò, MetaMask sẽ hỏi chọn tài khoản; không tự đăng nhập ví cũ.</span>
           </div>
 
           <button

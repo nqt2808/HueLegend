@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { PlusCircle, Wallet, AlertTriangle, Upload, Image as ImageIcon, Sparkles, Calendar, Clock, Lock } from 'lucide-react';
+import { vietnamToday } from '../lib/batchMetadata';
 
 interface CreateBatchTabProps {
   batchCreationFeeEth: string;
@@ -11,10 +12,9 @@ interface CreateBatchTabProps {
     batchCode: string,
     productName: string,
     origin: string,
-    metadataURI: string,
     imageUrl?: string,
     productionDate?: string,
-    expiryDate?: string,
+    expiryDate?: string | null,
     quantity?: string
   ) => Promise<void>;
   onDepositStake?: (amountEth: string) => Promise<void>;
@@ -34,18 +34,19 @@ export const CreateBatchTab: React.FC<CreateBatchTabProps> = ({
   const [imageUrl, setImageUrl] = useState('');
 
   // Thoi gian: Ngay san xuat va Han su dung
-  const todayStr = new Date().toISOString().split('T')[0];
-  const defaultExpDate = new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+  const todayStr = vietnamToday();
   const [productionDate, setProductionDate] = useState(todayStr);
-  const [expiryDate, setExpiryDate] = useState(defaultExpDate);
+  const [expiryDate, setExpiryDate] = useState('');
+  const [noExpiry, setNoExpiry] = useState(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Fast duration selection helper
   const setExpiryInMonths = (months: number) => {
-    const baseDate = productionDate ? new Date(productionDate) : new Date();
+    const baseDate = productionDate ? new Date(`${productionDate}T12:00:00`) : new Date();
     baseDate.setMonth(baseDate.getMonth() + months);
     setExpiryDate(baseDate.toISOString().split('T')[0]);
+    setNoExpiry(false);
   };
 
   // Danh sach anh dac san Cố Đô Huế mẫu
@@ -106,18 +107,20 @@ export const CreateBatchTab: React.FC<CreateBatchTabProps> = ({
       return;
     }
     if (!batchCode.trim() || !productName.trim() || !origin.trim()) return;
+    if (!noExpiry && !expiryDate) {
+      alert('Vui lòng chọn hạn sử dụng hoặc đánh dấu sản phẩm không áp dụng HSD.');
+      return;
+    }
 
     setIsSubmitting(true);
     try {
-      const generatedMetadataURI = `ipfs://huelegend/batch/${batchCode.trim()}`;
       await onCreateBatch(
         batchCode.trim(),
         productName.trim(),
         origin.trim(),
-        generatedMetadataURI,
         imageUrl,
         productionDate,
-        expiryDate,
+        noExpiry ? null : expiryDate,
         quantity.trim()
       );
       setBatchCode('');
@@ -125,10 +128,10 @@ export const CreateBatchTab: React.FC<CreateBatchTabProps> = ({
       setOrigin('');
       setQuantity('');
       setImageUrl('');
-      const freshToday = new Date().toISOString().split('T')[0];
-      const freshDefaultExp = new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      const freshToday = vietnamToday();
       setProductionDate(freshToday);
-      setExpiryDate(freshDefaultExp);
+      setExpiryDate('');
+      setNoExpiry(false);
     } catch (err) {
       console.error(err);
     } finally {
@@ -325,11 +328,21 @@ export const CreateBatchTab: React.FC<CreateBatchTabProps> = ({
                 </div>
                 <input
                   type="date"
-                  required
-                  value={expiryDate}
+                  required={!noExpiry}
+                  disabled={noExpiry}
+                  min={productionDate}
+                  value={noExpiry ? '' : expiryDate}
                   onChange={(e) => setExpiryDate(e.target.value)}
                   className="w-full px-3 py-2 rounded-xl border border-[#E6E1D7] text-xs font-mono font-bold focus:outline-none focus:border-[#264939] bg-white"
                 />
+                <label className="flex items-center gap-2 mt-2 text-[11px] text-[#264939] font-semibold">
+                  <input
+                    type="checkbox"
+                    checked={noExpiry}
+                    onChange={(e) => setNoExpiry(e.target.checked)}
+                  />
+                  Sản phẩm không áp dụng hạn sử dụng
+                </label>
               </div>
             </div>
           </div>
