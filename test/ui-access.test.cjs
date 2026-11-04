@@ -308,6 +308,8 @@ function loadComponent(name) {
     if (name === 'lucide-react') return new Proxy({}, { get(_, key) { return String(key); } });
     if (name.includes('constants')) return { CONTRACT_ADDRESS: C, OWNER_WALLET: C, ETHERSCAN_BASE_URL: 'https://sepolia.etherscan.io' };
     if (name.includes('lib/access')) return access;
+    if (name.includes('supply-ledger-core')) return { appendGps: (location) => location, readGps: () => null };
+    if (name.includes('lib/batchMetadata')) return { extractIPFSCid: () => null };
     if (name.includes('useDraggable')) return { useDraggable: () => ({ modalStyle: {}, dragHeaderProps: {} }) };
     if (name.includes('types')) return { SPECIALTY_CATEGORIES: [] };
     throw Error('Unexpected component import: ' + name);

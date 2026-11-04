@@ -6,6 +6,7 @@ export interface BatchMetadataV1 {
   productionDate: string;
   expiryDate: string | null;
   quantity: string;
+  category?: string;
 }
 export function isValidCid(value: unknown): value is string;
 export function isISODate(value: unknown): value is string;

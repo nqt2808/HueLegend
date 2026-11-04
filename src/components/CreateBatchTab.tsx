@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { PlusCircle, Wallet, AlertTriangle, Upload, Image as ImageIcon, Sparkles, Calendar, Clock, Lock } from 'lucide-react';
 import { vietnamToday } from '../lib/batchMetadata';
+import { SPECIALTY_CATEGORIES } from '../types';
 
 interface CreateBatchTabProps {
   batchCreationFeeEth: string;
@@ -15,7 +16,8 @@ interface CreateBatchTabProps {
     imageUrl?: string,
     productionDate?: string,
     expiryDate?: string | null,
-    quantity?: string
+    quantity?: string,
+    category?: string
   ) => Promise<void>;
   onDepositStake?: (amountEth: string) => Promise<void>;
   onWithdrawStake?: () => Promise<void>;
@@ -31,6 +33,7 @@ export const CreateBatchTab: React.FC<CreateBatchTabProps> = ({
   const [productName, setProductName] = useState('');
   const [origin, setOrigin] = useState('');
   const [quantity, setQuantity] = useState('');
+  const [category, setCategory] = useState<string>(SPECIALTY_CATEGORIES[0]);
   const [imageUrl, setImageUrl] = useState('');
 
   // Thoi gian: Ngay san xuat va Han su dung
@@ -121,7 +124,8 @@ export const CreateBatchTab: React.FC<CreateBatchTabProps> = ({
         imageUrl,
         productionDate,
         noExpiry ? null : expiryDate,
-        quantity.trim()
+        quantity.trim(),
+        category
       );
       setBatchCode('');
       setProductName('');
@@ -257,6 +261,12 @@ export const CreateBatchTab: React.FC<CreateBatchTabProps> = ({
               * Số lượng này sẽ tự động hiển thị ở mục <strong>Quy Mô / Sản Lượng</strong> khi tra cứu và làm mặc định cho <strong>Số Lượng Nhập Kho</strong> khi niêm yết bán lẻ.
             </p>
           </div>
+
+          <label className="block text-xs font-bold text-[#1A2820]">Danh mục đặc sản *
+            <select required className="w-full px-3.5 py-2 rounded-xl border border-[#E6E1D7] mt-1" value={category} onChange={event => setCategory(event.target.value)}>
+              {SPECIALTY_CATEGORIES.map(item => <option value={item} key={item}>{item}</option>)}
+            </select>
+          </label>
 
           {/* Mục Thời Gian: Ngày Sản Xuất & Hạn Sử Dụng */}
           <div className="bg-[#FAF9F5] p-4 rounded-2xl border border-[#E6E1D7] space-y-3">

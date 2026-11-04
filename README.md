@@ -67,3 +67,7 @@ npm run build
 
 - **Mạng:** Ethereum Sepolia Testnet (Chain ID: `11155111`)
 - **Địa chỉ Smart Contract ProjectCore:** `0xfe7BFa3ec478b621ecCA20DD73014Eb79B0bf5C5`
+# Chuc nang mo rong (2026-11-04)
+
+Huong dan so kho on-chain, ban do GPS van chuyen, dashboard theo workspace/loai dac san va phan anh chat luong ky vi qua IPFS: [docs/SUPPLY_FEATURES.md](docs/SUPPLY_FEATURES.md).
+

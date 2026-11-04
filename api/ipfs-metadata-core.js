@@ -31,6 +31,9 @@ export function normalizeBatchMetadata(value, expectedBatchCode) {
   if (expectedBatchCode && value.batchCode !== expectedBatchCode) {
     throw new Error('CID khong thuoc lo hang nay.');
   }
+  if (value.category !== undefined && (typeof value.category !== 'string' || value.category.length > 100 || !value.category.trim())) {
+    throw new Error('Danh muc khong hop le.');
+  }
   return {
     schemaVersion: 1,
     batchCode: value.batchCode,
@@ -39,6 +42,7 @@ export function normalizeBatchMetadata(value, expectedBatchCode) {
     productionDate: value.productionDate,
     expiryDate: value.expiryDate,
     quantity: value.quantity,
+    ...(value.category !== undefined ? { category: value.category } : {}),
   };
 }
 

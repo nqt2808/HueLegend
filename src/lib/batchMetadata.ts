@@ -10,6 +10,7 @@ export interface BatchMetadataV1 {
   productionDate: string;
   expiryDate: string | null;
   quantity: string;
+  category?: string;
 }
 
 export type ExpiryState = 'UNKNOWN' | 'NOT_APPLICABLE' | 'VALID' | 'EXPIRING' | 'EXPIRED';
