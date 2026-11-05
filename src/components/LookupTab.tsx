@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useId, useRef } from 'react';
 import { Batch, Checkpoint } from '../types';
 import {
   Search,
@@ -30,6 +30,7 @@ import {
 import { QRCodeSVG } from 'qrcode.react';
 import { ETHERSCAN_BASE_URL, ROLE_HASHES } from '../constants';
 import { displayMetadataDate, extractIPFSCid, getExpiryState } from '../lib/batchMetadata';
+import { parseHueLegendQR } from '../lib/qrLookup';
 
 interface LookupTabProps {
   batches: Record<string, Batch>;
@@ -213,6 +214,9 @@ export const LookupTab: React.FC<LookupTabProps> = ({
     selectedBatchCode && batches[selectedBatchCode] ? batches[selectedBatchCode] : null
   );
   const [isScanning, setIsScanning] = useState(false);
+  const [scanError, setScanError] = useState('');
+  const scannerId = `huelegend-reader-${useId().replace(/:/g, '')}`;
+  const scanResultRef = useRef<(value: string) => void>(() => {});
   const [copiedTx, setCopiedTx] = useState<string | null>(null);
 
   useEffect(() => {
@@ -241,6 +245,52 @@ export const LookupTab: React.FC<LookupTabProps> = ({
     }
   };
 
+  scanResultRef.current = (value: string) => {
+    const code = parseHueLegendQR(value, window.location.origin);
+    if (!code) {
+      setScanError('QR không hợp lệ. Chỉ chấp nhận mã lô hoặc đường dẫn QR HueLegend trên trang hiện tại.');
+      return;
+    }
+    setScanError('');
+    handleSearch(code);
+    setIsScanning(false);
+  };
+
+  useEffect(() => {
+    if (!isScanning) return;
+    let cancelled = false;
+    let started = false;
+    let stopped = false;
+    let scanner: import('html5-qrcode').Html5Qrcode | null = null;
+
+    const stop = async () => {
+      if (!scanner || !started || stopped) return;
+      stopped = true;
+      try { await scanner.stop(); } catch { /* Camera da dung. */ }
+      try { scanner.clear(); } catch { /* Khong con DOM de don dep. */ }
+    };
+
+    const start = async () => {
+      try {
+        if (!window.isSecureContext) throw new Error('Camera cần HTTPS hoặc localhost để hoạt động.');
+        const { Html5Qrcode, Html5QrcodeSupportedFormats } = await import('html5-qrcode');
+        if (cancelled) return;
+        scanner = new Html5Qrcode(scannerId, { formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE], verbose: false });
+        await scanner.start({ facingMode: 'environment' }, { fps: 10, qrbox: { width: 220, height: 220 } },
+          decodedText => { if (!cancelled) scanResultRef.current(decodedText); }, () => {});
+        started = true;
+        if (cancelled) await stop();
+      } catch (error) {
+        if (!cancelled) {
+          setScanError(error instanceof Error ? error.message : 'Không thể mở camera. Hãy kiểm tra quyền truy cập.');
+          setIsScanning(false);
+        }
+      }
+    };
+    void start();
+    return () => { cancelled = true; void stop(); };
+  }, [isScanning, scannerId]);
+
   const handleCopyText = (text: string) => {
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text);
@@ -249,7 +299,7 @@ export const LookupTab: React.FC<LookupTabProps> = ({
     }
   };
 
-  const currentOriginUrl = window.location.href;
+  const currentOriginUrl = window.location.origin + window.location.pathname;
   const suggestedPlaceholder = batchKeys[0]
     ? `Gợi ý nhập mã lô: ${batchKeys[0]}`
     : 'Nhập mã lô đặc sản (Ví dụ: HL-MEXUNG-2026-001)...';
@@ -311,7 +361,7 @@ export const LookupTab: React.FC<LookupTabProps> = ({
               </button>
 
               <button
-                onClick={() => setIsScanning(!isScanning)}
+                onClick={() => { setScanError(''); setIsScanning(value => !value); }}
                 className="inline-flex items-center justify-center gap-2 px-4 py-3 bg-[#E0ECE4] text-[#264939] font-sans font-bold text-xs rounded-2xl hover:bg-[#d0e2d5] transition-all border border-[#CCD8CF] flex-1 sm:flex-none"
               >
                 <Camera className="w-4 h-4" />
@@ -340,33 +390,13 @@ export const LookupTab: React.FC<LookupTabProps> = ({
             </div>
           )}
 
-          {/* Camera Simulator panel if toggled */}
+          {scanError && <p role="alert" className="p-3 rounded-xl bg-red-50 text-red-700 text-xs">{scanError}</p>}
+
+          {/* Camera duoc kich hoat khi nguoi dung bam nut quet. */}
           {isScanning && (
             <div className="p-5 bg-emerald-950 text-white rounded-2xl text-center space-y-3 animate-in fade-in font-sans shadow-lg">
-              <div className="w-12 h-12 rounded-full bg-emerald-800/50 flex items-center justify-center mx-auto text-emerald-300">
-                <QrCode className="w-6 h-6 animate-pulse" />
-              </div>
-              <p className="text-xs text-emerald-200 font-medium">
-                {batchKeys.length > 0
-                  ? 'Đang giả lập Camera quét QR Code... Vui lòng chọn lô bên dưới để nhận diện lập tức:'
-                  : 'Chưa có sản phẩm nào trên Blockchain để quét.'}
-              </p>
-              {batchKeys.length > 0 && (
-                <div className="flex flex-wrap justify-center gap-2 font-mono">
-                  {batchKeys.map((code) => (
-                    <button
-                      key={code}
-                      onClick={() => {
-                        handleSearch(code);
-                        setIsScanning(false);
-                      }}
-                      className="px-3.5 py-2 bg-emerald-800 hover:bg-emerald-700 rounded-xl text-xs font-bold text-white transition-all border border-emerald-700"
-                    >
-                      Nhận diện {code}
-                    </button>
-                  ))}
-                </div>
-              )}
+              <p className="text-xs text-emerald-200 font-medium">Cho phép truy cập camera, rồi đưa tem QR HueLegend vào giữa khung hình. Có thể tắt camera bất cứ lúc nào.</p>
+              <div id={scannerId} className="mx-auto max-w-sm overflow-hidden rounded-xl bg-black min-h-48" />
             </div>
           )}
         </div>

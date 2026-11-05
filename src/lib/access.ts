@@ -50,7 +50,7 @@ export function hasWorkspacePermission(permissions: RolePermissions, role: Works
   return permissions.owner || permissions[`ROLE_${role}` as ChainRole] === true;
 }
 const roleTabs: Record<WorkspaceRole, readonly TabId[]> = {
-  GUEST: ['overview', 'store'],
+  GUEST: ['overview', 'lookup', 'store'],
   CUSTOMER: ['overview', 'lookup', 'store'],
   PRODUCER: ['overview', 'lookup', 'store', 'create-batch'],
   INSPECTOR: ['overview', 'lookup', 'store', 'inspector'],
@@ -63,7 +63,7 @@ export function visibleTabs(session: WalletSession): readonly TabId[] {
   return roleTabs[session.workspace];
 }
 export function canVisitTab(tab: string, session: WalletSession): boolean {
-  // Ho so nguon goc va lien ket QR la du lieu doc cong khai; khong hien thanh menu cua khach.
+  // Tra cuu QR la du lieu cong khai; cac tab ghi on-chain van can quyen.
   return tab === 'lookup' || visibleTabs(session).includes(tab as TabId);
 }
 export function canPerform(session: WalletSession, role: WorkspaceRole): boolean {

@@ -33,8 +33,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, allowedTabs, onTabC
     },
     {
       id: 'lookup',
-      label: 'Tra Cứu Tem QR',
-      sublabel: 'Xác thực & quét mã camera',
+      label: 'Quét & Tra Cứu QR',
+      sublabel: 'Quét camera & xác thực lô',
       icon: QrCode,
     },
     {
