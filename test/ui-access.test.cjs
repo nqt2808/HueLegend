@@ -9,13 +9,14 @@ const ts = require('typescript');
 const root = path.resolve(__dirname, '..');
 const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'hl-access-tests-'));
 after(() => fs.rmSync(temp, { recursive: true, force: true }));
-for (const name of ['access', 'walletSession']) {
+for (const name of ['access', 'walletSession', 'qrLookup']) {
   const source = fs.readFileSync(path.join(root, 'src/lib', name + '.ts'), 'utf8');
   fs.writeFileSync(path.join(temp, name + '.js'), ts.transpileModule(source, {
     compilerOptions: { target: ts.ScriptTarget.ES2020, module: ts.ModuleKind.CommonJS },
   }).outputText);
 }
 const access = require(path.join(temp, 'access.js'));
+const { parseHueLegendQR } = require(path.join(temp, 'qrLookup.js'));
 const { WalletSessionController, withDeadline } = require(path.join(temp, 'walletSession.js'));
 const { visibleTabs, canVisitTab, canPerform, emptyPermissions, guestSession, normalizeWorkspace, SEPOLIA_CHAIN } = access;
 const A = '0x' + 'a'.repeat(40);
@@ -75,13 +76,14 @@ function session(workspace, permissions = {}) {
     permissions: { ...emptyPermissions(), ...permissions } };
 }
 
-test('Guest sees exactly overview and store', () => assert.deepEqual(visibleTabs(guestSession()), ['overview', 'store']));
+const PUBLIC_TABS = ['overview', 'lookup', 'store'];
+test('Guest sees exactly overview, QR lookup and store', () => assert.deepEqual(visibleTabs(guestSession()), PUBLIC_TABS));
 test('Forged selected role without connected account cannot open menus', () => {
-  assert.deepEqual(visibleTabs({ ...guestSession(), workspace: 'ADMIN', permissions: { ...emptyPermissions(), owner: true } }), ['overview', 'store']);
+  assert.deepEqual(visibleTabs({ ...guestSession(), workspace: 'ADMIN', permissions: { ...emptyPermissions(), owner: true } }), PUBLIC_TABS);
 });
 for (const status of ['guest', 'connecting', 'checking', 'wrong-network', 'error']) {
   test('No privileged menus during status ' + status, () => {
-    assert.deepEqual(visibleTabs({ ...session('ADMIN', { owner: true }), status }), ['overview', 'store']);
+    assert.deepEqual(visibleTabs({ ...session('ADMIN', { owner: true }), status }), PUBLIC_TABS);
   });
 }
 const matrices = {
@@ -100,7 +102,7 @@ for (const [role, expected] of Object.entries(matrices)) {
 }
 test('ROLE_ADMIN alone is not owner for onlyOwner management methods', () => {
   assert.equal(canPerform(session('ADMIN', { ROLE_ADMIN: true }), 'ADMIN'), false);
-  assert.deepEqual(visibleTabs(session('ADMIN', { ROLE_ADMIN: true })), ['overview', 'store']);
+  assert.deepEqual(visibleTabs(session('ADMIN', { ROLE_ADMIN: true })), PUBLIC_TABS);
 });
 test('Owner may work in producer mode without exposing inspector/admin menus', () => {
   assert.deepEqual(visibleTabs(session('PRODUCER', { owner: true })), matrices.PRODUCER);
@@ -116,6 +118,22 @@ test('Public QR lookup remains readable; private paths are denied', () => {
   for (const tab of ['admin', 'create-batch', 'inspector', 'checkpoint', 'retailer', 'unknown']) {
     assert.equal(canVisitTab(tab, guestSession()), false, tab);
   }
+});
+test('Quet QR HueLegend cong khai tu URL tem va ma lo', () => {
+  assert.equal(parseHueLegendQR('https://huelegend.example/?batch=HL-BANHLOC-2026-001', 'https://huelegend.example'), 'HL-BANHLOC-2026-001');
+  assert.equal(parseHueLegendQR('hl-mexung-2026-001', 'https://huelegend.example'), 'HL-MEXUNG-2026-001');
+  assert.equal(parseHueLegendQR('https://huelegend.example/#/lookup?batchCode=HL-HUE-001', 'https://huelegend.example'), 'HL-HUE-001');
+});
+test('Chong ma QR gia mao: khong chap nhan URL ngoai domain hoac script', () => {
+  assert.equal(parseHueLegendQR('https://huelegend-fake.example/?batch=HL-HUE-001', 'https://huelegend.example'), null);
+  assert.equal(parseHueLegendQR('javascript:alert(1)', 'https://huelegend.example'), null);
+  assert.equal(parseHueLegendQR('https://huelegend.example/?batch=../../admin', 'https://huelegend.example'), null);
+});
+test('May quet dung camera that, dong camera khi thoat trang', () => {
+  const lookup = fs.readFileSync(path.join(root, 'src/components/LookupTab.tsx'), 'utf8');
+  assert.match(lookup, /import\('html5-qrcode'\)/);
+  assert.match(lookup, /await scanner\.stop\(\)/);
+  assert.doesNotMatch(lookup, /Đang giả lập Camera/);
 });
 test('Unknown legacy ALL does not become administrator', () => assert.equal(normalizeWorkspace('ALL'), 'CUSTOMER'));
 test('Role aliases map to producer and retailer', () => {
@@ -146,7 +164,7 @@ test('Owner is read dynamically rather than tied to a fixed address', async () =
 test('A previously authorized extension does not auto-login on page load', () => {
   const f = fixture({}, A);
   f.provider.emit('accountsChanged', [A]);
-  assert.deepEqual(visibleTabs(f.controller.getSnapshot()), ['overview', 'store']);
+  assert.deepEqual(visibleTabs(f.controller.getSnapshot()), PUBLIC_TABS);
   assert.equal(f.provider.calls.length, 0);
   f.controller.destroy();
 });
@@ -176,7 +194,7 @@ test('No role is verified while the MetaMask account selection is pending', asyn
   f.provider.permissionGate = new Promise(resolve => { approve = resolve; });
   const pending = f.controller.connect('ADMIN');
   assert.equal(f.controller.getSnapshot().status, 'connecting');
-  assert.deepEqual(visibleTabs(f.controller.getSnapshot()), ['overview', 'store']);
+  assert.deepEqual(visibleTabs(f.controller.getSnapshot()), PUBLIC_TABS);
   assert.deepEqual(f.provider.calls, ['wallet_requestPermissions']);
   approve();
   await pending;
@@ -188,14 +206,14 @@ test('Unsupported account chooser must not silently reuse an already authorized 
   f.provider.permissionsUnsupported = true;
   await f.controller.connect('ADMIN');
   assert.equal(f.controller.getSnapshot().account, null);
-  assert.deepEqual(visibleTabs(f.controller.getSnapshot()), ['overview', 'store']);
+  assert.deepEqual(visibleTabs(f.controller.getSnapshot()), PUBLIC_TABS);
   assert.equal(f.provider.calls.includes('eth_requestAccounts'), false);
   f.controller.destroy();
 });
 test('Switching away from Admin removes private menus immediately', async () => {
   const f = fixture({}, A); await f.controller.connect('ADMIN');
   f.provider.changeAccount(B);
-  assert.deepEqual(visibleTabs(f.controller.getSnapshot()), ['overview', 'store']);
+  assert.deepEqual(visibleTabs(f.controller.getSnapshot()), PUBLIC_TABS);
   await pause(); await pause();
   assert.equal(f.controller.getSnapshot().account, B);
   assert.equal(f.controller.getSnapshot().workspace, 'CUSTOMER');
@@ -205,13 +223,13 @@ test('Wallet lock clears account and privileges', async () => {
   const f = fixture({}, A); await f.controller.connect('ADMIN');
   f.provider.changeAccount(null); await pause();
   assert.equal(f.controller.getSnapshot().account, null);
-  assert.deepEqual(visibleTabs(f.controller.getSnapshot()), ['overview', 'store']);
+  assert.deepEqual(visibleTabs(f.controller.getSnapshot()), PUBLIC_TABS);
   f.controller.destroy();
 });
 test('Wrong network clears private menus and recovery rechecks roles', async () => {
   const f = fixture({ [A]: { ROLE_PRODUCER: true } }); await f.controller.connect('PRODUCER');
   f.provider.changeChain('0x1');
-  assert.deepEqual(visibleTabs(f.controller.getSnapshot()), ['overview', 'store']);
+  assert.deepEqual(visibleTabs(f.controller.getSnapshot()), PUBLIC_TABS);
   await pause(); assert.equal(f.controller.getSnapshot().status, 'wrong-network');
   f.provider.changeChain(SEPOLIA_CHAIN); await pause(); await pause();
   assert.deepEqual(visibleTabs(f.controller.getSnapshot()), matrices.PRODUCER);
@@ -219,12 +237,12 @@ test('Wrong network clears private menus and recovery rechecks roles', async () 
 });
 test('User refusal to connect does not unlock anything', async () => {
   const f = fixture({}, A); f.provider.rejectConnect = true; await f.controller.connect('ADMIN');
-  assert.deepEqual(visibleTabs(f.controller.getSnapshot()), ['overview', 'store']);
+  assert.deepEqual(visibleTabs(f.controller.getSnapshot()), PUBLIC_TABS);
   f.controller.destroy();
 });
 test('User refusal to switch network does not unlock anything', async () => {
   const f = fixture({}, A); f.provider.chain = '0x1'; f.provider.rejectSwitch = true;
-  await f.controller.connect('ADMIN'); assert.deepEqual(visibleTabs(f.controller.getSnapshot()), ['overview', 'store']);
+  await f.controller.connect('ADMIN'); assert.deepEqual(visibleTabs(f.controller.getSnapshot()), PUBLIC_TABS);
   f.controller.destroy();
 });
 test('Missing chain is added and switched before verification', async () => {
@@ -238,20 +256,20 @@ test('RPC role failure is fail-closed, not fallback permission', async () => {
   const f = fixture({}, A); f.reader.permissions = async () => { throw Error('RPC down'); };
   await f.controller.connect('ADMIN');
   assert.equal(f.controller.getSnapshot().status, 'error');
-  assert.deepEqual(visibleTabs(f.controller.getSnapshot()), ['overview', 'store']);
+  assert.deepEqual(visibleTabs(f.controller.getSnapshot()), PUBLIC_TABS);
   f.controller.destroy();
 });
 test('Revoked permission blocks signing without waiting for page reload', async () => {
   const f = fixture({ [A]: { ROLE_PRODUCER: true } }); await f.controller.connect('PRODUCER');
   f.permissions[A].ROLE_PRODUCER = false;
   await assert.rejects(f.controller.authorize('PRODUCER'));
-  assert.deepEqual(visibleTabs(f.controller.getSnapshot()), ['overview', 'store']);
+  assert.deepEqual(visibleTabs(f.controller.getSnapshot()), PUBLIC_TABS);
   f.controller.destroy();
 });
 test('Disconnect is local logout and extension events do not log user in again', async () => {
   const f = fixture({}, A); await f.controller.connect('ADMIN'); f.controller.disconnect();
   f.provider.changeAccount(A); await pause();
-  assert.deepEqual(visibleTabs(f.controller.getSnapshot()), ['overview', 'store']);
+  assert.deepEqual(visibleTabs(f.controller.getSnapshot()), PUBLIC_TABS);
   f.controller.destroy();
 });
 test('Stale RPC reply cannot restore old Admin after logout', async () => {
@@ -326,7 +344,7 @@ const MobileNav = loadComponent('MobileNav');
 const Overview = loadComponent('OverviewTab');
 for (const role of ['GUEST', ...Object.keys(matrices)]) {
   test('Actual desktop and mobile component menus agree for ' + role, () => {
-    const tabs = role === 'GUEST' ? ['overview', 'store'] : matrices[role];
+    const tabs = role === 'GUEST' ? PUBLIC_TABS : matrices[role];
     const props = { allowedTabs: tabs, activeTab: 'overview', onTabChange() {}, isOpenMobileMenu: true, onToggleMobileMenu() {} };
     const desktop = allNodes(Sidebar(props)).filter(n => n.props['data-nav-id']).map(n => n.props['data-nav-id']);
     const mobile = [...new Set(allNodes(MobileNav(props)).filter(n => n.props['data-nav-id']).map(n => n.props['data-nav-id']))];
@@ -334,14 +352,15 @@ for (const role of ['GUEST', ...Object.keys(matrices)]) {
     assert.deepEqual(mobile.sort(), [...tabs].sort());
   });
 }
-test('Guest overview CTAs open store/connection, never create batch', () => {
+test('Guest overview CTAs open store/QR lookup, never create batch or require wallet', () => {
   const navigations = []; let connections = 0;
-  const tree = Overview({ batches: {}, canCreateBatch: false, canUseLookupMenu: false, isConnected: false,
+  const tree = Overview({ batches: {}, canCreateBatch: false, canUseLookupMenu: true, isConnected: false,
     onNavigateTab: t => navigations.push(t), onConnectWallet: () => connections++, onSelectBatchForQR() {} });
   for (const n of allNodes(tree)) if (n.type === 'button') n.props.onClick?.();
   assert.ok(navigations.length > 0);
-  assert.ok(navigations.every(t => t === 'store'));
-  assert.equal(connections, 1);
+  assert.ok(navigations.every(t => t === 'store' || t === 'lookup'));
+  assert.ok(navigations.includes('lookup'));
+  assert.equal(connections, 0);
 });
 test('Producer overview exposes creation CTA', () => {
   const navigations = [];
