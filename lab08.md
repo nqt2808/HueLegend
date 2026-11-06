@@ -6,7 +6,7 @@
 
 ---
 
-## 📋 Kiểm tra các sản phẩm nộp của Lab 8
+## 📋 Kiểm tra các sản phẩm nộp của Lab 8.
 
 - [x] **Bước 1 — Chọn chủ đề & Viết câu định vị:** Đạt chuẩn $\le 2$ dòng, không dùng thuật ngữ kỹ thuật phức tạp.
 - [x] **Bước 2 — Tạo repo và cấu trúc chuẩn:** Thư mục `HueLegend/` chuẩn hóa theo Phần B.6.
