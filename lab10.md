@@ -4,7 +4,7 @@
 - **Mục tiêu thật:** Tìm và sửa lỗi trong [`contracts/project/ProjectCore.sol`](./contracts/project/ProjectCore.sol)
 - **Thông điệp commit chuẩn:**
   ```bash
-  lab-10: audit va sua loi project core
+  lab-10: audit va sua loi project core.
   ```
 
 ---
