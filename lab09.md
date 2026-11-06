@@ -4,7 +4,7 @@
 - **Áp dụng vào sản phẩm:** [`contracts/project/ProjectCore.sol`](./contracts/project/ProjectCore.sol)
 - **Thông điệp commit chuẩn:**
   ```bash
-  lab-09: contract loi bien dich duoc
+  lab-09: contract loi bien dich duoc.
   ```
 
 ---
