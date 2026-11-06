@@ -1,7 +1,7 @@
 # LAB 14 — RÀ SOÁT CHÉO GIỮA CÁC NHÓM (CROSS-TEAM SMART CONTRACT AUDIT)
 
 - **Học phần:** Tiền điện tử & Hợp đồng thông minh (ECO2432)  
-- **Dự án:** **HueLegend** — Truy xuất nguồn gốc đặc sản Huế trên Blockchain  
+- **Dự án:** **HueLegend** — Truy xuất nguồn gốc đặc sản Huế trên Blockchain.
 - **Thành viên nhóm:**  
   1. **Ngô Quỳnh Trang** — MSV: `23K4300041` (Lead Lab 14: Rà soát hợp đồng & Khắc phục lỗi)  
   2. **Ngô Thị Thuý Vân** — MSV: `23K4300023` (Đặc tả kỹ thuật & Báo cáo)  
