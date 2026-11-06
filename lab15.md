@@ -46,7 +46,7 @@
 
 ---
 
-## 📌 Bảng ánh xạ kết nối giao diện - hợp đồng
+## 📌 Bảng ánh xạ kết nối giao diện - hợp đồng.
 
 | Thành phần | Giá trị của nhóm HueLegend |
 |---|---|
