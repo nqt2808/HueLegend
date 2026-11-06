@@ -1,7 +1,7 @@
 # LAB 13 — THỰC NGHIỆM MỘT VỤ MẤT TIỀN VÀ CÁCH KHẮC PHỤC
 
 - **Học phần:** Tiền điện tử & Hợp đồng thông minh (ECO2432)
-- **Dự án:** **HueLegend** — Truy xuất nguồn gốc đặc sản Huế trên Blockchain
+- **Dự án:** **HueLegend** — Truy xuất nguồn gốc đặc sản Huế trên Blockchain.
 - **Thành viên nhóm:**
   1. **Ngô Quỳnh Trang** — MSV: `23K4300041` (Lead Lab 13: Hợp đồng & Kiểm thử)
   2. **Ngô Thị Thuỷ Vân** — MSV: `23K4300023` (Đặc tả & Giao diện)
