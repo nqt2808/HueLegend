@@ -37,7 +37,7 @@ Nhóm đã sử dụng prompt chuẩn được quy định trong tài liệu Lab
 - **Quy tắc chưa đủ chặt:** Mục 1 trong `ECONOMIC_RULES.md` quy định thưởng 50% tiền cọc cho người tố giác nhưng chưa có chế tài ràng buộc nếu người tố giác khai báo sai sự thật.
 - **Biện pháp của Nhóm:** Nhóm bổ sung quy tắc *Ký quỹ khiếu nại (Challenging Stake)* tại Mục 2 `ECONOMIC_RULES.md`: Người gửi đơn tố giác phải ký quỹ `0.01 ETH`. Nếu tố cáo chính xác, nhận lại cọc + thưởng 50% tiền phạt; nếu vu khống sai sự thật, tiền cọc bị tịch thu vào Quỹ OCOP.
 
-#### 4. Lạm dụng 4: Nguy cơ Quản trị viên lạm quyền (Admin Rugpull & Centralization)
+#### 4. Lạm dụng 4: Nguy cơ Quản trị viên lạm quyền (Admin Rugpull & Centralization).
 - **Hành vi lạm dụng:** Địa chỉ ví `owner` tùy tiện gọi `revokeRole` hoặc kích hoạt lệnh tịch thu tiền ký quỹ của cơ sở sản xuất mà không có sự đồng thuận của cơ quan chức năng.
 - **Quy tắc chưa đủ chặt:** Mục 3 trong `ECONOMIC_RULES.md` trao toàn quyền quyết định cho `ROLE_ADMIN` mà chưa áp dụng cơ chế đa chữ ký (Multi-Signature).
 - **Phản hồi của Nhóm (Chấp nhận rủi ro có lộ trình):** Trong khuôn khổ **Lab 8**, nhóm chấp nhận dùng một ví Admin để đơn giản hóa quá trình khởi tạo cấu trúc và kiểm thử cục bộ. Nhóm cam kết từ **Lab 11** sẽ nâng cấp lên hợp đồng đa chữ ký (Multi-Sig 2/3 giữa Ban quản lý OCOP, Đại diện làng nghề và Trưởng nhóm kỹ thuật) để kiểm soát việc tịch thu cọc.
