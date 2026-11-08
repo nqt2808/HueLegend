@@ -100,9 +100,16 @@ for (const [role, expected] of Object.entries(matrices)) {
     assert.deepEqual(visibleTabs(session(role, p)), expected);
   });
 }
-test('ROLE_ADMIN alone is not owner for onlyOwner management methods', () => {
-  assert.equal(canPerform(session('ADMIN', { ROLE_ADMIN: true }), 'ADMIN'), false);
-  assert.deepEqual(visibleTabs(session('ADMIN', { ROLE_ADMIN: true })), PUBLIC_TABS);
+test('ROLE_ADMIN validated by isAdmin can manage every workspace', () => {
+  assert.equal(canPerform(session('ADMIN', { ROLE_ADMIN: true }), 'ADMIN'), true);
+  assert.deepEqual(visibleTabs(session('ADMIN', { ROLE_ADMIN: true })), matrices.ADMIN);
+  for (const role of ['PRODUCER', 'INSPECTOR', 'LOGISTICS', 'RETAILER']) {
+    assert.equal(canPerform(session('ADMIN', { ROLE_ADMIN: true }), role), true);
+  }
+});
+test('Account without Owner or ROLE_ADMIN cannot enter administration', () => {
+  assert.equal(canPerform(session('ADMIN', { ROLE_PRODUCER: true }), 'ADMIN'), false);
+  assert.deepEqual(visibleTabs(session('ADMIN', { ROLE_PRODUCER: true })), PUBLIC_TABS);
 });
 test('Owner may work in producer mode without exposing inspector/admin menus', () => {
   assert.deepEqual(visibleTabs(session('PRODUCER', { owner: true })), matrices.PRODUCER);
@@ -324,10 +331,10 @@ function loadComponent(name) {
   m.require = name => {
     if (name === 'react') return { __esModule: true, default: react, ...react };
     if (name === 'lucide-react') return new Proxy({}, { get(_, key) { return String(key); } });
-    if (name.includes('constants')) return { CONTRACT_ADDRESS: C, OWNER_WALLET: C, ETHERSCAN_BASE_URL: 'https://sepolia.etherscan.io' };
+    if (name.includes('constants')) return { CONTRACT_ADDRESS: C, OWNER_WALLET: C, ETHERSCAN_BASE_URL: 'https://sepolia.etherscan.io', ROLE_HASHES: { ROLE_PRODUCER: 'producer', ROLE_RETAILER: 'retailer', ROLE_LOGISTICS: 'logistics' } };
     if (name.includes('lib/access')) return access;
-    if (name.includes('supply-ledger-core')) return { appendGps: (location) => location, readGps: () => null };
-    if (name.includes('lib/batchMetadata')) return { extractIPFSCid: () => null };
+    if (name.includes('supply-ledger-core')) return { appendGps: (location) => location, readGps: () => null, inventoryForBatch: () => ({ movements: [] }) };
+    if (name.includes('lib/batchMetadata')) return { extractIPFSCid: () => null, getExpiryState: () => 'VALID' };
     if (name.includes('useDraggable')) return { useDraggable: () => ({ modalStyle: {}, dragHeaderProps: {} }) };
     if (name.includes('types')) return { SPECIALTY_CATEGORIES: [] };
     throw Error('Unexpected component import: ' + name);
@@ -342,6 +349,7 @@ function allNodes(node) {
 const Sidebar = loadComponent('Sidebar');
 const MobileNav = loadComponent('MobileNav');
 const Overview = loadComponent('OverviewTab');
+const RoleDashboard = loadComponent('RoleDashboard');
 for (const role of ['GUEST', ...Object.keys(matrices)]) {
   test('Actual desktop and mobile component menus agree for ' + role, () => {
     const tabs = role === 'GUEST' ? PUBLIC_TABS : matrices[role];
@@ -368,6 +376,40 @@ test('Producer overview exposes creation CTA', () => {
     onNavigateTab: t => navigations.push(t), onConnectWallet() {}, onSelectBatchForQR() {} });
   for (const n of allNodes(tree)) if (n.type === 'button') n.props.onClick?.();
   assert.ok(navigations.includes('create-batch'));
+});
+test('Signed-in dashboard hides duplicate promotional banner and KPI cards', () => {
+  const tree = Overview({ batches: {}, hasRoleDashboard: true, canCreateBatch: false, canUseLookupMenu: true,
+    isConnected: true, onNavigateTab() {}, onConnectWallet() {}, onSelectBatchForQR() {} });
+  const nodes = allNodes(tree);
+  assert.ok(nodes.some(n => n.props['data-testid'] === 'overview-batches'));
+  assert.ok(nodes.some(n => (n.children || []).includes('Danh sách lô hàng')));
+  assert.ok(!nodes.some(n => (n.children || []).includes('TỔNG LÔ HÀNG ON-CHAIN')));
+  assert.ok(!nodes.some(n => (n.children || []).includes('Tinh hoa xứ Huế, minh bạch từng hành trình')));
+});
+test('Admin dashboard shows workspace action for a connected account', () => {
+  const navigations = [];
+  const tree = RoleDashboard({ batches: {}, account: C, role: 'ADMIN', onNavigateTab: tab => navigations.push(tab) });
+  assert.ok(allNodes(tree).some(n => n.props['data-dashboard-role'] === 'ADMIN'));
+  allNodes(tree).filter(n => n.type === 'button').forEach(n => n.props.onClick?.());
+  assert.deepEqual(navigations, ['admin']);
+});
+test('Inspector and logistics dashboards lead to their own authorized workspaces', () => {
+  for (const [role, tab] of [['INSPECTOR', 'inspector'], ['LOGISTICS', 'checkpoint']]) {
+    const navigations = [];
+    const tree = RoleDashboard({ batches: {}, account: C, role, onNavigateTab: value => navigations.push(value) });
+    assert.ok(allNodes(tree).some(n => n.props['data-dashboard-role'] === role));
+    allNodes(tree).filter(n => n.type === 'button').forEach(n => n.props.onClick?.());
+    assert.deepEqual(navigations, [tab]);
+  }
+});
+test('Forged Admin dashboard with no wallet cannot expose an admin action', () => {
+  const tree = RoleDashboard({ batches: {}, account: null, role: 'ADMIN', onNavigateTab() { throw Error('unauthorized'); } });
+  assert.equal(tree, null);
+});
+test('Dashboard and Admin headings use a Vietnamese-capable font stack', () => {
+  const css = fs.readFileSync(path.join(root, 'src/index.css'), 'utf8');
+  assert.ok(css.includes("'Be Vietnam Pro', 'Segoe UI', Arial, sans-serif"));
+  assert.ok(!css.includes('Playfair Display'));
 });
 test('No fixed role-wallet constant and no cached authorization in App', () => {
   const app = fs.readFileSync(path.join(root, 'src/App.tsx'), 'utf8');

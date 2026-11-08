@@ -27,8 +27,8 @@ export const RoleConnectModal: React.FC<RoleConnectModalProps> = ({
       id: 'ADMIN',
       icon: '👑',
       title: 'Quản Trị Hệ Thống',
-      description: 'Chủ sở hữu hợp đồng (Owner). Xác minh trực tiếp trên Sepolia.',
-      badge: 'OWNER',
+      description: 'Owner hoặc ví ROLE_ADMIN có quyền trên phiên bản hợp đồng hỗ trợ nhiều Admin.',
+      badge: 'ROLE_ADMIN',
       badgeColor: 'bg-amber-100 text-amber-900 border-amber-300'
     },
     {

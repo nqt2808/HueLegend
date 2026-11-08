@@ -18,6 +18,7 @@ async function loadArtifact() {
   if (!res.ok) throw new Error('Không tải được artifact. Hãy dừng server, chạy npm install rồi npm run dev lại.');
   artifact = await res.json();
   $('admin').textContent = artifact.adminWallet;
+  $('admin2').textContent = artifact.secondAdminWallet || 'Chua cau hinh';
   $('artifact').textContent = artifact.compiler + ' · ' + artifact.sourceHash.slice(0, 12) + '...';
 }
 
@@ -74,6 +75,7 @@ async function persistAddress(address, txHash) {
 
 async function deploy() {
   if (!artifact || !signer || !account) throw new Error('Hãy kết nối MetaMask trước.');
+  if (!window.confirm('Hợp đồng mới sẽ có địa chỉ khác và chưa chứa các lô hàng của hợp đồng cũ. Tiếp tục deploy lên Sepolia?')) return;
   $('deploy').disabled = true;
   $('connect').disabled = true;
   try {
@@ -90,18 +92,24 @@ async function deploy() {
 
     const verify = new Contract(address, [
       'function owner() view returns (address)',
+      'function isAdmin(address account) view returns (bool)',
       'function batchCreationFee() view returns (uint256)',
       'function getTotalBatches() view returns (uint256)'
     ], provider);
 
-    const [owner, fee, total] = await Promise.all([
+    const [owner, fee, total, firstAdmin, secondAdmin] = await Promise.all([
       verify.owner(),
       verify.batchCreationFee(),
       verify.getTotalBatches(),
+      verify.isAdmin(artifact.adminWallet),
+      verify.isAdmin(artifact.secondAdminWallet),
     ]);
 
     if (owner.toLowerCase() !== artifact.adminWallet.toLowerCase()) {
       throw new Error('Owner sau deploy không đúng ADMIN_WALLET. Không tự cập nhật frontend.');
+    }
+    if (!firstAdmin || !secondAdmin) {
+      throw new Error('Chưa xác nhận đủ hai Admin trên hợp đồng mới. Không cập nhật frontend.');
     }
 
     await persistAddress(address, tx.hash);
@@ -110,6 +118,7 @@ async function deploy() {
       'DEPLOY THÀNH CÔNG\n\n' +
       'Contract: ' + address + '\n' +
       'Owner: ' + owner + '\n' +
+      'Admin 2: ' + artifact.secondAdminWallet + '\n' +
       'Fee: ' + fee.toString() + ' wei\n' +
       'Total batches: ' + total.toString() + '\n' +
       'Tx: ' + tx.hash + '\n\n' +

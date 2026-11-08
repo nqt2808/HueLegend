@@ -1063,9 +1063,10 @@ export const App: React.FC = () => {
         <main key={`${currentAccount || 'guest'}:${workspace}`} data-active-tab={safeActiveTab} className="flex-1 p-4 sm:p-6 lg:p-8 pb-24 md:pb-8 max-w-7xl w-full mx-auto space-y-6">
           {safeActiveTab === 'overview' && (
             <>
-            <RoleDashboard batches={batches} account={currentAccount} role={workspace} />
+            <RoleDashboard batches={batches} account={currentAccount} role={workspace} onNavigateTab={handleNavigateTab} />
             <OverviewTab
               batches={batches}
+              hasRoleDashboard={Boolean(currentAccount) && ['ADMIN', 'PRODUCER', 'RETAILER', 'INSPECTOR', 'LOGISTICS'].includes(workspace)}
               producerStakeBalance={producerStakeBalance}
               canCreateBatch={canPerform(access, 'PRODUCER')}
               canUseLookupMenu={allowedTabs.includes('lookup')}

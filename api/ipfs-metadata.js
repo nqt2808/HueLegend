@@ -1,7 +1,15 @@
 import { ethers } from 'ethers';
+import { readFileSync } from 'node:fs';
 import { isValidCid, normalizeBatchMetadata } from './ipfs-metadata-core.js';
 
-const CONTRACT_ADDRESS = process.env.HUELEGEND_CONTRACT_ADDRESS || '0xd689c22E4Fa4B8C80F374EF0F19D4Be6A5210f4C';
+function readDeployedContractAddress() {
+  try {
+    const deployment = JSON.parse(readFileSync(new URL('../deployments/sepolia-latest.json', import.meta.url), 'utf8'));
+    if (deployment.chainId === 11155111 && ethers.isAddress(deployment.address)) return deployment.address;
+  } catch { /* Khong co deployment manifest thi dung dia chi mac dinh. */ }
+  return '0xd689c22E4Fa4B8C80F374EF0F19D4Be6A5210f4C';
+}
+const CONTRACT_ADDRESS = process.env.HUELEGEND_CONTRACT_ADDRESS || readDeployedContractAddress();
 const RPC_URL = process.env.SEPOLIA_RPC_URL || 'https://ethereum-sepolia-rpc.publicnode.com';
 const IPFS_GATEWAY = (process.env.IPFS_GATEWAY_URL || 'https://dweb.link/ipfs').replace(/\/$/, '');
 const ROLE_PRODUCER = ethers.id('ROLE_PRODUCER');

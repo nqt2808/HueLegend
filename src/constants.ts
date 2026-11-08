@@ -73,6 +73,7 @@ export const PROJECT_CORE_ABI = [
   "function getBatchCodeByIndex(uint256 index) view returns (string)",
   "function getStakeInfo(address producer) view returns (uint256 balance, uint256 unlockAt, uint256 remainingSeconds)",
   "function hasRole(address account, bytes32 role) view returns (bool)",
+  "function isAdmin(address account) view returns (bool)",
   "function owner() view returns (address)",
   "function producerStake(address) view returns (uint256)",
   "function setBatchCreationFee(uint256 newFee)",

@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Be Vietnam Pro', 'Segoe UI', Arial, sans-serif;
+  --font-serif: 'Be Vietnam Pro', 'Segoe UI', Arial, sans-serif;
 }
 
 @layer base {
@@ -25,7 +25,7 @@
   }
 
   body {
-    font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Be Vietnam Pro', 'Segoe UI', Arial, sans-serif;
     background-color: var(--bg-body);
     background-image: url('/assets/aistudio/nen_9abbde3c.png');
     background-size: cover;
@@ -38,17 +38,17 @@
   }
 
   h1, h2, h3, h4, .font-serif {
-    font-family: 'Playfair Display', Georgia, serif !important;
-    letter-spacing: -0.02em;
+    font-family: 'Be Vietnam Pro', 'Segoe UI', Arial, sans-serif !important;
+    letter-spacing: -0.025em;
   }
 }
 
 .font-serif {
-  font-family: 'Playfair Display', Georgia, serif !important;
+  font-family: 'Be Vietnam Pro', 'Segoe UI', Arial, sans-serif !important;
 }
 
 .font-sans {
-  font-family: 'Be Vietnam Pro', sans-serif !important;
+  font-family: 'Be Vietnam Pro', 'Segoe UI', Arial, sans-serif !important;
 }
 
 /* Typography Utility Classes */

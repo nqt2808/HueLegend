@@ -15,7 +15,7 @@ export interface WalletSession {
 export const SEPOLIA_CHAIN = '0xaa36a7';
 export const CHAIN_ROLES: ChainRole[] = ['ROLE_ADMIN', 'ROLE_PRODUCER', 'ROLE_INSPECTOR', 'ROLE_LOGISTICS', 'ROLE_RETAILER'];
 export const ROLE_LABELS: Record<WorkspaceRole, string> = {
-  GUEST: 'Khách chưa kết nối', CUSTOMER: 'Khách hàng / Du khách', ADMIN: 'Quản trị hệ thống (Owner)',
+  GUEST: 'Khách chưa kết nối', CUSTOMER: 'Khách hàng / Du khách', ADMIN: 'Quản trị hệ thống (Admin)',
   PRODUCER: 'Cơ sở sản xuất', INSPECTOR: 'Kiểm định viên OCOP', LOGISTICS: 'Đơn vị vận chuyển', RETAILER: 'Đại lý bán lẻ',
 };
 export function emptyPermissions(): RolePermissions {
@@ -45,9 +45,9 @@ export function isVerifiedSession(session: WalletSession): boolean {
 export function hasWorkspacePermission(permissions: RolePermissions, role: WorkspaceRole): boolean {
   if (role === 'GUEST') return false;
   if (role === 'CUSTOMER') return true;
-  // Cac ham quan tri trong ProjectCore dung onlyOwner, khong chi ROLE_ADMIN.
-  if (role === 'ADMIN') return permissions.owner;
-  return permissions.owner || permissions[`ROLE_${role}` as ChainRole] === true;
+  // ROLE_ADMIN chi duoc xac nhan khi contract moi ho tro isAdmin(address).
+  if (permissions.owner || permissions.ROLE_ADMIN) return true;
+  return permissions[`ROLE_${role}` as ChainRole] === true;
 }
 const roleTabs: Record<WorkspaceRole, readonly TabId[]> = {
   GUEST: ['overview', 'lookup', 'store'],

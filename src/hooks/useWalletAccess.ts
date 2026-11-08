@@ -35,6 +35,12 @@ export function useWalletAccess() {
           const permissions = emptyPermissions();
           permissions.owner = sameAddress(owner, account);
           CHAIN_ROLES.forEach((role, index) => { permissions[role] = values[index] === true; });
+          // Hop dong cu co ROLE_ADMIN nhung ham quan tri van onlyOwner.
+          // Chi bat Admin thu hai khi hop dong moi xac nhan isAdmin on-chain.
+          if (!permissions.owner) {
+            try { permissions.ROLE_ADMIN = permissions.ROLE_ADMIN && (await contract.isAdmin(account, { blockTag })) === true; }
+            catch { permissions.ROLE_ADMIN = false; }
+          }
           return permissions;
         } finally { provider.destroy(); }
       },

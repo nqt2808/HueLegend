@@ -10,6 +10,7 @@ const sourceName = 'contracts/project/ProjectCore.sol';
 const sourcePath = path.join(root, sourceName);
 const artifactPath = path.join(root, 'public', 'generated', 'project-core.json');
 const expectedAdmin = '0x2e4216e1BCA81d308b25adaD6ef5Ea92E2e42F8c';
+const expectedSecondAdmin = '0x82d022a704706B2f144863D619D7418F8a0f19A7';
 
 if (!fs.existsSync(sourcePath)) {
   throw new Error(`Khong tim thay ${sourceName}`);
@@ -17,8 +18,8 @@ if (!fs.existsSync(sourcePath)) {
 
 const source = fs.readFileSync(sourcePath, 'utf8');
 
-if (!source.includes(expectedAdmin) || !source.includes('Ownable(ADMIN_WALLET)')) {
-  throw new Error('ProjectCore.sol chua dat ADMIN_WALLET/Ownable dung vi quan tri HueLegend.');
+if (!source.includes(expectedAdmin) || !source.includes(expectedSecondAdmin) || !source.includes('Ownable(ADMIN_WALLET)')) {
+  throw new Error('ProjectCore.sol chua khai bao du hai vi Admin HueLegend.');
 }
 
 function findImports(importPath) {
@@ -77,6 +78,7 @@ const artifact = {
   chainId: 11155111,
   compiler: solc.version(),
   adminWallet: expectedAdmin,
+  secondAdminWallet: expectedSecondAdmin,
   sourceHash: crypto.createHash('sha256').update(source).digest('hex'),
   abi: compiled.abi,
   bytecode: `0x${compiled.evm.bytecode.object}`,

@@ -35,23 +35,31 @@ contract ProjectCore is Ownable, ReentrancyGuard {
 
     address public constant ADMIN_WALLET =
         0x2e4216e1BCA81d308b25adaD6ef5Ea92E2e42F8c;
+    address public constant SECOND_ADMIN_WALLET =
+        0x82d022a704706B2f144863D619D7418F8a0f19A7;
 
     constructor() Ownable(ADMIN_WALLET) {
         _roles[ADMIN_WALLET][ROLE_ADMIN] = true;
+        _roles[SECOND_ADMIN_WALLET][ROLE_ADMIN] = true;
         _roles[ADMIN_WALLET][ROLE_PRODUCER] = true;
         ecosystemFund = ADMIN_WALLET;
 
         emit RoleAssigned(ADMIN_WALLET, ROLE_ADMIN);
+        emit RoleAssigned(SECOND_ADMIN_WALLET, ROLE_ADMIN);
         emit RoleAssigned(ADMIN_WALLET, ROLE_PRODUCER);
         emit EcosystemFundUpdated(address(0), ADMIN_WALLET);
     }
-    modifier onlyRole(bytes32 role) { if (!_roles[msg.sender][role] && msg.sender != owner()) revert UnauthorizedCaller(msg.sender, role); _; }
-    function grantRole(address account, bytes32 role) external onlyOwner { if (account == address(0)) revert InvalidAddress(); _roles[account][role] = true; emit RoleAssigned(account, role); }
-    function revokeRole(address account, bytes32 role) external onlyOwner { if (account == address(0)) revert InvalidAddress(); _roles[account][role] = false; emit RoleRevoked(account, role); }
-    function hasRole(address account, bytes32 role) external view returns (bool) { return (account == owner()) || _roles[account][role]; }
-    function setStakeLockDuration(uint256 newDuration) external onlyOwner { emit StakeLockDurationUpdated(stakeLockDuration, newDuration); stakeLockDuration = newDuration; }
-    function setEcosystemFund(address newFund) external onlyOwner { if (newFund == address(0)) revert InvalidAddress(); emit EcosystemFundUpdated(ecosystemFund, newFund); ecosystemFund = newFund; }
-    function setBatchCreationFee(uint256 newFee) external onlyOwner { if (newFee > MAX_BATCH_FEE_LIMIT) revert FeeExceedsLimit(newFee, MAX_BATCH_FEE_LIMIT); emit BatchCreationFeeUpdated(batchCreationFee, newFee); batchCreationFee = newFee; }
+    // Admin duoc quyen quan tri va moi vai tro nghiep vu; Owner giu quyen chuyen ownership.
+    function _isAdmin(address account) internal view returns (bool) { return account == owner() || _roles[account][ROLE_ADMIN]; }
+    function isAdmin(address account) external view returns (bool) { return _isAdmin(account); }
+    modifier onlyAdmin() { if (!_isAdmin(msg.sender)) revert UnauthorizedCaller(msg.sender, ROLE_ADMIN); _; }
+    modifier onlyRole(bytes32 role) { if (!_isAdmin(msg.sender) && !_roles[msg.sender][role]) revert UnauthorizedCaller(msg.sender, role); _; }
+    function grantRole(address account, bytes32 role) external onlyAdmin { if (account == address(0)) revert InvalidAddress(); _roles[account][role] = true; emit RoleAssigned(account, role); }
+    function revokeRole(address account, bytes32 role) external onlyAdmin { if (account == address(0)) revert InvalidAddress(); _roles[account][role] = false; emit RoleRevoked(account, role); }
+    function hasRole(address account, bytes32 role) external view returns (bool) { return _isAdmin(account) || _roles[account][role]; }
+    function setStakeLockDuration(uint256 newDuration) external onlyAdmin { emit StakeLockDurationUpdated(stakeLockDuration, newDuration); stakeLockDuration = newDuration; }
+    function setEcosystemFund(address newFund) external onlyAdmin { if (newFund == address(0)) revert InvalidAddress(); emit EcosystemFundUpdated(ecosystemFund, newFund); ecosystemFund = newFund; }
+    function setBatchCreationFee(uint256 newFee) external onlyAdmin { if (newFee > MAX_BATCH_FEE_LIMIT) revert FeeExceedsLimit(newFee, MAX_BATCH_FEE_LIMIT); emit BatchCreationFeeUpdated(batchCreationFee, newFee); batchCreationFee = newFee; }
 
     // Nap va rut tien ky quy co thoi gian khoa (Hop dong khong tu dong goi ma phai co nguoi goi)
     function depositStake() external payable {
@@ -78,15 +86,15 @@ contract ProjectCore is Ownable, ReentrancyGuard {
         if (bytes(productName).length == 0) revert EmptyString("productName"); if (bytes(productName).length > MAX_PRODUCT_NAME_LENGTH) revert StringTooLong("productName", MAX_PRODUCT_NAME_LENGTH);
         if (bytes(origin).length == 0) revert EmptyString("origin"); if (bytes(origin).length > MAX_LOCATION_LENGTH) revert StringTooLong("origin", MAX_LOCATION_LENGTH);
         if (_batches[batchCode].exists) revert BatchAlreadyExists(batchCode);
-        if (producerStake[msg.sender] < MIN_STAKE_AMOUNT && msg.sender != owner()) revert StakeTooLow(producerStake[msg.sender], MIN_STAKE_AMOUNT);
-        if (msg.value < batchCreationFee && msg.sender != owner()) revert InsufficientBatchFee(msg.value, batchCreationFee);
+        if (producerStake[msg.sender] < MIN_STAKE_AMOUNT && !_isAdmin(msg.sender)) revert StakeTooLow(producerStake[msg.sender], MIN_STAKE_AMOUNT);
+        if (msg.value < batchCreationFee && !_isAdmin(msg.sender)) revert InsufficientBatchFee(msg.value, batchCreationFee);
 
         _batches[batchCode] = Batch(batchCode, productName, origin, block.timestamp, msg.sender, false, true); _allBatchCodes.push(batchCode);
         _batchCheckpoints[batchCode].push(Checkpoint(block.timestamp, msg.sender, ROLE_PRODUCER, origin, "Khoi tao lo hang dac san tai co so san xuat", initialMetadataURI));
         emit BatchCreated(batchCode, productName, msg.sender, block.timestamp);
         emit CheckpointAdded(batchCode, msg.sender, ROLE_PRODUCER, "Khoi tao lo hang dac san tai co so san xuat", origin, block.timestamp);
 
-        uint256 feeToCollect = msg.sender == owner() ? 0 : batchCreationFee;
+        uint256 feeToCollect = _isAdmin(msg.sender) ? 0 : batchCreationFee;
         uint256 excess = msg.value > feeToCollect ? msg.value - feeToCollect : 0;
         if (feeToCollect > 0) {
             (bool okFund, ) = payable(ecosystemFund).call{value: feeToCollect}(""); if (!okFund) revert TransferFailed();
@@ -101,7 +109,7 @@ contract ProjectCore is Ownable, ReentrancyGuard {
     // Ghi nhan chang boi dung vai tro on-chain
     function addCheckpoint(string calldata batchCode, bytes32 role, string calldata location, string calldata action, string calldata metadataURI) external {
         if (!_batches[batchCode].exists) revert BatchNotFound(batchCode);
-        if (!_roles[msg.sender][role] && msg.sender != owner()) revert UnauthorizedCaller(msg.sender, role);
+        if (!_isAdmin(msg.sender) && !_roles[msg.sender][role]) revert UnauthorizedCaller(msg.sender, role);
         if (bytes(location).length == 0) revert EmptyString("location"); if (bytes(location).length > MAX_LOCATION_LENGTH) revert StringTooLong("location", MAX_LOCATION_LENGTH);
         if (bytes(action).length == 0) revert EmptyString("action");
         if (_batchCheckpoints[batchCode].length >= MAX_CHECKPOINTS_PER_BATCH) revert MaxCheckpointsExceeded(batchCode, MAX_CHECKPOINTS_PER_BATCH);
