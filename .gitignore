@@ -4,6 +4,8 @@ node_modules/
 artifacts/
 cache/
 dist/
+web-backups/
+web/.huelegend-generated.json
 .vercel/
 .env.*
 !.env.example
