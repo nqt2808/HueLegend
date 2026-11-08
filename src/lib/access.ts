@@ -59,8 +59,17 @@ const roleTabs: Record<WorkspaceRole, readonly TabId[]> = {
   ADMIN: TAB_IDS,
 };
 export function visibleTabs(session: WalletSession): readonly TabId[] {
-  if (!isVerifiedSession(session) || !hasWorkspacePermission(session.permissions, session.workspace)) return roleTabs.GUEST;
-  return roleTabs[session.workspace];
+  if (!isVerifiedSession(session)) return roleTabs.GUEST;
+  // Moi vai tro da duoc xac minh on-chain mo toan bo chuc nang cua vai tro do.
+  // Workspace chi la man hinh uu tien, khong phai gioi han quyen cua vi.
+  if (hasWorkspacePermission(session.permissions, 'ADMIN')) return TAB_IDS;
+  const tabs = new Set<TabId>(roleTabs.CUSTOMER);
+  for (const role of ['PRODUCER', 'INSPECTOR', 'LOGISTICS', 'RETAILER'] as const) {
+    if (hasWorkspacePermission(session.permissions, role)) {
+      for (const tab of roleTabs[role]) tabs.add(tab);
+    }
+  }
+  return TAB_IDS.filter(tab => tabs.has(tab));
 }
 export function canVisitTab(tab: string, session: WalletSession): boolean {
   // Tra cuu QR la du lieu cong khai; cac tab ghi on-chain van can quyen.
@@ -68,8 +77,8 @@ export function canVisitTab(tab: string, session: WalletSession): boolean {
 }
 export function canPerform(session: WalletSession, role: WorkspaceRole): boolean {
   if (!isVerifiedSession(session) || role === 'GUEST') return false;
-  if (role === 'CUSTOMER') return true;
-  return hasWorkspacePermission(session.permissions, role) && (session.workspace === 'ADMIN' || session.workspace === role);
+  // Khong khoa quyen on-chain chi vi nguoi dung da chon workspace khac.
+  return hasWorkspacePermission(session.permissions, role);
 }
 export function checkpointWorkspace(role: string): WorkspaceRole | null {
   const key = role.replace(/^ROLE_/, '');

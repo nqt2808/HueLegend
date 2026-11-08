@@ -130,18 +130,28 @@ test('grant and revoke apply to arbitrary wallet, including after reconnection',
   assert.equal(f.controller.getSnapshot().status, 'error');
   f.controller.destroy();
 });
-test('Account without Owner or ROLE_ADMIN cannot enter administration', () => {
+test('Account without Owner or ROLE_ADMIN cannot enter administration even when another role was assigned', () => {
   assert.equal(canPerform(session('ADMIN', { ROLE_PRODUCER: true }), 'ADMIN'), false);
-  assert.deepEqual(visibleTabs(session('ADMIN', { ROLE_PRODUCER: true })), PUBLIC_TABS);
+  assert.deepEqual(visibleTabs(session('ADMIN', { ROLE_PRODUCER: true })), matrices.PRODUCER);
+  assert.equal(canVisitTab('admin', session('ADMIN', { ROLE_PRODUCER: true })), false);
 });
-test('Owner may work in producer mode without exposing inspector/admin menus', () => {
-  assert.deepEqual(visibleTabs(session('PRODUCER', { owner: true })), matrices.PRODUCER);
-  assert.equal(canPerform(session('PRODUCER', { owner: true }), 'INSPECTOR'), false);
+test('Owner and verified Admin retain all functions regardless of preferred workspace', () => {
+  assert.deepEqual(visibleTabs(session('PRODUCER', { owner: true })), matrices.ADMIN);
+  assert.equal(canPerform(session('PRODUCER', { owner: true }), 'INSPECTOR'), true);
+  assert.equal(canPerform(session('CUSTOMER', { ROLE_ADMIN: true }), 'ADMIN'), true);
 });
-test('Multiple roles do not leak into a different chosen workspace', () => {
+test('Each assigned role grants every matching function even when another workspace was selected', () => {
   const current = session('PRODUCER', { ROLE_PRODUCER: true, ROLE_INSPECTOR: true });
-  assert.equal(canVisitTab('inspector', current), false);
-  assert.equal(canPerform(current, 'INSPECTOR'), false);
+  assert.deepEqual(visibleTabs(current), ['overview', 'lookup', 'store', 'create-batch', 'inspector']);
+  assert.equal(canVisitTab('inspector', current), true);
+  assert.equal(canPerform(current, 'INSPECTOR'), true);
+  assert.equal(canPerform(current, 'ADMIN'), false);
+});
+test('Fraud: switching workspaces cannot create a role that was not granted', () => {
+  const unassigned = session('RETAILER', { ROLE_LOGISTICS: true });
+  assert.deepEqual(visibleTabs(unassigned), matrices.LOGISTICS);
+  assert.equal(canPerform(unassigned, 'RETAILER'), false);
+  assert.equal(canVisitTab('retailer', unassigned), false);
 });
 test('Public QR lookup remains readable; private paths are denied', () => {
   assert.equal(canVisitTab('lookup', guestSession()), true);
@@ -179,6 +189,26 @@ for (const role of ['PRODUCER', 'INSPECTOR', 'LOGISTICS', 'RETAILER']) {
     f.controller.destroy();
   });
 }
+test('Wallet granted multiple roles may authorize all operations after one MetaMask connection', async () => {
+  const f = fixture({ [B]: { ROLE_PRODUCER: true, ROLE_INSPECTOR: true, ROLE_LOGISTICS: true, ROLE_RETAILER: true } });
+  f.provider.account = B;
+  await f.controller.connect('PRODUCER');
+  assert.deepEqual(visibleTabs(f.controller.getSnapshot()), matrices.ADMIN.filter(tab => tab !== 'admin'));
+  for (const role of ['PRODUCER', 'INSPECTOR', 'LOGISTICS', 'RETAILER']) {
+    assert.equal(await f.controller.authorize(role), B);
+  }
+  await assert.rejects(f.controller.authorize('ADMIN'));
+  f.controller.destroy();
+});
+test('Selected but ungranted workspace falls back to the wallet actual assigned role', async () => {
+  const f = fixture({ [A]: { ROLE_INSPECTOR: true } });
+  await f.controller.connect('ADMIN');
+  assert.equal(f.controller.getSnapshot().workspace, 'INSPECTOR');
+  assert.deepEqual(visibleTabs(f.controller.getSnapshot()), matrices.INSPECTOR);
+  assert.equal(await f.controller.authorize('INSPECTOR'), A);
+  await assert.rejects(f.controller.authorize('ADMIN'));
+  f.controller.destroy();
+});
 test('Choosing Admin with ordinary wallet is downgraded to customer', async () => {
   const f = fixture(); await f.controller.connect('ADMIN');
   assert.equal(f.controller.getSnapshot().workspace, 'CUSTOMER');
