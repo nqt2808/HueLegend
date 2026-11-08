@@ -9,6 +9,7 @@ const root = path.resolve(path.dirname(__filename), '..');
 const sourceName = 'contracts/project/ProjectCore.sol';
 const sourcePath = path.join(root, sourceName);
 const artifactPath = path.join(root, 'public', 'generated', 'project-core.json');
+const compatibilityAbiPath = path.join(root, 'public', 'ProjectCore_abi.json');
 const expectedAdmin = '0x2e4216e1BCA81d308b25adaD6ef5Ea92E2e42F8c';
 const expectedSecondAdmin = '0x82d022a704706B2f144863D619D7418F8a0f19A7';
 
@@ -100,6 +101,8 @@ const artifact = {
 
 fs.mkdirSync(path.dirname(artifactPath), { recursive: true });
 fs.writeFileSync(artifactPath, JSON.stringify(artifact, null, 2) + '\n', 'utf8');
+// ABI doc lap cho cac cong cu cu doc /web/ProjectCore_abi.json.
+fs.writeFileSync(compatibilityAbiPath, JSON.stringify(compiled.abi, null, 2) + '\n', 'utf8');
 
 console.log('ProjectCore compile OK');
 console.log('Compiler:', artifact.compiler);

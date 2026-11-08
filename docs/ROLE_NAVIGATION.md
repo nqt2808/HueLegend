@@ -1,25 +1,26 @@
 # HueLegend — Hiển thị chức năng theo quyền ví
 
-**Bản cập nhật: 31/10/2026.**
+**Bản cập nhật: 08/11/2026.**
 
 Bản này sửa trực tiếp từ `HueLegend-main.zip` (React 18, TypeScript, Vite 6) người dùng cung cấp. Không ghép lại các bản HTML/JavaScript cũ. Giữ giao diện xanh-vàng, hình nền, logo và các trang hiện có.
 
 ## 1. Hành vi đã thay đổi
 
-Khi mở website, kể cả trình duyệt từng cho phép MetaMask trước đó, ứng dụng bắt đầu ở trạng thái khách. Chưa kết nối thì menu máy tính và thanh nhanh điện thoại chỉ có:
+Khi mở website, kể cả trình duyệt từng cho phép MetaMask trước đó, ứng dụng bắt đầu ở trạng thái khách. Chưa kết nối thì menu máy tính và thanh nhanh điện thoại có:
 
 - Tổng Quan Hệ Thống.
+- Quét & Tra Cứu QR.
 - Cửa Hàng Đặc Sản.
 
 Không còn nút tạo lô, ghi chặng, niêm yết hay quản trị trên trang chủ của khách. Nút chính trên trang chủ dẫn tới cửa hàng; nút còn lại mở kết nối MetaMask. Nút quản lý niêm yết trong cửa hàng chỉ xuất hiện với người có quyền tương ứng.
 
-Menu Tra Cứu Tem QR xuất hiện sau khi kết nối và xác minh thành công. Đường dẫn hồ sơ/QR từ chi tiết sản phẩm vẫn là dữ liệu đọc công khai: không bắt khách ký giao dịch để xem nguồn gốc.
+Menu Tra Cứu Tem QR là dữ liệu công khai cả trước và sau khi kết nối: không bắt khách ký giao dịch để xem nguồn gốc.
 
 ## 2. Ma trận menu
 
 | Trạng thái/khu vực làm việc | Menu hiển thị |
 |---|---|
-| Chưa kết nối, đang kiểm tra quyền, sai mạng hoặc xác minh lỗi | Tổng quan, Cửa hàng |
+| Chưa kết nối, đang kiểm tra quyền, sai mạng hoặc xác minh lỗi | Tổng quan, Tra cứu QR, Cửa hàng |
 | Khách hàng/Du khách đã kết nối | Tổng quan, Tra cứu QR, Cửa hàng |
 | Cơ sở sản xuất | Ba mục chung và Tạo lô hàng |
 | Kiểm định viên | Ba mục chung và Kiểm định OCOP |
@@ -27,7 +28,7 @@ Menu Tra Cứu Tem QR xuất hiện sau khi kết nối và xác minh thành cô
 | Đại lý bán lẻ | Ba mục chung và Quản lý niêm yết |
 | Quản trị hệ thống (Owner hoặc ROLE_ADMIN được xác minh trên hợp đồng mới) | Toàn bộ tám mục |
 
-Một ví có nhiều quyền có thể bấm vào thông tin ví → **Đổi Vai Trò Làm Việc** để chọn khu vực khác. Việc chuyển khu vực luôn kiểm tra lại quyền. Owner chọn khu vực Sản xuất vẫn chỉ nhìn thấy menu của khu vực Sản xuất; chọn Quản trị mới mở toàn bộ.
+**Quyền được cộng gộp theo ví:** một ví có đồng thời `ROLE_PRODUCER` và `ROLE_INSPECTOR` thấy cả Tạo lô và Kiểm định, bất kể khu vực làm việc đã chọn lúc kết nối. Mỗi vai trò chỉ mở những nghiệp vụ được cấp. Owner hoặc `ROLE_ADMIN` đã được xác minh trên hợp đồng mới thấy cả tám mục ngay cả khi chọn workspace khác. Không cần ngắt kết nối rồi đăng nhập lại theo từng vai trò.
 
 ## 3. Quyền lấy ở đâu?
 
@@ -45,7 +46,7 @@ Các mã vai trò được tính bằng `ethers.id('ROLE_PRODUCER')` và các t�
 
 **Phan biet hop dong cu va hop dong moi:** Hop dong Sepolia cu dung `onlyOwner` cho thao tac quan tri, nen viec gan `ROLE_ADMIN` tren hop dong cu chua du de mo toan bo quyen. Ma nguon moi tai `contracts/project/ProjectCore.sol` dung `onlyAdmin`: bat ky vi nao duoc cap `ROLE_ADMIN` tren hop dong moi deu duoc quan tri va ke thua cac vai tro nghiep vu. Cac vai tro Producer, Inspector, Logistics, Retailer duoc xac minh truc tiep tu blockchain, khong phu thuoc danh sach vi hardcode. Frontend chi mo Admin sau khi `isAdmin(wallet)` tren hop dong da trien khai tra ve `true`.
 
-Chọn vai trò không có quyền sẽ mở khu vực Khách hàng và hiển thị cảnh báo. RPC lỗi không cấp quyền dự phòng. Địa chỉ smart contract trong `src/constants.ts` được giữ lại; đó không phải ví Admin mặc định.
+Chọn vai trò chưa được cấp sẽ chuyển tới vai trò khác mà ví thực sự có quyền (nếu có) và hiển thị cảnh báo. Nếu không có quyền nghiệp vụ nào, chỉ mở khu vực Khách hàng. RPC lỗi không cấp quyền dự phòng. Địa chỉ smart contract trong `src/constants.ts` được giữ lại; đó không phải ví Admin mặc định.
 
 ## 4. Đổi ví, đổi mạng, thu hồi quyền
 
@@ -79,6 +80,8 @@ Bản sửa này **không tiếp tục báo thanh toán thành công theo cách 
 
 ## 6. Chạy trên Windows
 
+**Huong dan hien tai (08/11/2026):** de cap nhat repository tai `Desktop\HueLegend` tu GitHub va build lai `web/`, xem [UPDATE_WINDOWS.md](UPDATE_WINDOWS.md). Phan ben duoi la huong dan lich su cho goi ZIP Role Menu, khong phai cach dong bo main hien tai.
+
 Giải nén bản full vào thư mục mới để không ghi đè repository đang rebase hoặc đang có thay đổi chưa lưu. `package.json` nằm ngay gốc ZIP, không có lớp `HueLegend-main` lồng thêm.
 
 ```powershell
@@ -106,7 +109,9 @@ npx.cmd vite preview --host 127.0.0.1 --port 4173 --strictPort
 
 Bản này bổ sung script `test`; vẫn dùng `dev`, `build`, `preview` của bản Vite, không dùng `npm start` của các bản HueLegend cũ.
 
-## 7. Kết quả kiểm tra trong phiên đóng gói
+## 7. Kết quả kiểm tra trong phiên đóng gói lich su
+
+Bang ben duoi chi mo ta ban ZIP Role Menu cu. Khong su dung so lieu kiem tra cu de khang dinh ket qua cua code tren GitHub hien tai; hay chay `npm.cmd test` va `npm.cmd run build:web` tren phien ban moi.
 
 | Kiểm tra | Kết quả/phạm vi |
 |---|---|
@@ -131,9 +136,11 @@ Bằng chứng: `evidence/role-navigation/tests.txt`, `source-check.txt`, `scope
 
 **Ca đổi phiên:** đang mở Admin, chuyển tài khoản MetaMask sang ví thường; Admin phải đóng ngay, không giữ biểu mẫu/số dư của ví cũ.
 
-**Ca public:** chưa kết nối chỉ có hai menu; liên kết hồ sơ/QR từ sản phẩm vẫn đọc được, không mở bất kỳ nghiệp vụ ghi blockchain nào.
+**Ca public:** chưa kết nối có ba menu đọc công khai; liên kết hồ sơ/QR từ sản phẩm vẫn đọc được, không mở bất kỳ nghiệp vụ ghi blockchain nào.
 
 ## 9. Phạm vi và giới hạn
+
+Nhung dong duoi day la luu y lich su cua ban ZIP Role Menu; source `ProjectCore.sol` hien tai da duoc bo sung ho tro multi-admin nhung chua duoc deploy de thay the hop dong Sepolia cu. Xem [MULTI_ADMIN_DEPLOY.md](MULTI_ADMIN_DEPLOY.md).
 
 Không sửa mã Solidity hay quy tắc kinh tế trong hợp đồng. Không khẳng định bytecode tại địa chỉ Sepolia đang cấu hình khớp source ZIP. Các endpoint backend, lưu trữ chứng từ, quy trình chứng nhận pháp lý, luồng trả phí tạo lô/niêm yết và chức năng khác ngoài phân quyền cần kiểm thử riêng; không coi chúng đã được nghiệm thu chỉ vì menu đã đúng.
 

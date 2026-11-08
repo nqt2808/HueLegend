@@ -1,5 +1,7 @@
 # KỊCH BẢN THUYẾT TRÌNH VÀ DEMO DỰ ÁN HUELEGEND (LAB 15)
 
+> **LƯU Ý 08/11/2026:** Đây là kịch bản thuyết trình lịch sử, **không phải báo cáo trạng thái triển khai hiện tại**. URL GitHub Pages, mã giao dịch ví dụ và địa chỉ hợp đồng trong phần kịch bản bên dưới chưa được xác minh cho bản React hiện tại; không dùng chúng làm bằng chứng giao dịch. ABI nguồn mới được biên dịch tại `public/ProjectCore_abi.json`, sau đó sao chép vào `web/ProjectCore_abi.json` khi `npm run build:web`. Frontend hiện trỏ tới `0xd689c22E4Fa4B8C80F374EF0F19D4Be6A5210f4C` (contract cũ); luồng rút quỹ/checkout mới chưa được triển khai on-chain.
+
 **Học phần:** Tiền điện tử & Hợp đồng thông minh (ECO2432)  
 **Tên dự án:** **HueLegend** — Hệ Thống Truy Xuất Nguồn Gốc Đặc Sản Huế Trên Blockchain  
 **Thời lượng chuẩn bị & diễn tập:** 5 phút thuyết trình + 3 phút hỏi đáp (Q&A)  

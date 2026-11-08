@@ -1,70 +1,88 @@
-# HueLegend — Nền Tảng Quản Trị & Truy Xuất Nguồn Gốc Đặc Sản Cố Đô Huế (ECO2432)
+# HueLegend - Quan tri va truy xuat nguon goc dac san Hue (08/11/2026)
 
-> **HueLegend (ECO2432):** Nền tảng Web3 DApp minh bạch 100% quy trình sản xuất, thẩm định OCOP, vận chuyển kho lạnh và phân phối thương mại cho các sản phẩm đặc sản Thừa Thiên Huế trên Blockchain Ethereum Sepolia Testnet.
+**Trang thai hien tai:** frontend React/Vite va folder `web/` duoc build tu cung mot ma nguon; phan quyen hien thi dua tren `owner()`, `hasRole()` va `isAdmin()` cua Sepolia. Mot vi duoc cap nhieu role co toan bo chuc nang tuong ung, khong phai ket noi lai tung role. Owner va Admin duoc xac minh tren hop dong **moi** co quyen quan tri va toan bo role nghiep vu.
 
----
+**Luu y hop dong dang chay:** `src/constants.ts` hien van tro den Sepolia `0xd689c22E4Fa4B8C80F374EF0F19D4Be6A5210f4C`. Bytecode cu dung `onlyOwner` cho quan tri; cap `ROLE_ADMIN` o do khong bien vi thu hai thanh Admin day du. Thay doi Solidity trong repo khong nang cap hop dong da deploy. Xem [docs/MULTI_ADMIN_DEPLOY.md](docs/MULTI_ADMIN_DEPLOY.md) truoc khi tao hop dong moi va lap ke hoach giu du lieu/ky quy cu.
 
-## 👥 Thành Viên Thực Hiện Dự Án
+**Doi chieu file ZIP `HueLegend-Huelegend-van` ngay 02/11/2026:** [docs/ARCHIVE_REVIEW_2026-11-08.md](docs/ARCHIVE_REVIEW_2026-11-08.md). Cac dich vu Supabase cu, du lieu mo phong va luong checkout tao giao dich gia **khong** duoc nhap lai.
 
-1. **Ngô Thị Thuỷ Vân** — MSV: `23K4300023`
-2. **Ngô Quỳnh Trang** — MSV: `23K4300041`
+**Cap nhat ket noi MetaMask (04/11/2026):** moi lan bam Ket noi > Chon vai tro, ung dung yeu cau chon/xac nhan tai khoan trong MetaMask bang `wallet_requestPermissions` truoc khi xac minh role tren Sepolia; khong tu nhan lai vi da dang nhap truoc. Xem [docs/METAMASK_ROLE_PICKER.md](docs/METAMASK_ROLE_PICKER.md).
 
----
+**Cap nhat HSD Blockchain + IPFS (04/11/2026):** da bo sung metadata JSON Pinata/IPFS, chu ky Producer, doi chieu CID Sepolia va hien trang thai HSD khi tra cuu. Can cau hinh `PINATA_JWT` tren server de upload. Xem [docs/IPFS_HSD.md](docs/IPFS_HSD.md) de cai dat bang PowerShell, chay test va biet nhung gioi han cua ban buoc 1.
 
-## 🚀 Các Chức Năng Chính Của Ứng Dụng HueLegend:
+**Huong dan tieng Viet, ma tran vai tro va gioi han kiem thu:** [docs/ROLE_NAVIGATION.md](docs/ROLE_NAVIGATION.md).
 
-### 1. Tổng Quan Hệ Thống (System Overview)
-- Thống kê thời gian thực các chỉ số On-Chain: Tổng số lô hàng, tỷ lệ đạt chứng nhận OCOP, số lượng đại lý phân phối ghi nhận.
-- **Ngày Khởi Tạo Sản Phẩm**: Hiển thị chính xác Ngày Sản Xuất (`productionDate`) do cơ sở khai báo.
-- Tìm kiếm tức thì theo mã lô, tên đặc sản, địa danh và bộ lọc trạng thái kiểm định.
-
-### 2. Khai Báo & Khởi Tạo Lô Hàng On-Chain (Producer Management)
-- Đăng ký thông tin lô đặc sản Huế (Mè Xửng, Tôm Chua, Trà Sen, Nón Lá, Tinh Dầu Tràm...) lên Smart Contract kèm phí khởi tạo (0.001 ETH).
-- Quản lý Quỹ Ký Quỹ Đảm Bảo Chất Lượng (`depositStake` & `withdrawStake`).
-
-### 3. Thẩm Định & Cấp Chứng Nhận OCOP (Inspector Audit)
-- Hội đồng thẩm định ký duyệt tiêu chuẩn an toàn thực phẩm, xếp hạng OCOP (3–5 Sao) và cấp chứng nhận số hóa.
-- **Theo dõi phí thẩm định**: Hiển thị `SỐ DƯ ETH QUẢN TRỊ VIÊN TRẢ PHÍ THẨM ĐỊNH` chỉ tăng (+0.002 ETH/lô) khi Quản trị viên thực hiện giao dịch chi trả qua MetaMask.
-
-### 4. Vận Chuyển Kho Lạnh & Ghi Nhật Ký Chặng (Logistics Tracking)
-- Ghi nhận vị trí, thời gian, nhiệt độ, độ ẩm và thông số bảo quản cho từng chặng giao vận.
-- **Theo dõi phí vận chuyển**: Hiển thị `SỐ DƯ ETH QUẢN TRỊ VIÊN TRẢ PHÍ VẬN CHUYỂN` chỉ tăng (+0.002 ETH/chặng) khi Quản trị viên thanh toán thành công.
-
-### 5. Quản Lý Niêm Yết & Bán Lẻ Thương Mại (Retailer & Store)
-- Đại lý chọn lô hàng từ đơn vị vận chuyển để niêm yết thương mại.
-- **Tự động ẩn lô hàng đã niêm yết**: Lô hàng xác nhận niêm yết thành công sẽ ẩn khỏi danh sách chọn và hiển thị cố định ở bảng "Trạng Thái Niêm Yết Lô Hàng".
-
-### 6. Tra Cứu Hành Trình & Tem QR Stamp (Traceability & Stamp)
-- Quét mã QR Code hoặc nhập Mã lô để tra cứu toàn bộ Dòng thời gian (Timeline) minh bạch trên Blockchain.
-- Xuất & in Tem QR Stamp niêm phong chính hãng sản phẩm OCOP Cố Đô Huế.
-
-### 7. Quản Trị Hệ Thống & Chi Trả Phí Treasury (Admin & Governance)
-- Phân quyền theo mô hình OpenZeppelin AccessControl (`ROLE_PRODUCER`, `ROLE_LOGISTICS`, `ROLE_RETAILER`, `ROLE_INSPECTOR`, `ROLE_ADMIN`).
-- **Chi Trả Phí Cho Kiểm Định Viên & Vận Chuyển**: Chuyển đúng số dư ETH (`0.002 ETH/lượt`) trực tiếp về ví thụ hưởng qua giao dịch MetaMask Sepolia.
-- **Tắt nút chi trả khi số dư bằng 0**: Ngay sau khi thanh toán xong, nút chi trả tự động tắt/vô hiệu hóa và chỉ bật lại khi có lượt thẩm định OCOP hoặc chặng vận chuyển mới được ký duyệt thành công.
-- Cấu hình mức phí tạo lô và chế độ tạm dừng khẩn cấp (`pause/unpause`).
+Ban nay duoc sua tu file HueLegend-main.zip do nguoi dung gui. Giu React/Vite/TypeScript va giao dien xanh-vang hien tai.
+Khach chua ket noi co the xem Tong quan, Tra cuu QR va Cua hang. Vai tro duoc xac minh bang owner()/hasRole() tren Sepolia; khong gan vi mac dinh va khong lay quyen tu localStorage.
+Cac ghi chu lich su ben duoi khong phai xac nhan nghiem thu blockchain cua ban nay.
 
 ---
 
-## 💻 Hướng Dẫn Chạy Ứng Dụng
+# HueLegend — Hệ Thống Quản Trị & Truy Xuất Nguồn Gốc Đặc Sản Huế (React + Vite + TypeScript)
+
+> **HueLegend (ECO2432):** Nền tảng Web3 DApp minh bạch 100% lịch sử nguồn gốc và quy trình OCOP cho các sản phẩm đặc sản Cố Đô Huế trên Blockchain Sepolia.
+
+---
+
+## 🚀 Tính năng nổi bật của ứng dụng React:
+
+1. **Tổng quan hệ thống (Dashboard Overview):**
+   - Thống kê chỉ số On-Chain: Tổng số lô hàng đặc sản, tỷ lệ đạt chứng nhận OCOP, tổng số dư tiền ký quỹ Producer, tổng số chặng đã ghi nhận.
+   - Chỉ hiển thị lô hàng và lịch sử thực sự đọc được từ hợp đồng Sepolia; không sinh sản phẩm mẫu để giả lập dữ liệu giao dịch.
+   - Bộ lọc trạng thái OCOP & công cụ tìm kiếm tức thì.
+
+2. **Tra cứu & Xác thực Tem QR Blockchain (Traceability & QR Stamp):**
+   - Tra cứu chi tiết hành trình từng lô hàng bằng Mã Định Danh (e.g., `HL-MEXUNG-2026-001`).
+   - Tích hợp máy quét Camera QR Code để quét trực tiếp mã niêm phong.
+   - Trực quan hóa Dòng Thời Gian (Timeline) tất cả các chặng: Sản xuất, Vận chuyển kho lạnh, Nhập kho đại lý.
+   - Xem chứng nhận OCOP, ghi chú của Kiểm Định Viên và liên kết giao dịch Etherscan Sepolia.
+   - Xuất và in Tem Mã QR Niêm Phong chính hãng.
+
+3. **Khai báo & Quản lý Lô Hàng (Producer Management):**
+   - Khởi tạo lô hàng đặc sản mới on-chain (`createBatch`) kèm đóng nộp phí khai báo (0.001 ETH).
+   - Quản lý Tiền Ký Quỹ Đảm Bảo (`depositStake` & `withdrawStake`) với mức cọc tối thiểu 0.05 ETH.
+
+4. **Ghi Nhật Ký Chặng Supply Chain (Logistics & Retailer Checkpoint):**
+   - Ghi nhận vị trí, thời gian, mô tả chi tiết công đoạn và điều kiện bảo quản (nhiệt độ, độ ẩm) cho từng chặng.
+
+5. **Thẩm Định & Cấp Chứng Nhận OCOP (Inspector Audit):**
+   - Kiểm định chất lượng vi sinh, nguồn gốc xuất xứ và cấp chứng nhận OCOP 4-5 sao hoặc thu hồi chứng nhận nếu vi phạm.
+
+6. **Quản Trị RBAC & Cấu Hình Phí (Admin & Governance):**
+   - Phân quyền `ROLE_ADMIN`, `ROLE_PRODUCER`, `ROLE_LOGISTICS`, `ROLE_RETAILER`, `ROLE_INSPECTOR` bằng mapping RBAC trong `ProjectCore.sol`, kế thừa `Ownable` của OpenZeppelin.
+   - Điều chỉnh mức phí khai báo lô hàng.
+   - Quyền đã cấp được đọc lại từ Sepolia khi kết nối, đồng bộ và trước mỗi giao dịch. Khi ví có nhiều vai trò, các menu và quyền tương ứng được gộp lại.
+
+---
+
+## 💻 Hướng dẫn chạy ứng dụng
 
 ```bash
-# Cài đặt các thư viện dependencies:
+# Cài đặt thư viện dependencies:
 npm install
 
 # Khởi chạy máy chủ phát triển (Dev Server):
 npm run dev
 
-# Kiểm tra cú pháp và kiểu dữ liệu (Type check):
-npm run lint
-
-# Biên dịch ứng dụng Production:
+# Biên dịch ứng dụng production:
 npm run build
+
+# Dong bo ban build vao web/ de phat hanh static:
+npm run build:web
+
+# Chay bo kiem thu phan quyen, IPFS, giao dien va tuong thich:
+npm test
 ```
 
 ---
 
-## 🔗 Thông Tin Smart Contract On-Chain
+## 🔗 Thông tin Smart Contract:
 
-- **Mạng Lưới:** Ethereum Sepolia Testnet (Chain ID: `11155111`)
-- **Địa Chỉ Smart Contract ProjectCore:** `0xfe7BFa3ec478b621ecCA20DD73014Eb79B0bf5C5`
+- **Mạng:** Ethereum Sepolia Testnet (Chain ID: `11155111`)
+- **Địa chỉ smart contract đang được frontend sử dụng:** `0xd689c22E4Fa4B8C80F374EF0F19D4Be6A5210f4C` (hợp đồng cũ, chưa hỗ trợ Admin thứ hai đầy đủ).
+- **ABI biên dịch từ mã nguồn mới:** `public/ProjectCore_abi.json` và `web/ProjectCore_abi.json`, cùng được tạo bởi `npm run compile:contract` / `npm run build:web`. ABI này dành cho **hợp đồng mới**, không được tự suy ra là bytecode đang chạy tại địa chỉ cũ.
+- **Đường dẫn tương thích:** `web/admin.html` chuyển về ứng dụng chính, không tự cấp quyền Admin.
+# Chuc nang mo rong (2026-11-04)
+
+Huong dan so kho on-chain, ban do GPS van chuyen, dashboard theo workspace/loai dac san va phan anh chat luong ky vi qua IPFS: [docs/SUPPLY_FEATURES.md](docs/SUPPLY_FEATURES.md).
+
