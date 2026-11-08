@@ -7,6 +7,11 @@ const { execFileSync, spawnSync } = require('node:child_process');
 
 const originScript = path.join(__dirname, '..', 'scripts', 'sync-web.mjs');
 
+test('Tailwind does not scan the generated web folder back into itself', () => {
+  const css = fs.readFileSync(path.join(__dirname, '..', 'src', 'index.css'), 'utf8');
+  assert.match(css, /@source not "\.\.\/web"/);
+});
+
 function fixture() {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'huelegend-web-sync-'));
   fs.mkdirSync(path.join(root, 'scripts'));

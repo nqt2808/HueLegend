@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@source not "../web";
+@source not "../web-backups";
 
 @theme {
   --font-sans: 'Be Vietnam Pro', 'Segoe UI', Arial, sans-serif;

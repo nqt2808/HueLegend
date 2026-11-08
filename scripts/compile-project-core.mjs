@@ -72,6 +72,18 @@ if (!compiled?.evm?.bytecode?.object) {
   throw new Error('Khong lay duoc bytecode ProjectCore sau khi compile.');
 }
 
+const sourceHash = crypto.createHash('sha256').update(source).digest('hex');
+let generatedAt = new Date().toISOString();
+if (fs.existsSync(artifactPath)) {
+  try {
+    const previous = JSON.parse(fs.readFileSync(artifactPath, 'utf8'));
+    // Giu thoi gian tao artifact neu source va compiler khong doi de build lap lai on dinh.
+    if (previous.sourceHash === sourceHash && previous.compiler === solc.version() && previous.generatedAt) {
+      generatedAt = previous.generatedAt;
+    }
+  } catch {}
+}
+
 const artifact = {
   contractName: 'ProjectCore',
   networkTarget: 'Sepolia',
@@ -79,11 +91,11 @@ const artifact = {
   compiler: solc.version(),
   adminWallet: expectedAdmin,
   secondAdminWallet: expectedSecondAdmin,
-  sourceHash: crypto.createHash('sha256').update(source).digest('hex'),
+  sourceHash,
   abi: compiled.abi,
   bytecode: `0x${compiled.evm.bytecode.object}`,
   deployedBytecode: `0x${compiled.evm.deployedBytecode.object}`,
-  generatedAt: new Date().toISOString(),
+  generatedAt,
 };
 
 fs.mkdirSync(path.dirname(artifactPath), { recursive: true });
