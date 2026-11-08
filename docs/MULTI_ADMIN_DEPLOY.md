@@ -20,6 +20,18 @@
 - Neu Admin bi thu hoi `ROLE_ADMIN`, lan xac minh vi tiep theo se khoa quyen.
 - Quan trong: Admin khong duoc giai thich thanh co quyen rut ETH cua vi nguoi khac. Ham `withdrawStake` chi rut so du cua `msg.sender`.
 
+## Nguyen tac cap vai tro cho bat ky vi nao
+
+- `grantRole(wallet, ROLE_ADMIN)`: vi duoc cap co the quan tri phan quyen, doi phi va thao tac tat ca khu vuc Producer, Inspector, Logistics, Retailer. Khong phu thuoc danh sach vi duoc hardcode; hai vi khoi tao chi la vai tro ban dau.
+- `grantRole(wallet, ROLE_PRODUCER)`: vi co quyen tao lo va ghi chang Producer, nhung van phai dap ung quy tac coc va phi cua Producer.
+- `grantRole(wallet, ROLE_INSPECTOR)`: vi co quyen kiem dinh, thu hoi chung nhan va ghi chang Inspector.
+- `grantRole(wallet, ROLE_LOGISTICS)`: vi co quyen ghi chang van chuyen.
+- `grantRole(wallet, ROLE_RETAILER)`: vi co quyen ghi chang/niem yet ban le; doanh thu/checkout on-chain hien chua duoc trien khai.
+- Moi vai tro da cap la trang thai cua hop dong tren Sepolia, khong phai du lieu luu tren trinh duyet. Tai lai trang phai chon lai vi MetaMask; quyen thuc te duoc xac minh lai tu `hasRole`.
+- `hasRole` cho biet **quyen co hieu luc** (Admin duoc ke thua tat ca vai tro). `hasDirectRole` cho biet vai tro **duoc gan rieng**, dung de kiem tra chinh xac cap/thu hoi. Thu hoi vai tro con cua Admin khong lam mat quyen ke thua; muon khoa quyen quan tri phai thu hoi `ROLE_ADMIN` (Owner van co quyen cao nhat).
+- Smart contract tu choi role hash khong thuoc nam vai tro duoc ho tro va khong cho ghi chang mang role gia mao.
+- **Chi ap dung sau khi trien khai bytecode moi**. Hien tai dia chi Sepolia cu van co gioi han `onlyOwner`, khong the sua bang frontend hay git push.
+
 ## 2. Tai sao can deploy hop dong moi?
 
 Hop dong Sepolia cu `0xd689c22E4Fa4B8C80F374EF0F19D4Be6A5210f4C` dung `onlyOwner` cho quan tri. `grantRole(vi, ROLE_ADMIN)` tren hop dong cu **khong** cap cac quyen `onlyOwner`.

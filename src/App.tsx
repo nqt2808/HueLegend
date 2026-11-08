@@ -1006,8 +1006,15 @@ export const App: React.FC = () => {
       const tx = grant ? await contract.grantRole(normalizedAccount, roleHash) : await contract.revokeRole(normalizedAccount, roleHash);
       const receipt = await tx.wait();
       if (!receipt || receipt.status !== 1) throw new Error('Giao dịch chưa được xác nhận thành công.');
-      const effective = await contract.hasRole(normalizedAccount, roleHash);
-      if (effective !== grant) throw new Error('Quyền thực tế chưa khớp. Owner luôn có quyền kế thừa trong hợp đồng này.');
+      let directAssignment: boolean;
+      try {
+        directAssignment = await contract.hasDirectRole(normalizedAccount, roleHash);
+      } catch (error: any) {
+        if (error?.code !== 'BAD_DATA' && error?.code !== 'CALL_EXCEPTION') throw error;
+        // Hop dong cu chua co hasDirectRole; chi doc duoc quyen co hieu luc.
+        directAssignment = await contract.hasRole(normalizedAccount, roleHash);
+      }
+      if (directAssignment !== grant) throw new Error('Quyền trực tiếp chưa khớp; Admin/Owner vẫn có thể kế thừa quyền nghiệp vụ.');
       addToast(grant ? 'Đã Cấp Quyền Trên Sepolia' : 'Đã Thu Hồi Quyền Trên Sepolia', `${normalizedAccount} • ${roleName}`, 'success');
       await reloadRoleRegistry();
       await wallet.refresh();

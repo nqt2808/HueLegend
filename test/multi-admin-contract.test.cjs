@@ -20,7 +20,7 @@ test('contract source initializes original Owner and second Admin', () => {
 
 test('compiled ABI exposes independent Admin verification and governance methods', () => {
   const iface = new ethers.Interface(artifact.abi);
-  for (const name of ['isAdmin', 'hasRole', 'grantRole', 'revokeRole', 'setBatchCreationFee', 'setStakeLockDuration', 'setEcosystemFund']) {
+  for (const name of ['isAdmin', 'hasRole', 'hasDirectRole', 'grantRole', 'revokeRole', 'setBatchCreationFee', 'setStakeLockDuration', 'setEcosystemFund']) {
     assert.ok(iface.getFunction(name), name);
   }
   assert.match(source, /function grantRole\(address account, bytes32 role\) external onlyAdmin/);
@@ -31,4 +31,27 @@ test('unauthorized wallet does not inherit Admin and cannot bypass contract modi
   assert.match(source, /function _isAdmin\(address account\) internal view returns \(bool\) \{ return account == owner\(\) \|\| _roles\[account\]\[ROLE_ADMIN\]; \}/);
   assert.match(source, /modifier onlyAdmin\(\) \{ if \(!_isAdmin\(msg.sender\)\) revert UnauthorizedCaller\(msg.sender, ROLE_ADMIN\)/);
   assert.match(source, /if \(!_isAdmin\(msg.sender\) && !_roles\[msg.sender\]\[role\]\) revert UnauthorizedCaller/);
+});
+
+test('any verified Admin wallet inherits every supported role on-chain', () => {
+  assert.match(source, /_isAdmin\(address account\) internal view returns \(bool\) \{ return account == owner\(\) \|\| _roles\[account\]\[ROLE_ADMIN\]; \}/);
+  assert.match(source, /function hasRole\(address account, bytes32 role\) external view returns \(bool\) \{ return _knownRole\(role\) && \(_isAdmin\(account\) \|\| _roles\[account\]\[role\]\); \}/);
+  for (const action of ['grantRole', 'revokeRole', 'setBatchCreationFee', 'setEcosystemFund', 'setStakeLockDuration']) {
+    assert.match(source, new RegExp(`function ${action}\\([^)]*\\) external onlyAdmin`));
+  }
+});
+
+test('assignments apply to any address and each role has a corresponding protected action', () => {
+  assert.match(source, /_roles\[account\]\[role\] = true; emit RoleAssigned\(account, role\)/);
+  assert.match(source, /_roles\[account\]\[role\] = false; emit RoleRevoked\(account, role\)/);
+  assert.match(source, /function createBatch\([\s\S]*?onlyRole\(ROLE_PRODUCER\)/);
+  assert.match(source, /function verifyBatch\([\s\S]*?onlyRole\(ROLE_INSPECTOR\)/);
+  assert.match(source, /function revokeBatchVerification\([\s\S]*?onlyRole\(ROLE_INSPECTOR\)/);
+  assert.match(source, /if \(!_isAdmin\(msg.sender\) && !_roles\[msg.sender\]\[role\]\) revert UnauthorizedCaller/);
+});
+
+test('forged role identifiers cannot be assigned or used in checkpoints', () => {
+  assert.match(source, /if \(!_knownRole\(role\)\) revert InvalidRole\(role\)/);
+  assert.match(source, /if \(role != ROLE_PRODUCER && role != ROLE_LOGISTICS && role != ROLE_RETAILER && role != ROLE_INSPECTOR\) revert InvalidRole\(role\)/);
+  assert.match(source, /function hasDirectRole\(address account, bytes32 role\) external view returns \(bool\)/);
 });

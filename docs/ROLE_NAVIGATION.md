@@ -25,7 +25,7 @@ Menu Tra Cứu Tem QR xuất hiện sau khi kết nối và xác minh thành cô
 | Kiểm định viên | Ba mục chung và Kiểm định OCOP |
 | Đơn vị vận chuyển | Ba mục chung và Vận chuyển |
 | Đại lý bán lẻ | Ba mục chung và Quản lý niêm yết |
-| Quản trị hệ thống (Owner) | Toàn bộ tám mục |
+| Quản trị hệ thống (Owner hoặc ROLE_ADMIN được xác minh trên hợp đồng mới) | Toàn bộ tám mục |
 
 Một ví có nhiều quyền có thể bấm vào thông tin ví → **Đổi Vai Trò Làm Việc** để chọn khu vực khác. Việc chuyển khu vực luôn kiểm tra lại quyền. Owner chọn khu vực Sản xuất vẫn chỉ nhìn thấy menu của khu vực Sản xuất; chọn Quản trị mới mở toàn bộ.
 
@@ -43,7 +43,7 @@ Sau khi MetaMask cấp quyền truy cập tài khoản, ứng dụng kiểm tra:
 
 Các mã vai trò được tính bằng `ethers.id('ROLE_PRODUCER')` và các tên tương ứng, khớp `keccak256("ROLE_...")` trong source Solidity gửi kèm.
 
-**Owner không đồng nghĩa mọi ví có `ROLE_ADMIN`.** Trong `contracts/project/ProjectCore.sol`, các hàm cấp quyền, thu hồi quyền và đổi phí dùng `onlyOwner`. Vì vậy khu vực Quản trị yêu cầu ví trùng `owner()` thật. Ví chỉ có cờ `ROLE_ADMIN` mà không phải Owner không được mở các thao tác `onlyOwner`.
+**Phan biet hop dong cu va hop dong moi:** Hop dong Sepolia cu dung `onlyOwner` cho thao tac quan tri, nen viec gan `ROLE_ADMIN` tren hop dong cu chua du de mo toan bo quyen. Ma nguon moi tai `contracts/project/ProjectCore.sol` dung `onlyAdmin`: bat ky vi nao duoc cap `ROLE_ADMIN` tren hop dong moi deu duoc quan tri va ke thua cac vai tro nghiep vu. Cac vai tro Producer, Inspector, Logistics, Retailer duoc xac minh truc tiep tu blockchain, khong phu thuoc danh sach vi hardcode. Frontend chi mo Admin sau khi `isAdmin(wallet)` tren hop dong da trien khai tra ve `true`.
 
 Chọn vai trò không có quyền sẽ mở khu vực Khách hàng và hiển thị cảnh báo. RPC lỗi không cấp quyền dự phòng. Địa chỉ smart contract trong `src/constants.ts` được giữ lại; đó không phải ví Admin mặc định.
 

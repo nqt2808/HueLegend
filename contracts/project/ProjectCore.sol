@@ -19,7 +19,7 @@ contract ProjectCore is Ownable, ReentrancyGuard {
     string[] private _allBatchCodes; mapping(address => mapping(bytes32 => bool)) private _roles;
     mapping(address => uint256) public producerStake; mapping(address => uint256) public producerUnlockTime;
 
-    error BatchAlreadyExists(string batchCode); error BatchNotFound(string batchCode); error UnauthorizedCaller(address caller, bytes32 requiredRole);
+    error BatchAlreadyExists(string batchCode); error BatchNotFound(string batchCode); error UnauthorizedCaller(address caller, bytes32 requiredRole); error InvalidRole(bytes32 role);
     error EmptyString(string paramName); error StringTooLong(string paramName, uint256 maxAllowed); error InvalidAddress(); error ZeroAmount();
     error StillLocked(uint256 unlockAt, uint256 currentTime); error NothingToWithdraw(); error TransferFailed(); error StakeTooLow(uint256 provided, uint256 minimum);
     error MaxCheckpointsExceeded(string batchCode, uint256 maxAllowed); error BatchAlreadyVerified(string batchCode); error BatchNotVerified(string batchCode);
@@ -52,11 +52,19 @@ contract ProjectCore is Ownable, ReentrancyGuard {
     // Admin duoc quyen quan tri va moi vai tro nghiep vu; Owner giu quyen chuyen ownership.
     function _isAdmin(address account) internal view returns (bool) { return account == owner() || _roles[account][ROLE_ADMIN]; }
     function isAdmin(address account) external view returns (bool) { return _isAdmin(account); }
+    function _knownRole(bytes32 role) internal pure returns (bool) { return role == ROLE_ADMIN || role == ROLE_PRODUCER || role == ROLE_LOGISTICS || role == ROLE_RETAILER || role == ROLE_INSPECTOR; }
     modifier onlyAdmin() { if (!_isAdmin(msg.sender)) revert UnauthorizedCaller(msg.sender, ROLE_ADMIN); _; }
     modifier onlyRole(bytes32 role) { if (!_isAdmin(msg.sender) && !_roles[msg.sender][role]) revert UnauthorizedCaller(msg.sender, role); _; }
-    function grantRole(address account, bytes32 role) external onlyAdmin { if (account == address(0)) revert InvalidAddress(); _roles[account][role] = true; emit RoleAssigned(account, role); }
-    function revokeRole(address account, bytes32 role) external onlyAdmin { if (account == address(0)) revert InvalidAddress(); _roles[account][role] = false; emit RoleRevoked(account, role); }
-    function hasRole(address account, bytes32 role) external view returns (bool) { return _isAdmin(account) || _roles[account][role]; }
+    function grantRole(address account, bytes32 role) external onlyAdmin {
+        if (account == address(0)) revert InvalidAddress(); if (!_knownRole(role)) revert InvalidRole(role);
+        if (!_roles[account][role]) { _roles[account][role] = true; emit RoleAssigned(account, role); }
+    }
+    function revokeRole(address account, bytes32 role) external onlyAdmin {
+        if (account == address(0)) revert InvalidAddress(); if (!_knownRole(role)) revert InvalidRole(role);
+        if (_roles[account][role]) { _roles[account][role] = false; emit RoleRevoked(account, role); }
+    }
+    function hasDirectRole(address account, bytes32 role) external view returns (bool) { return _knownRole(role) && _roles[account][role]; }
+    function hasRole(address account, bytes32 role) external view returns (bool) { return _knownRole(role) && (_isAdmin(account) || _roles[account][role]); }
     function setStakeLockDuration(uint256 newDuration) external onlyAdmin { emit StakeLockDurationUpdated(stakeLockDuration, newDuration); stakeLockDuration = newDuration; }
     function setEcosystemFund(address newFund) external onlyAdmin { if (newFund == address(0)) revert InvalidAddress(); emit EcosystemFundUpdated(ecosystemFund, newFund); ecosystemFund = newFund; }
     function setBatchCreationFee(uint256 newFee) external onlyAdmin { if (newFee > MAX_BATCH_FEE_LIMIT) revert FeeExceedsLimit(newFee, MAX_BATCH_FEE_LIMIT); emit BatchCreationFeeUpdated(batchCreationFee, newFee); batchCreationFee = newFee; }
@@ -109,6 +117,7 @@ contract ProjectCore is Ownable, ReentrancyGuard {
     // Ghi nhan chang boi dung vai tro on-chain
     function addCheckpoint(string calldata batchCode, bytes32 role, string calldata location, string calldata action, string calldata metadataURI) external {
         if (!_batches[batchCode].exists) revert BatchNotFound(batchCode);
+        if (role != ROLE_PRODUCER && role != ROLE_LOGISTICS && role != ROLE_RETAILER && role != ROLE_INSPECTOR) revert InvalidRole(role);
         if (!_isAdmin(msg.sender) && !_roles[msg.sender][role]) revert UnauthorizedCaller(msg.sender, role);
         if (bytes(location).length == 0) revert EmptyString("location"); if (bytes(location).length > MAX_LOCATION_LENGTH) revert StringTooLong("location", MAX_LOCATION_LENGTH);
         if (bytes(action).length == 0) revert EmptyString("action");

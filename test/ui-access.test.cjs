@@ -107,6 +107,29 @@ test('ROLE_ADMIN validated by isAdmin can manage every workspace', () => {
     assert.equal(canPerform(session('ADMIN', { ROLE_ADMIN: true }), role), true);
   }
 });
+test('any second wallet with on-chain Admin can use every Admin action after choosing Admin', async () => {
+  const f = fixture({ [B]: { ROLE_ADMIN: true, ROLE_PRODUCER: true, ROLE_INSPECTOR: true, ROLE_LOGISTICS: true, ROLE_RETAILER: true } });
+  f.provider.account = B;
+  await f.controller.connect('ADMIN');
+  assert.deepEqual(visibleTabs(f.controller.getSnapshot()), matrices.ADMIN);
+  for (const role of ['ADMIN', 'PRODUCER', 'INSPECTOR', 'LOGISTICS', 'RETAILER']) {
+    assert.equal(await f.controller.authorize(role), B);
+  }
+  f.controller.destroy();
+});
+test('grant and revoke apply to arbitrary wallet, including after reconnection', async () => {
+  const f = fixture({ [B]: { ROLE_RETAILER: true } });
+  f.provider.account = B;
+  await f.controller.connect('RETAILER');
+  assert.equal(await f.controller.authorize('RETAILER'), B);
+  f.controller.disconnect();
+  await f.controller.connect('RETAILER');
+  assert.equal(await f.controller.authorize('RETAILER'), B);
+  f.permissions[B].ROLE_RETAILER = false;
+  await assert.rejects(f.controller.authorize('RETAILER'));
+  assert.equal(f.controller.getSnapshot().status, 'error');
+  f.controller.destroy();
+});
 test('Account without Owner or ROLE_ADMIN cannot enter administration', () => {
   assert.equal(canPerform(session('ADMIN', { ROLE_PRODUCER: true }), 'ADMIN'), false);
   assert.deepEqual(visibleTabs(session('ADMIN', { ROLE_PRODUCER: true })), PUBLIC_TABS);
