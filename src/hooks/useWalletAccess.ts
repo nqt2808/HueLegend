@@ -38,8 +38,13 @@ export function useWalletAccess() {
           // Hop dong cu co ROLE_ADMIN nhung ham quan tri van onlyOwner.
           // Chi bat Admin thu hai khi hop dong moi xac nhan isAdmin on-chain.
           if (!permissions.owner) {
-            try { permissions.ROLE_ADMIN = permissions.ROLE_ADMIN && (await contract.isAdmin(account, { blockTag })) === true; }
-            catch { permissions.ROLE_ADMIN = false; }
+            const assignedAdmin = permissions.ROLE_ADMIN;
+            try { permissions.ROLE_ADMIN = assignedAdmin && (await contract.isAdmin(account, { blockTag })) === true; }
+            catch (error: any) {
+              if (error?.code !== 'BAD_DATA' && error?.code !== 'CALL_EXCEPTION') throw error;
+              permissions.ROLE_ADMIN = false;
+              permissions.legacyAdminAssigned = assignedAdmin;
+            }
           }
           return permissions;
         } finally { provider.destroy(); }

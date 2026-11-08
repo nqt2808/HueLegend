@@ -3,7 +3,7 @@ export type TabId = typeof TAB_IDS[number];
 export type WorkspaceRole = 'GUEST' | 'CUSTOMER' | 'ADMIN' | 'PRODUCER' | 'INSPECTOR' | 'LOGISTICS' | 'RETAILER';
 export type ChainRole = 'ROLE_ADMIN' | 'ROLE_PRODUCER' | 'ROLE_INSPECTOR' | 'ROLE_LOGISTICS' | 'ROLE_RETAILER';
 export type WalletStatus = 'guest' | 'connecting' | 'checking' | 'ready' | 'wrong-network' | 'error';
-export type RolePermissions = Record<ChainRole, boolean> & { owner: boolean };
+export type RolePermissions = Record<ChainRole, boolean> & { owner: boolean; legacyAdminAssigned?: boolean };
 export interface WalletSession {
   account: string | null;
   chainId: string | null;

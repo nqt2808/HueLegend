@@ -34,6 +34,7 @@ import { canPerform, canVisitTab, checkpointWorkspace, ROLE_LABELS, visibleTabs,
 import { metadataUploadMessage, parseBatchMetadata, readBatchMetadata, vietnamToday } from './lib/batchMetadata';
 import { matchesOnChainBatch } from '../api/ipfs-metadata-core.js';
 import { normalizeQualityReport, qualitySignMessage, QualityReport } from '../api/quality-core.js';
+import { loadRoleRegistry } from './lib/roleRegistry';
 
 async function hydrateVerifiedMetadata(batch: Batch): Promise<Batch> {
   try {
@@ -57,6 +58,9 @@ export const App: React.FC = () => {
   // Global State
   const [batches, setBatches] = useState<Record<string, Batch>>({});
   const [grantedWallets, setGrantedWallets] = useState<GrantedWallet[]>([]);
+  const [isRoleRegistryLoading, setIsRoleRegistryLoading] = useState(false);
+  const [roleRegistryError, setRoleRegistryError] = useState('');
+  const [supportsMultiAdmin, setSupportsMultiAdmin] = useState<boolean | null>(null);
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedLookupBatch, setSelectedLookupBatch] = useState('');
   const [qrStampBatch, setQrStampBatch] = useState<Batch | null>(null);
@@ -82,6 +86,7 @@ export const App: React.FC = () => {
   const accountRef = useRef(currentAccount);
   accountRef.current = currentAccount;
   const dataRequestRef = useRef(0);
+  const roleRegistryRequestRef = useRef(0);
   const [producerStakeBalance, setProducerStakeBalance] = useState('0.00');
   const [batchCreationFeeEth, setBatchCreationFeeEth] = useState('0.001');
   const [contractBalanceEth, setContractBalanceEth] = useState('0.00');
@@ -279,6 +284,33 @@ export const App: React.FC = () => {
     }
   }, []);
 
+  const reloadRoleRegistry = useCallback(async () => {
+    const requestId = ++roleRegistryRequestRef.current;
+    if (!currentAccount || !isCurrentAccountAdmin) {
+      setGrantedWallets([]);
+      setRoleRegistryError('');
+      setSupportsMultiAdmin(null);
+      setIsRoleRegistryLoading(false);
+      return;
+    }
+    setIsRoleRegistryLoading(true);
+    setRoleRegistryError('');
+    const provider = new ethers.JsonRpcProvider('https://ethereum-sepolia-rpc.publicnode.com');
+    try {
+      const registry = await loadRoleRegistry(provider);
+      if (requestId !== roleRegistryRequestRef.current || accountRef.current?.toLowerCase() !== currentAccount.toLowerCase()) return;
+      setGrantedWallets(registry.wallets);
+      setSupportsMultiAdmin(registry.supportsMultiAdmin);
+    } catch (err: any) {
+      if (requestId === roleRegistryRequestRef.current) {
+        setRoleRegistryError(err?.message || 'Không đọc được lịch sử phân quyền Sepolia. Hãy thử đồng bộ lại.');
+      }
+    } finally {
+      provider.destroy();
+      if (requestId === roleRegistryRequestRef.current) setIsRoleRegistryLoading(false);
+    }
+  }, [currentAccount, isCurrentAccountAdmin]);
+
   // Tu dong doc tham so ?batch=... tu URL (khi quet QR) va mo Popup Nhat Ky Hanh Trinh Chi Tiet On-Chain
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -419,6 +451,11 @@ export const App: React.FC = () => {
     setIsOpenMobileMenu(false);
     setGrantedWallets([]);
   }, [currentAccount]);
+
+  useEffect(() => {
+    void reloadRoleRegistry();
+    return () => { ++roleRegistryRequestRef.current; };
+  }, [reloadRoleRegistry]);
 
   const executeMetaMaskConnect = async (targetRole?: string) => {
     if (!(window as any).ethereum) {
@@ -971,12 +1008,8 @@ export const App: React.FC = () => {
       if (!receipt || receipt.status !== 1) throw new Error('Giao dịch chưa được xác nhận thành công.');
       const effective = await contract.hasRole(normalizedAccount, roleHash);
       if (effective !== grant) throw new Error('Quyền thực tế chưa khớp. Owner luôn có quyền kế thừa trong hợp đồng này.');
-      setGrantedWallets((prev) => {
-        const retained = prev.filter((w) => !(w.address.toLowerCase() === normalizedAccount.toLowerCase() && w.role === roleName));
-        return grant ? [{ address: normalizedAccount, role: roleName, roleTitle: getRoleTitle(roleHash),
-          grantedAt: new Date().toISOString(), status: 'Active' }, ...retained] : retained;
-      });
       addToast(grant ? 'Đã Cấp Quyền Trên Sepolia' : 'Đã Thu Hồi Quyền Trên Sepolia', `${normalizedAccount} • ${roleName}`, 'success');
+      await reloadRoleRegistry();
       await wallet.refresh();
     } catch (err: any) {
       addToast('Giao Dịch Quyền Thất Bại', err?.reason || err?.message || 'Không thể cập nhật quyền; không thay đổi dữ liệu cục bộ.', 'error');
@@ -1018,7 +1051,7 @@ export const App: React.FC = () => {
 
   // Dong bo du lieu va kiem tra lai quyen, khong doc quyen tu cloud/localStorage.
   const handleManualSync = async () => {
-    await Promise.all([fetchContractData(), wallet.refresh()]);
+    await Promise.all([fetchContractData(), wallet.refresh(), reloadRoleRegistry()]);
   };
 
   // Phan anh cong khai luu IPFS; chu ky duoc kiem tra lai tai server.
@@ -1161,6 +1194,10 @@ export const App: React.FC = () => {
             <AdminTab
               batches={batches}
               grantedWallets={grantedWallets}
+              isRoleRegistryLoading={isRoleRegistryLoading}
+              roleRegistryError={roleRegistryError}
+              supportsMultiAdmin={supportsMultiAdmin}
+              onRefreshRoleRegistry={reloadRoleRegistry}
               batchCreationFeeEth={batchCreationFeeEth}
               contractBalanceEth={contractBalanceEth}
               isSystemPaused={isSystemPaused}

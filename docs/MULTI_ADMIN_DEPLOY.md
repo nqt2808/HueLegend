@@ -4,6 +4,10 @@
 
 > Ban cap nhat 08/11/2026: da sua loi chu tieng Viet bi ma hoa sai trong `src/components/AdminTab.tsx` (vi du `Quáº£n Trá»‹` thanh `Quản Trị`) va bo sung `test/text-encoding.test.cjs` de ngan tai phat. Sau khi dong bo, nhan `Ctrl+Shift+R` tren trinh duyet neu van thay noi dung cu do cache.
 
+> Bo sung: danh sach RBAC trong trang Admin nay duoc tai lai tu su kien `RoleAssigned`/`RoleRevoked` cua dung hop dong Sepolia sau khi Admin ket noi, khong con chi duoc luu trong React state. Neu goi role da thanh cong, refresh trang khong xoa quyen tren blockchain; tuy nhien nguoi dung van phai chu dong chon vai tro va tai khoan MetaMask sau khi refresh.
+
+> Neu vi thu hai da co `ROLE_ADMIN` tren hop dong cu nhung khong vao duoc khu vuc Admin, do la gioi han `onlyOwner` cua bytecode hien tai, khong phai do trang web xoa role. Khong gia mao quyen bang localStorage, khong hardcode bo qua kiem tra. Khi thay doi contract can duoc Owner xac nhan phuong an giu lich su va ky quy cu.
+
 ## 1. Dia chi duoc cau hinh
 
 | Vi | Quyen tren ProjectCore moi |

@@ -72,9 +72,12 @@ export class WalletSessionController {
         return this.snapshot;
       }
       const allowed = hasWorkspacePermission(permissions, this.preferred);
+      const notice = allowed ? '' : this.preferred === 'ADMIN' && permissions.legacyAdminAssigned
+        ? 'Ví đã được cấp ROLE_ADMIN trên Sepolia, nhưng hợp đồng hiện tại chỉ cho Owner quản trị. Cần triển khai hợp đồng hỗ trợ nhiều Admin để ví này có đầy đủ quyền.'
+        : 'Ví chưa có quyền cho vai trò đã chọn. Chỉ mở chức năng khách hàng; cần Owner cấp quyền trên hợp đồng.';
       this.publish({ account, chainId: SEPOLIA_CHAIN, status: 'ready', permissions,
         workspace: allowed ? this.preferred : 'CUSTOMER',
-        notice: allowed ? '' : 'Ví chưa có quyền cho vai trò đã chọn. Chỉ mở chức năng khách hàng; cần Owner cấp quyền trên hợp đồng.',
+        notice,
       });
     } catch {
       if (token === this.generation && this.enabled) this.clear('error', account,

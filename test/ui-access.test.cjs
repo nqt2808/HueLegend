@@ -163,6 +163,16 @@ test('Choosing Admin with ordinary wallet is downgraded to customer', async () =
   await assert.rejects(f.controller.authorize('ADMIN'));
   f.controller.destroy();
 });
+test('Legacy ROLE_ADMIN remains visible as assigned but cannot fake Owner authority', async () => {
+  const f = fixture({ [A]: { legacyAdminAssigned: true, ROLE_ADMIN: false } });
+  await f.controller.connect('ADMIN');
+  const snapshot = f.controller.getSnapshot();
+  assert.equal(snapshot.workspace, 'CUSTOMER');
+  assert.match(snapshot.notice, /đã được cấp ROLE_ADMIN/);
+  assert.match(snapshot.notice, /chỉ cho Owner quản trị/);
+  await assert.rejects(f.controller.authorize('ADMIN'));
+  f.controller.destroy();
+});
 test('Owner is read dynamically rather than tied to a fixed address', async () => {
   const f = fixture({}, A); await f.controller.connect('ADMIN');
   assert.equal(await f.controller.authorize('ADMIN'), A);

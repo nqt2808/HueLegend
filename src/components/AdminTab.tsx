@@ -33,6 +33,10 @@ export interface EventLog {
 interface AdminTabProps {
   batches?: Record<string, Batch>;
   grantedWallets?: GrantedWallet[];
+  isRoleRegistryLoading?: boolean;
+  roleRegistryError?: string;
+  supportsMultiAdmin?: boolean | null;
+  onRefreshRoleRegistry?: () => Promise<void>;
   batchCreationFeeEth: string;
   contractBalanceEth?: string;
   producerStakeBalance?: string;
@@ -49,6 +53,10 @@ interface AdminTabProps {
 export const AdminTab: React.FC<AdminTabProps> = ({
   batches = {},
   grantedWallets = [],
+  isRoleRegistryLoading = false,
+  roleRegistryError = '',
+  supportsMultiAdmin = null,
+  onRefreshRoleRegistry,
   batchCreationFeeEth,
   contractBalanceEth = '0.00',
   producerStakeBalance = '0.00',
@@ -193,7 +201,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
   }
 
   return (
-    <div className="space-y-5 font-sans" data-testid="admin-console">
+    <div className="space-y-5 font-sans" data-testid="admin-console" data-ui-version="admin-utf8-v2">
       {/* Header Title Banner */}
       <div className="relative flex flex-wrap items-end justify-between gap-5 overflow-hidden rounded-[28px] bg-[#173F32] p-6 text-white shadow-[0_16px_42px_-28px_rgba(12,57,40,.8)] sm:p-8">
         <div className="pointer-events-none absolute -right-16 -top-28 h-72 w-72 rounded-full border-[52px] border-white/[0.045]" />
@@ -222,6 +230,18 @@ export const AdminTab: React.FC<AdminTabProps> = ({
           </div>
         </div>
       </div>
+
+      {supportsMultiAdmin === false && (
+        <div role="alert" className="rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3.5 text-sm leading-6 text-amber-950">
+          <div className="flex items-start gap-2.5">
+            <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0 text-amber-700" />
+            <div>
+              <p className="font-extrabold">Hợp đồng Sepolia hiện tại chưa hỗ trợ nhiều Admin toàn quyền.</p>
+              <p className="mt-1 text-xs leading-5">Ví có thể đã được gán <code>ROLE_ADMIN</code> trên blockchain, nhưng hợp đồng cũ vẫn yêu cầu Owner cho các thao tác quản trị. Tải lại trang không làm mất quyền đã ghi on-chain. Muốn hai ví cùng quản trị đầy đủ phải triển khai và chuyển sang hợp đồng hỗ trợ nhiều Admin.</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 5 Production Feature Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -326,12 +346,22 @@ export const AdminTab: React.FC<AdminTabProps> = ({
                   <span>Kết Nối Ví Đăng Nhập</span>
                 </button>
               </div>
+            ) : isRoleRegistryLoading ? (
+              <div role="status" className="rounded-xl border border-[#DCE6DD] bg-[#F7FAF7] px-5 py-8 text-center text-xs font-semibold text-[#51735C]">
+                <RefreshCw className="mx-auto mb-2 h-5 w-5 animate-spin" />
+                Đang đọc lịch sử cấp quyền trực tiếp từ Sepolia...
+              </div>
+            ) : roleRegistryError ? (
+              <div role="alert" className="space-y-3 rounded-xl border border-red-200 bg-red-50 px-5 py-6 text-center text-xs text-red-800">
+                <p>{roleRegistryError}</p>
+                {onRefreshRoleRegistry && <button type="button" onClick={() => void onRefreshRoleRegistry()} className="rounded-lg bg-white px-4 py-2 font-bold text-red-800 shadow-sm hover:bg-red-100">Thử đồng bộ lại</button>}
+              </div>
             ) : filteredWallets.length === 0 ? (
               <div className="text-center py-8 px-4 bg-[#FAF9F5] rounded-2xl border border-dashed border-[#E6E1D7] space-y-2">
                 <Users className="w-8 h-8 text-[#8A9D92] mx-auto opacity-60" />
                 <p className="text-xs font-bold text-[#1A2820]">Chưa Có Ví Được Phân Quyền On-Chain</p>
-                <p className="text-[11px] text-[#5E7166] max-w-sm mx-auto">
-                  Sử dụng biểu mẫu "Gán Quyền Vai Trò" ở trên để cấp quyền cho địa chỉ ví Nhà sản xuất, Kiểm định viên OCOP hoặc Đại lý.
+                    <p className="text-[11px] text-[#5E7166] max-w-sm mx-auto">
+                  Chưa tìm thấy ví đang có quyền theo lịch sử RoleAssigned/RoleRevoked trên hợp đồng Sepolia hiện tại.
                 </p>
               </div>
             ) : (
@@ -341,7 +371,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
                     <tr className="bg-[#FAF9F5] border-b border-[#E6E1D7] text-[#8A9D92] font-bold uppercase text-[10px] tracking-wider">
                       <th className="py-2.5 px-3">Địa Chỉ Ví</th>
                       <th className="py-2.5 px-3">Tên Vai Trò / Đơn Vị</th>
-                      <th className="py-2.5 px-3">Thời Gian Gán</th>
+                      <th className="py-2.5 px-3">Ghi Nhận On-Chain</th>
                       <th className="py-2.5 px-3 text-right">Thao Tác</th>
                     </tr>
                   </thead>
