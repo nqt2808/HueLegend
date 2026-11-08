@@ -6,6 +6,8 @@
 
 **Doi chieu file ZIP `HueLegend-Huelegend-van` ngay 02/11/2026:** [docs/ARCHIVE_REVIEW_2026-11-08.md](docs/ARCHIVE_REVIEW_2026-11-08.md). Cac dich vu Supabase cu, du lieu mo phong va luong checkout tao giao dich gia **khong** duoc nhap lai.
 
+**Danh muc 15 dac san Hue:** `public/huelegend-15.csv` duoc doc trong trang Cua hang va dong bo sang `web/huelegend-15.csv` bang `npm run build:web`. Day la 15 ban ghi tham khao (ten, don vi, nguon goc, so luong demo), **chua phai 15 lo hang da duoc ghi hay niem yet tren Sepolia**. Khong gan OCOP, gia ban, QR hay cho thanh toan cho ban ghi tham khao. Muon bien chung thanh lo that, Producer can xac minh NSX/HSD va ghi giao dich MetaMask, sau do Retailer niem yet on-chain.
+
 **Cap nhat ket noi MetaMask (04/11/2026):** moi lan bam Ket noi > Chon vai tro, ung dung yeu cau chon/xac nhan tai khoan trong MetaMask bang `wallet_requestPermissions` truoc khi xac minh role tren Sepolia; khong tu nhan lai vi da dang nhap truoc. Xem [docs/METAMASK_ROLE_PICKER.md](docs/METAMASK_ROLE_PICKER.md).
 
 **Cap nhat HSD Blockchain + IPFS (04/11/2026):** da bo sung metadata JSON Pinata/IPFS, chu ky Producer, doi chieu CID Sepolia va hien trang thai HSD khi tra cuu. Can cau hinh `PINATA_JWT` tren server de upload. Xem [docs/IPFS_HSD.md](docs/IPFS_HSD.md) de cai dat bang PowerShell, chay test va biet nhung gioi han cua ban buoc 1.

@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { Batch, SPECIALTY_CATEGORIES } from '../types';
 import { ETHERSCAN_BASE_URL } from '../constants';
+import { parseReferenceSpecialties, type ReferenceSpecialty } from '../lib/specialtyCatalog';
 
 interface StoreTabProps {
   batches: Record<string, Batch>;
@@ -73,8 +74,11 @@ export const StoreTab: React.FC<StoreTabProps> = ({
 }) => {
   const categories = ['Tất Cả', ...SPECIALTY_CATEGORIES];
 
-  // Danh sach san pham duoc lay hoan toan tu du lieu lo hang da QUA XAC NHAN NIEM YET
+  // Phan biet danh muc tham khao CSV va lo hang da niem yet that tren Sepolia.
   const [catalog, setCatalog] = useState<ProductItem[]>([]);
+  const [referenceSpecialties, setReferenceSpecialties] = useState<ReferenceSpecialty[]>([]);
+  const [referenceLoading, setReferenceLoading] = useState(true);
+  const [referenceError, setReferenceError] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('Tất Cả');
   const [selectedStar, setSelectedStar] = useState<string>('Tất Cả');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -92,6 +96,26 @@ export const StoreTab: React.FC<StoreTabProps> = ({
   const [customerAddress, setCustomerAddress] = useState<string>('');
   const [orderNote, setOrderNote] = useState<string>('');
   const [confirmedOrder, setConfirmedOrder] = useState<any>(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const catalogUrl = new URL('huelegend-15.csv', document.baseURI).toString();
+    fetch(catalogUrl, { signal: controller.signal })
+      .then(response => {
+        if (!response.ok) throw new Error(`Khong tai duoc danh muc (${response.status}).`);
+        return response.text();
+      })
+      .then(csv => {
+        if (!controller.signal.aborted) setReferenceSpecialties(parseReferenceSpecialties(csv));
+      })
+      .catch(() => {
+        if (!controller.signal.aborted) setReferenceError(true);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setReferenceLoading(false);
+      });
+    return () => controller.abort();
+  }, []);
 
   // Khoi phuc gio hang va loc cac lo hang DA XAC NHAN NIEM YET
   useEffect(() => {
@@ -197,6 +221,14 @@ export const StoreTab: React.FC<StoreTabProps> = ({
       prod.origin.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCat && matchesStar && matchesSearch;
   });
+  const filteredReferenceSpecialties = referenceSpecialties.filter((product) => {
+    if (selectedStar !== 'Tất Cả') return false;
+    const matchesCategory = selectedCategory === 'Tất Cả' || product.category === selectedCategory;
+    const search = searchQuery.trim().toLocaleLowerCase('vi');
+    const matchesSearch = !search || [product.name, product.producer, product.origin, String(product.id)]
+      .some(value => value.toLocaleLowerCase('vi').includes(search));
+    return matchesCategory && matchesSearch;
+  });
 
   // Bat dau dat hang
   const handleCompleteOrder = async (e: React.FormEvent) => {
@@ -214,7 +246,7 @@ export const StoreTab: React.FC<StoreTabProps> = ({
   return (
     <div className="space-y-6 font-sans">
       <div role="status" className="rounded-xl border border-amber-200 bg-amber-50 text-amber-900 p-3 text-sm">
-        Gian hàng hiện cho phép xem sản phẩm và giỏ hàng. Thanh toán blockchain chưa được tích hợp; chưa gửi ETH hoặc xác nhận đơn hàng thật.
+        Danh mục 15 đặc sản là dữ liệu tham khảo từ CSV, chưa phải lô được xác minh trên blockchain. Chỉ lô đã niêm yết on-chain mới có tem truy xuất và giỏ hàng; chức năng thanh toán chưa được tích hợp.
       </div>
       {/* Store Banner */}
       <div className="bg-gradient-to-r from-[#264939] via-[#1c372b] to-[#264939] text-white p-6 sm:p-8 rounded-3xl shadow-lg relative overflow-hidden">
@@ -224,7 +256,7 @@ export const StoreTab: React.FC<StoreTabProps> = ({
           <div className="space-y-2 max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-emerald-200 border border-white/20 text-xs font-semibold backdrop-blur-xs">
               <Store className="w-4 h-4 text-[#C29B38]" />
-              <span>CỬA HÀNG ĐẶC SẢN CỐ ĐÔ HUẾ - BLOCKCHAIN CERTIFIED</span>
+              <span>DANH MỤC ĐẶC SẢN HUẾ & LÔ HÀNG BLOCKCHAIN</span>
             </div>
 
             <h2 className="font-serif font-extrabold text-2xl sm:text-3xl lg:text-4xl tracking-tight text-amber-100 leading-snug">
@@ -232,7 +264,7 @@ export const StoreTab: React.FC<StoreTabProps> = ({
             </h2>
 
             <p className="text-xs sm:text-sm text-emerald-100/90 leading-relaxed font-sans">
-              Điểm bán niêm phong sản phẩm OCOP Thừa Thiên Huế. Khách hàng mua sắm trực tuyến với chứng nhận nguồn gốc Blockchain minh bạch 100%.
+              Khám phá đặc sản xứ Huế từ danh sách tham khảo. Những lô đã được đại lý niêm yết trên Sepolia sẽ hiển thị riêng với mã truy xuất blockchain.
             </p>
           </div>
 
@@ -317,7 +349,60 @@ export const StoreTab: React.FC<StoreTabProps> = ({
         </div>
       </div>
 
-      {/* Product Grid */}
+      {/* Danh muc CSV la ban ghi tham khao, khong phai san pham OCOP da xac nhan. */}
+      <section aria-label="Danh mục 15 đặc sản Huế" className="space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div>
+            <h3 className="font-serif font-extrabold text-xl text-[#264939]">15 Đặc Sản Huế Trong Danh Mục</h3>
+            <p className="text-xs text-[#5E7166]">Dữ liệu giới thiệu từ file CSV · Chưa xác minh OCOP, ngày sản xuất, hạn sử dụng hoặc giao dịch Sepolia</p>
+          </div>
+          <span className="self-start text-xs font-bold bg-[#E0ECE4] text-[#264939] px-3 py-1.5 rounded-full">
+            {referenceSpecialties.length} sản phẩm tham khảo
+          </span>
+        </div>
+        {referenceLoading && <p role="status" className="text-sm text-[#5E7166]">Đang tải danh mục đặc sản Huế...</p>}
+        {referenceError && (
+          <p role="alert" className="p-4 text-sm rounded-xl border border-red-200 bg-red-50 text-red-800">
+            Không tải được danh mục. Hãy kiểm tra file <code>huelegend-15.csv</code> trong folder web và tải lại trang.
+          </p>
+        )}
+        {!referenceLoading && !referenceError && filteredReferenceSpecialties.length === 0 && (
+          <p className="p-4 text-sm rounded-xl border border-[#E6E1D7] bg-white text-[#5E7166]">
+            {selectedStar === 'Tất Cả'
+              ? 'Không có sản phẩm tham khảo phù hợp với bộ lọc.'
+              : 'Danh mục tham khảo chưa có chứng nhận OCOP được xác minh, nên không áp dụng bộ lọc sao.'}
+          </p>
+        )}
+        {filteredReferenceSpecialties.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {filteredReferenceSpecialties.map(product => (
+              <article key={`reference-${product.id}`} className="bg-white rounded-3xl border border-[#E6E1D7] overflow-hidden shadow-xs p-5 space-y-3">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-[11px] font-bold text-[#264939]">{product.category}</span>
+                  <span className="shrink-0 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 px-2 py-1 text-[10px] font-bold">Tham khảo</span>
+                </div>
+                <h4 className="font-serif font-extrabold text-lg text-[#1A2820]">{product.name}</h4>
+                <div className="text-xs text-[#5E7166] space-y-2">
+                  <p className="flex gap-2"><Building2 className="w-4 h-4 shrink-0 text-[#264939]"/><span>Đơn vị tham khảo: <b>{product.producer}</b></span></p>
+                  <p>Nguồn gốc: <b>{product.origin}</b></p>
+                  <p>Quy mô ghi trong CSV: <b>{product.demoQuantity}</b> (dữ liệu mẫu)</p>
+                </div>
+                <div className="flex items-start gap-2 text-[11px] text-amber-900 bg-amber-50 border border-amber-100 p-3 rounded-xl">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>Chưa có giá bán hoặc lô hàng được xác thực. Không dùng thông tin này làm chứng nhận OCOP hay tem QR.</span>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Lo hang da duoc niem yet thuc te qua blockchain. */}
+      <section aria-label="Lô hàng niêm yết on-chain" className="space-y-4">
+        <div>
+          <h3 className="font-serif font-extrabold text-xl text-[#264939]">Lô Hàng Đã Niêm Yết On-Chain</h3>
+          <p className="text-xs text-[#5E7166]">Chỉ lấy từ lịch sử lô hàng Sepolia đã xác nhận niêm yết bán lẻ.</p>
+        </div>
       {filteredProducts.length === 0 ? (
         <div className="bg-white p-10 sm:p-14 rounded-3xl border border-[#E6E1D7] text-center space-y-4 max-w-xl mx-auto shadow-2xs">
           <div className="w-16 h-16 rounded-full bg-[#E0ECE4] text-[#264939] flex items-center justify-center mx-auto border border-[#CCD8CF]">
@@ -326,7 +411,7 @@ export const StoreTab: React.FC<StoreTabProps> = ({
           <div className="space-y-1.5">
             <h3 className="font-serif font-extrabold text-lg sm:text-xl text-[#264939]">
               {catalog.length === 0
-                ? 'Chưa Có Sản Phẩm Nào Được Xác Nhận Niêm Yết'
+                ? 'Chưa Có Lô Hàng Nào Được Xác Nhận Niêm Yết'
                 : 'Không Tìm Thấy Sản Phẩm Phù Hợp'}
             </h3>
             <p className="text-xs text-[#5E7166] leading-relaxed max-w-md mx-auto">
@@ -447,6 +532,7 @@ export const StoreTab: React.FC<StoreTabProps> = ({
           ))}
         </div>
       )}
+      </section>
 
       {/* Product Details Modal */}
       {selectedProductDetails && (

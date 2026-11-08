@@ -133,6 +133,21 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
         </div>
       )}
 
+      {!hasRoleDashboard && (
+        <div className="flex flex-col gap-3 rounded-2xl border border-[#D9E4DA] bg-[#F2F8F0] p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="space-y-1">
+            <p className="font-serif text-base font-extrabold text-[#264939]">Khám phá danh mục 15 đặc sản Huế</p>
+            <p className="text-xs text-[#5E7166]">Giới thiệu sản phẩm từ CSV tham khảo; số lô on-chain và chứng nhận OCOP được thống kê riêng bên dưới.</p>
+          </div>
+          <button
+            onClick={() => onNavigateTab('store')}
+            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[#264939] px-4 py-2.5 text-xs font-bold text-white hover:bg-[#1c372b]"
+          >
+            Xem 15 đặc sản <ArrowRight className="h-4 w-4" />
+          </button>
+        </div>
+      )}
+
       {/* KPI Stats Cards */}
       {!hasRoleDashboard && <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 lg:gap-4">
         <div className="bg-white p-5 rounded-2xl border border-[#E6E1D7] shadow-2xs flex items-center gap-4">

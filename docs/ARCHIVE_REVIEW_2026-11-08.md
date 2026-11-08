@@ -26,6 +26,8 @@
 
 ## Nguyen tac xac minh
 
+**Cap nhat danh muc (08/11/2026):** file `public/huelegend-15.csv` tu bo nhap demo duoc tai va hien thi thanh 15 the gioi thieu tai Cua hang, tach biet khoi cac lo duoc niem yet thuc te. 15 ban ghi khong duoc tu tao transaction, chung nhan OCOP, gia ban, HSD hay tem QR.
+
 - Vi duoc cap mot vai tro chi mo **nhung quyen cua vai tro do**; vi co nhieu vai tro nhan **hop** quyen. Admin hop le tren contract moi ke thua toan bo quyen nghiep vu.
 - Sau khi refresh, doi tai khoan, doi mang hoac thu hoi quyen, web doc lai thong tin tu blockchain; khong phuc hoi quyen tu cache. Client chi kiem tra UX; smart contract la noi thuc thi ranh gioi bao mat.
 - Khong cong bo khoa rieng, seed phrase, `PINATA_JWT` hoac token dich vu len GitHub.
