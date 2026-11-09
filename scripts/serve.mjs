@@ -6,29 +6,40 @@ const root = path.resolve(fileURLToPath(new URL("../web/", import.meta.url)));
 const port = Number(process.env.PORT || 5173);
 const host = process.env.HOST || "127.0.0.1";
 // Dung cung API route voi Vercel khi chay o may ca nhan.
-const apiRoutes = new Set(["health", "batches", "batch", "rules", "tx", "evidence", "config", "market-config", "market-health", "market-products", "market-product"]);
+const apiRoutes = new Set(["health", "batches", "batch", "rules", "tx", "evidence", "ipfs-metadata", "quality-reports"]);
+const writableApiRoutes = new Set(["ipfs-metadata", "quality-reports"]);
 const mime = { ".html":"text/html; charset=utf-8", ".css":"text/css; charset=utf-8",
   ".js":"text/javascript; charset=utf-8", ".json":"application/json; charset=utf-8",
   ".svg":"image/svg+xml", ".png":"image/png", ".webp":"image/webp", ".jpg":"image/jpeg", ".jpeg":"image/jpeg", ".txt":"text/plain; charset=utf-8" };
 const server = http.createServer(async (request, response) => {
   try {
-    if (!["GET","HEAD"].includes(request.method)) { response.writeHead(405); response.end(); return; }
     const url = new URL(request.url, "http://localhost");
     const pathname = decodeURIComponent(url.pathname);
     const match = pathname.match(/^\/api\/([a-z-]+)$/);
     if (match && apiRoutes.has(match[1])) {
+      if (request.method !== "GET" && !(request.method === "POST" && writableApiRoutes.has(match[1]))) {
+        response.writeHead(405, { "Content-Type": "application/json; charset=utf-8" });
+        response.end(JSON.stringify({ error: "Method not allowed." }));
+        return;
+      }
       try {
         const mod = await import(`../api/${match[1]}.js`);
+        if (writableApiRoutes.has(match[1])) {
+          // IPFS va phan anh chat luong su dung Node.js handler cho ca GET/POST.
+          await mod.default(request, response);
+          return;
+        }
         const apiResponse = await mod.GET(new Request(url.href));
         response.writeHead(apiResponse.status, Object.fromEntries(apiResponse.headers.entries()));
         response.end(Buffer.from(await apiResponse.arrayBuffer()));
       } catch (error) {
         console.error("Local API:", error.message);
         response.writeHead(503, {"Content-Type":"application/json"});
-        response.end(JSON.stringify({ok:false,error:"Can cai npm install de bat backend API."}));
+        response.end(JSON.stringify({ok:false,error:"Backend API khong san sang."}));
       }
       return;
     }
+    if (!["GET","HEAD"].includes(request.method)) { response.writeHead(405); response.end(); return; }
     const relative = pathname === "/" ? "index.html" : pathname.replace(/^\/+/, "");
     let target = path.resolve(root, relative);
     if (target !== root && !target.startsWith(root + path.sep)) { response.writeHead(403); response.end("Forbidden"); return; }

@@ -10,6 +10,8 @@
 
 **Cap nhat HSD Blockchain + IPFS (04/11/2026):** da bo sung metadata JSON Pinata/IPFS, chu ky Producer, doi chieu CID Sepolia va hien trang thai HSD khi tra cuu. Can cau hinh `PINATA_JWT` tren server de upload. Xem [docs/IPFS_HSD.md](docs/IPFS_HSD.md) de cai dat bang PowerShell, chay test va biet nhung gioi han cua ban buoc 1.
 
+**Sua loi QA backend (09/11/2026):** da khoi phuc `api/_shared.js` cho 6 API chi doc Sepolia, bo sung Node.js handler cho Vercel, va noi `/api/ipfs-metadata` cung `/api/quality-reports` vao `npm run serve:web`. Endpoint `/api/sync` cu bi khoa (HTTP 410) vi cho phep ghi du lieu lo hang va vai tro khong xac thuc; quyen van phai xac minh truc tiep tren chain. Giao dien production khong can mo endpoint dong bo nay. `PINATA_JWT` va RPC Sepolia van can duoc cau hinh de cac luong thuc te hoat dong.
+
 **Huong dan tieng Viet, ma tran vai tro va gioi han kiem thu:** [docs/ROLE_NAVIGATION.md](docs/ROLE_NAVIGATION.md).
 
 Ban nay duoc sua tu file HueLegend-main.zip do nguoi dung gui. Giu React/Vite/TypeScript va giao dien xanh-vang hien tai.
@@ -70,9 +72,14 @@ npm run build
 # Dong bo ban build vao web/ de phat hanh static:
 npm run build:web
 
+# Chay ban web/ co ho tro API Node.js tai localhost:5173:
+npm run serve:web
+
 # Chay bo kiem thu phan quyen, IPFS, giao dien va tuong thich:
 npm test
 ```
+
+**Gioi han nghiem thu:** build/test offline khong thay the viec thu MetaMask, giao dich Sepolia, pin metadata/phan anh tren Pinata hoac xac nhan deployment cong khai. Smart contract dang cau hinh van la ban cu; Admin thu hai chua co full quyen thuc su tren hop dong do. Cua hang hien chi xem san pham va gio hang; chua co thanh toan blockchain hoac don hang that.
 
 ---
 

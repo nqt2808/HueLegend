@@ -1,4 +1,4 @@
-import { getOnly, inParallel, integerParam, json, mapBatch, withChain } from "./_shared.js";
+import { getOnly, inParallel, integerParam, json, mapBatch, serveGet, withChain } from "./_shared.js";
 export const GET = getOnly(async url => {
   const page = integerParam(url.searchParams.get("page"), 0, 0, 100000);
   const size = integerParam(url.searchParams.get("size"), 8, 1, 12);
@@ -17,3 +17,5 @@ export const GET = getOnly(async url => {
     return { page, size, total, items, blockNumber };
   }), 200, "public, s-maxage=10");
 });
+// Vercel su dung default Node handler; local server co the goi GET truc tiep.
+export default (req, res) => serveGet(GET, req, res);

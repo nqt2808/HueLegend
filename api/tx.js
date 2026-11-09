@@ -1,4 +1,4 @@
-import { getOnly, json, validHash, withChain } from "./_shared.js";
+import { getOnly, json, serveGet, validHash, withChain } from "./_shared.js";
 export const GET = getOnly(async url => {
   const hash = validHash(url.searchParams.get("hash"));
   return json(await withChain(async ({ provider }) => {
@@ -8,3 +8,5 @@ export const GET = getOnly(async url => {
     pendingOrUnknown: r === null };
   }));
 });
+// Vercel su dung default Node handler; local server co the goi GET truc tiep.
+export default (req, res) => serveGet(GET, req, res);

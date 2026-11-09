@@ -1,4 +1,4 @@
-import { getOnly, json, mapBatch, mapPoint, validCode, withChain } from "./_shared.js";
+import { getOnly, json, mapBatch, mapPoint, serveGet, validCode, withChain } from "./_shared.js";
 export const GET = getOnly(async url => {
   const code = validCode(url.searchParams.get("code"));
   const data = await withChain(async ({ contract, provider }) => {
@@ -11,3 +11,5 @@ export const GET = getOnly(async url => {
   });
   return json(data, 200, "public, s-maxage=10");
 });
+// Vercel su dung default Node handler; local server co the goi GET truc tiep.
+export default (req, res) => serveGet(GET, req, res);

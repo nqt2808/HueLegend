@@ -46,6 +46,10 @@ if ($LASTEXITCODE -ne 0) { throw "Build web that bai." }
 npm.cmd run dev
 ```
 
+Neu muon chay folder `web/` da build kem API backend Node.js, dung `npm.cmd run serve:web` thay cho `npm.cmd run dev` (mac dinh localhost:5173). Cac API IPFS/phan anh chat luong can `PINATA_JWT` o bien moi truong may chu; API chi doc Sepolia can ket noi RPC hop le. `vite preview` chi phuc vu file static, khong thay the Node.js API.
+
+Endpoint `/api/sync` cu da bi khoa (HTTP 410), vi khong xac thuc du lieu ghi. Vai tro vi duoc doc tu Sepolia, khong dung du lieu dong bo khong tin cay.
+
 - `npm run build:web` tu dong bien dich smart contract, TypeScript, Vite va dong bo `dist/` vao `web/`. File `web/` bi sua thu cong duoc script sao luu vao `web-backups/` truoc khi thay.
 - Neu da tung tao stash, **khong** `git stash pop` tu dong: xem `git stash list` va `git stash show --stat` va chi lay lai nhung thay doi muon giu, de tranh dua code cu ve thay code moi.
 - `npm run dev` phuc vu ban development o cong 3000. Ket qua localhost khong co nghia GitHub/Vercel da deploy.
