@@ -1,0 +1,57 @@
+================================================================================
+  THUC NGHIEM TAN CONG TAI NHAP (REENTRANCY) VA PHUONG PHAP VA LOI (LAB 13)
+  Du an: HueLegend - Truy xuat dac san Hue tren Blockchain
+  Nhom sinh vien: Ngo Thi Thuy Van (23K4300023) & Ngo Quynh Trang (23K4300041)
+================================================================================
+
+[BUOC 1] DUNG HIEN TRUONG TREN REMIX VM (VULNERABLEBANK):
+  [+] Tai khoan 0xUserAlice_0001 goi deposit(2 ETH).
+  [+] Tai khoan 0xUserBob_0002 goi deposit(2 ETH).
+  [+] Tai khoan 0xUserCharlie_0003 goi deposit(2 ETH).
+  ==> Xac nhan so du ngan hang ban dau: bankBalance() = 6.0000 ETH (Chuan 6 ETH).
+
+[BUOC 2] THUC HIEN TAN CONG TAI NHAP (REENTRANCY EXPLOIT):
+  [+] Trien khai Attacker hop dong tai dia chi: 0xAttackerContract00000000000000000000001
+  [+] Attacker su dung tai khoan thu tu goi attack() voi von: 1.0000 ETH.
+[KHOI DONG] Attacker goi attack() voi 1.0 ETH
+  -> Ham receive() chay: Rut duoc 1.0 ETH. Ngan hang con: 6.0 ETH.
+     [TAI NHAP] Goi tiep withdraw() khi so du cu van chua bi xoa...
+  -> Ham receive() chay: Rut duoc 1.0 ETH. Ngan hang con: 5.0 ETH.
+     [TAI NHAP] Goi tiep withdraw() khi so du cu van chua bi xoa...
+  -> Ham receive() chay: Rut duoc 1.0 ETH. Ngan hang con: 4.0 ETH.
+     [TAI NHAP] Goi tiep withdraw() khi so du cu van chua bi xoa...
+  -> Ham receive() chay: Rut duoc 1.0 ETH. Ngan hang con: 3.0 ETH.
+     [TAI NHAP] Goi tiep withdraw() khi so du cu van chua bi xoa...
+  -> Ham receive() chay: Rut duoc 1.0 ETH. Ngan hang con: 2.0 ETH.
+     [TAI NHAP] Goi tiep withdraw() khi so du cu van chua bi xoa...
+  -> Ham receive() chay: Rut duoc 1.0 ETH. Ngan hang con: 1.0 ETH.
+     [TAI NHAP] Goi tiep withdraw() khi so du cu van chua bi xoa...
+  -> Ham receive() chay: Rut duoc 1.0 ETH. Ngan hang con: 0.0 ETH.
+
+  ==> KET QUA SAU TAN CONG:
+      - So du Ngan hang (bankBalance) truoc tan cong: 6.0000 ETH
+      - So du Ngan hang (bankBalance) sau tan cong:   0.0000 ETH (BANG 0 - BI RUT CAN!)
+      - Tong so ETH Attacker chiem doat duoc:         7.0000 ETH (7 ETH = 6 ETH cua nan nhan + 1 ETH von)
+      ==> KET LUAN BUOC 2: DUNG LOI REENTRANCY THE DAO NGUYEN MAU!
+
+--------------------------------------------------------------------------------
+[BUOC 4 - CACH 1] KIEM CHUNG BAN DA VA: SAFEBANK_CEI (CHECKS - EFFECTS - INTERACTIONS)
+  Nguyen ly: Cap nhat so sach (balances[msg.sender] = 0) TRUOC KHI gui tien ra ngoai.
+  [+] Nap 6 ETH vao SafeBankCEI. bankBalance = 6.0000 ETH.
+  [+] Attacker goi attack(1 ETH) vao SafeBankCEI...
+  [PASS] TAN CONG THAT BAI HOAN TOAN: Giao dich bi REVERT!
+         Chi tiet chan: NoBalance: So du bang 0 hoac da duoc rut
+         So du SafeBankCEI duoc bao toan: 6.0000 ETH.
+
+--------------------------------------------------------------------------------
+[BUOC 4 - CACH 2] KIEM CHUNG BAN DA VA: SAFEBANK_GUARD (OPENZEPPELIN 5.x REENTRANCYGUARD)
+  Nguyen ly: Khoa trang thai nonReentrant ngan chan moi cuoc goi de quy trong cung giao dich.
+  [+] Nap 6 ETH vao SafeBankGuard. bankBalance = 6.0000 ETH.
+  [+] Attacker goi attack(1 ETH) vao SafeBankGuard...
+  [PASS] TAN CONG THAT BAI HOAN TOAN: Giao dich bi REVERT!
+         Chi tiet chan: ReentrancyGuardReentrantCall: Bi chan boi khoa nonReentrant
+         So du SafeBankGuard duoc bao toan: 7.0000 ETH.
+
+================================================================================
+  TONG KET THUC NGHIEM LAB 13: CHUNG MINH RUT CAN VA VA LOI THANH CONG 100%
+================================================================================
