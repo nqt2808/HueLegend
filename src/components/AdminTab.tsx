@@ -15,7 +15,7 @@ import {
   Users,
   Search
 } from 'lucide-react';
-import { ETHERSCAN_BASE_URL, CONTRACT_ADDRESS, safeGetAddress, ROLE_HASHES } from '../constants';
+import { ETHERSCAN_BASE_URL, CONTRACT_ADDRESS, safeGetAddress, ROLE_HASHES, isDefaultAdminAddress } from '../constants';
 
 import { Batch, Checkpoint, GrantedWallet } from '../types';
 
@@ -416,37 +416,61 @@ export const AdminTab: React.FC<AdminTabProps> = ({
                   <thead>
                     <tr className="bg-[#FAF9F5] border-b border-[#E6E1D7] text-[#8A9D92] font-bold uppercase text-[10px] tracking-wider">
                       <th className="py-2.5 px-3">Địa Chỉ Ví</th>
-                      <th className="py-2.5 px-3">Tên Vai Trò / Đơn Vị</th>
+                      <th className="py-2.5 px-3">Vai Trò / Người Cấp</th>
                       <th className="py-2.5 px-3">Thời Gian Gán</th>
                       <th className="py-2.5 px-3 text-right">Thao Tác</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#EDE9E0]">
-                    {filteredWallets.map((wallet) => (
-                      <tr key={`${wallet.address}-${wallet.role}`} className="hover:bg-[#FAF9F5]/80 transition-colors">
-                        <td className="py-3 px-3 font-mono font-bold text-[#1A2820]">
-                          {wallet.address.slice(0, 8)}...{wallet.address.slice(-4)}
-                        </td>
-                        <td className="py-3 px-3">
-                          <span className="font-bold text-[#264939] block text-xs">{wallet.roleTitle}</span>
-                          <span className="text-[10px] font-mono text-gray-500">{wallet.role}</span>
-                        </td>
-                        <td className="py-3 px-3 text-gray-500 text-[11px]">
-                          {wallet.grantedAt}
-                        </td>
-                        <td className="py-3 px-3 text-right">
-                          <button
-                            onClick={() => handleRevokeWallet(wallet.address, wallet.role)}
-                            disabled={isSubmitting || !isAdminRole}
-                            className="px-2.5 py-1 rounded-lg bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 text-[11px] font-bold transition-all disabled:opacity-40 inline-flex items-center gap-1 cursor-pointer"
-                            title="Thu hồi quyền vai trò RBAC này"
-                          >
-                            <UserMinus className="w-3 h-3" />
-                            <span>Thu Hồi</span>
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
+                    {filteredWallets.map((wallet) => {
+                      const isTargetAdmin = wallet.role === 'ROLE_ADMIN' || wallet.role === 'ADMIN' || (wallet.roleTitle && wallet.roleTitle.toLowerCase().includes('quản trị'));
+                      
+                      // Kiem tra xem nguoi dang dang nhap co phai la Master Admin khong
+                      const isMasterAdminConnecting = isDefaultAdminAddress(currentAccount);
+
+                      // Quyen thu hoi: 
+                      // 1. Neu toi la nguoi truc tiep cap quyen (wallet.granter match)
+                      // 2. Neu ví do 'He thong' cap (null granter) VA toi la Master Admin
+                      const isGrantedByMe = (wallet.granter && currentAccount && wallet.granter.toLowerCase() === currentAccount.toLowerCase()) ||
+                                            (!wallet.granter && isMasterAdminConnecting);
+                      
+                      const canRevoke = !isTargetAdmin && isGrantedByMe;
+
+                      return (
+                        <tr key={`${wallet.address}-${wallet.role}`} className="hover:bg-[#FAF9F5]/80 transition-colors">
+                          <td className="py-3 px-3 font-mono font-bold text-[#1A2820]">
+                            {wallet.address.slice(0, 8)}...{wallet.address.slice(-4)}
+                          </td>
+                          <td className="py-3 px-3">
+                            <span className="font-bold text-[#264939] block text-xs">{wallet.roleTitle}</span>
+                            <div className="flex items-center gap-1 mt-0.5">
+                              <span className="text-[9px] font-mono text-gray-400">Granter:</span>
+                              <span className="text-[9px] font-mono text-emerald-600 font-bold">
+                                {wallet.granter ? `${wallet.granter.slice(0, 6)}...${wallet.granter.slice(-4)}` : 'Hệ thống'}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="py-3 px-3 text-gray-500 text-[11px]">
+                            {wallet.grantedAt}
+                          </td>
+                          <td className="py-3 px-3 text-right">
+                            <button
+                              onClick={() => handleRevokeWallet(wallet.address, wallet.role)}
+                              disabled={isSubmitting || !isAdminRole || !canRevoke}
+                              className={`px-2.5 py-1 rounded-lg border text-[11px] font-bold transition-all inline-flex items-center gap-1 ${
+                                canRevoke 
+                                  ? 'bg-red-50 text-red-700 hover:bg-red-100 border-red-200 cursor-pointer' 
+                                  : 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed opacity-60'
+                              }`}
+                              title={isTargetAdmin ? "Không thể thu hồi vai trò Quản Trị Viên" : !isGrantedByMe ? "Bạn chỉ có thể thu hồi ví do chính bạn cấp quyền" : "Thu hồi quyền vai trò RBAC này"}
+                            >
+                              <UserMinus className="w-3 h-3" />
+                              <span>Thu Hồi</span>
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>

@@ -74,4 +74,5 @@ export interface GrantedWallet {
   roleTitle: string;
   grantedAt: string;
   status: string;
+  granter?: string;
 }

@@ -72,14 +72,16 @@ export const App: React.FC = () => {
         role: 'ROLE_ADMIN',
         roleTitle: 'Quản Trị Viên',
         grantedAt: new Date().toISOString().replace('T', ' ').slice(0, 16),
-        status: 'Active'
+        status: 'Active',
+        granter: safeGetAddress('0xfe7BFa3ec478b621ecCA20DD73014Eb79B0bf5C5')
       },
       {
         address: safeGetAddress('0x2e4216e1BCA81d308b25adaD6ef5Ea92E2e42F8c'),
         role: 'ROLE_ADMIN',
         roleTitle: 'Quản Trị Viên',
         grantedAt: new Date().toISOString().replace('T', ' ').slice(0, 16),
-        status: 'Active'
+        status: 'Active',
+        granter: safeGetAddress('0xfe7BFa3ec478b621ecCA20DD73014Eb79B0bf5C5')
       }
     ];
 
@@ -1855,7 +1857,8 @@ export const App: React.FC = () => {
       role: roleName,
       roleTitle: roleTitles[roleName] || roleName,
       grantedAt: new Date().toISOString().replace('T', ' ').slice(0, 16),
-      status: 'Active'
+      status: 'Active',
+      granter: safeGetAddress(currentAccount)
     };
 
     const updateWalletsState = async () => {

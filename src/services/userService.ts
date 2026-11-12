@@ -22,7 +22,8 @@ export const fetchGrantedWalletsFromSupabase = async (): Promise<GrantedWallet[]
       role: u.role,
       roleTitle: u.role_title,
       grantedAt: new Date(u.granted_at || u.created_at).toLocaleDateString('vi-VN'),
-      status: u.status || 'ACTIVE'
+      status: u.status || 'ACTIVE',
+      granter: u.granter_address || u.granter
     }));
   } catch (err) {
     console.error('Loi fetchGrantedWalletsFromSupabase:', err);
@@ -39,6 +40,7 @@ export const saveGrantedWalletToSupabase = async (wallet: GrantedWallet): Promis
       role: wallet.role,
       role_title: wallet.roleTitle,
       status: wallet.status || 'ACTIVE',
+      granter_address: wallet.granter,
       granted_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     };
