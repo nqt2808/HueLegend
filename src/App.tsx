@@ -2072,7 +2072,7 @@ export const App: React.FC = () => {
       );
       const targetInspectorAddr = inspectorGrantedWallet && ethers.isAddress(inspectorGrantedWallet.address)
         ? safeGetAddress(inspectorGrantedWallet.address)
-        : '0x35655079aEbB215E58e379D5a8c2f1f3a5323C6b';
+        : DEFAULT_ADMIN_ADDRESS;
 
       const loadingToastId = addToast(
         'Yêu Cầu MetaMask',
@@ -2277,7 +2277,7 @@ export const App: React.FC = () => {
     // Xac dinh dia chi vi Kiem dinh vien da ky kiem dinh lo hang nay
     const cleanInspectorAddr = inspectorAddress && ethers.isAddress(inspectorAddress)
       ? safeGetAddress(inspectorAddress)
-      : '0x35655079aEbB215E58e379D5a8c2f1f3a5323C6b';
+      : DEFAULT_ADMIN_ADDRESS;
 
     const loadingToastId = addToast(
       'Yêu Cầu MetaMask',

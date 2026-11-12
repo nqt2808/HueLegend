@@ -67,4 +67,4 @@ npm run build
 ## 🔗 Thông Tin Smart Contract On-Chain
 
 - **Mạng Lưới:** Ethereum Sepolia Testnet (Chain ID: `11155111`)
-- **Địa Chỉ Smart Contract ProjectCore:** `0xfe7BFa3ec478b621ecCA20DD73014Eb79B0bf5C5`
+- **Địa Chỉ Smart Contract ProjectCore:** `0x35655079aEbB215E58e379D5a8c2f1f3a5323C6b`

@@ -15,7 +15,7 @@ export const safeGetAddress = (address: string): string => {
 };
 
 // Cau hinh hop dong, cong RPC ngam va mang Sepolia
-export const CONTRACT_ADDRESS = safeGetAddress("0xfe7BFa3ec478b621ecCA20DD73014Eb79B0bf5C5");
+export const CONTRACT_ADDRESS = safeGetAddress("0x35655079aEbB215E58e379D5a8c2f1f3a5323C6b");
 export const RPC_URL = "https://ethereum-sepolia-rpc.publicnode.com";
 export const SEPOLIA_CHAIN_ID = "0xaa36a7"; // 11155111
 export const SEPOLIA_DECIMAL_ID = 11155111;

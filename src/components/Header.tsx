@@ -59,7 +59,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="hidden md:flex items-center gap-1.5 text-xs text-[#5E7166]">
           <ShieldCheck className="w-3.5 h-3.5 text-[#C29B38]" />
           <span className="font-mono text-[11px] font-bold">
-            {CONTRACT_ADDRESS ? `${CONTRACT_ADDRESS.slice(0, 6)}...${CONTRACT_ADDRESS.slice(-4)}` : '0xfe7B...f5C5'}
+            {CONTRACT_ADDRESS ? `${CONTRACT_ADDRESS.slice(0, 6)}...${CONTRACT_ADDRESS.slice(-4)}` : '0x3565...3C6b'}
           </span>
         </div>
       </div>

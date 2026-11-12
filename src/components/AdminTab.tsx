@@ -15,7 +15,7 @@ import {
   Users,
   Search
 } from 'lucide-react';
-import { ETHERSCAN_BASE_URL, CONTRACT_ADDRESS, safeGetAddress, ROLE_HASHES, isDefaultAdminAddress } from '../constants';
+import { ETHERSCAN_BASE_URL, CONTRACT_ADDRESS, safeGetAddress, ROLE_HASHES, isDefaultAdminAddress, DEFAULT_ADMIN_ADDRESS } from '../constants';
 
 import { Batch, Checkpoint, GrantedWallet } from '../types';
 
@@ -330,7 +330,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
                     required
                     value={accountAddress}
                     onChange={(e) => setAccountAddress(e.target.value)}
-                    placeholder="Ví dụ: 0x35655079aEbB215E58e379D5a8c2f1f3a5323C6b"
+                    placeholder="Ví dụ: 0x2e4216e1BCA81d308b25adaD6ef5Ea92E2e42F8c"
                     className="w-full px-3.5 py-2.5 rounded-xl border border-[#E6E1D7] text-xs font-mono font-bold focus:outline-none focus:border-[#264939] bg-[#FAF9F5]"
                   />
                 </div>
@@ -654,7 +654,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
                       const inspectorGrantedWallet = grantedWallets.find(
                         (w) => w.role === 'ROLE_INSPECTOR' || w.role === ROLE_HASHES.ROLE_INSPECTOR
                       );
-                      const inspectorAddr = inspectorCp?.recorder || inspectorGrantedWallet?.address || '0x35655079aEbB215E58e379D5a8c2f1f3a5323C6b';
+                      const inspectorAddr = inspectorCp?.recorder || inspectorGrantedWallet?.address || DEFAULT_ADMIN_ADDRESS;
                       const isPaid = Boolean(b.adminPaidInspectorFee);
 
                       return (
